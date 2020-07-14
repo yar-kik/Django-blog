@@ -1,0 +1,30 @@
+{% extends "articles/base.html" %}
+{% load article_tags %}
+
+{% block title %}My Blog{% endblock %}
+
+{% block content %}
+    <h1>My Blog</h1>
+
+    {% if tag %}
+        <h2>Articles tagged with "{{ tag.name }}"</h2>
+    {% endif %}
+
+    {% for article in articles %}
+        <h2>
+            <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
+        </h2>
+        <p class="tags">
+            Tags:
+                {% for tag in article.tags.all %}
+                    <a href="{% url 'articles:all_articles_by_tag' tag.slug %}">
+                        {{ tag.name }}
+                    </a>
+                    {% if not forloop.last %}, {% endif %}
+                {% endfor %}
+        </p>
+        <p class="date">Published {{ article.date_created }} by {{ article.author }}</p>
+        {{ article.text|markdown|truncatewords_html:30 }}
+    {% endfor %}
+    {% include "pagination.html" with page=articles %}
+{% endblock %}

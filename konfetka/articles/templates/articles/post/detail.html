@@ -1,0 +1,57 @@
+{% extends "articles/base.html" %}
+{% load article_tags %}
+
+{% block title %}{{ article.title }}{% endblock %}
+
+{% block content %}
+    <h1>{{ article.title }}</h1>
+
+    {% for tag in article.tags.all %}
+        <a href="{% url 'articles:all_articles_by_tag' tag.slug %}">
+            {{ tag.name }}
+        </a>
+        {% if not forloop.last %}, {% endif %}
+    {% endfor %}
+
+    <p class="date">Published {{ article.date_created }} by {{ article.author }}</p>
+    {{ article.text|markdown }}
+
+    <p>
+        <a href="{% url 'articles:post_share' article.id %}">Share this post</a>
+    </p>
+
+    <h2>Similar posts</h2>
+        {% for article in similar_articles %}
+            <p>
+                <a href="{{ article.get_absolute_url }}">{{article.title}}</a>
+            </p>
+        {% empty %}
+            <p>There are no similar article yet.</p>
+        {% endfor %}
+
+    {% with comments.count as total_comments %}
+        <h2>{{ total_comments }} comment{{ total_comments|pluralize }}</h2>
+    {% endwith %}
+    {% for comment in comments %}
+        <div class="comment">
+            <p class="info">
+                Comment {{ forloop.counter }} by {{ comment.name }}
+                {{ comment.created }}
+            </p>
+            {{ comment.body|linebreaks }}
+        </div>
+    {% empty %}
+        <p>There are no comments yet.</p>
+    {% endfor %}
+
+    {% if new_comment %}
+        <h2>Your comment has been added.</h2>
+    {% else %}
+        <h2>Add a new comment</h2>
+        <form action="." method="post">
+            {{ comment_form.as_p }}
+            {% csrf_token %}
+            <p><input type="submit" value="Add comment"></p>
+        </form>
+    {% endif %}
+{% endblock %}
