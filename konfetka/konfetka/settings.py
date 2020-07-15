@@ -15,7 +15,6 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
@@ -31,17 +30,17 @@ SITE_ID = 1
 
 # Application definition
 INSTALLED_APPS = [
+    'account',
+    'articles',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'articles',
     'taggit',
     'django.contrib.sites',
     'django.contrib.sitemaps',
-    'account',
 ]
 
 MIDDLEWARE = [
@@ -74,7 +73,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'konfetka.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
@@ -84,7 +82,6 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
@@ -104,7 +101,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
@@ -118,14 +114,13 @@ USE_L10N = True
 
 USE_TZ = False
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-#EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 EMAIL_HOST = 'einstein16.04@gmail.com'
 EMAIL_HOST_USER = 'einstein16.04@gmail.com'
@@ -133,3 +128,7 @@ EMAIL_HOST_PASSWORD = 'luspdziywpxtmkuo'
 EMAIL_PORT = 25
 EMAIL_USE_TLS = True
 
+LOGIN_REDIRECT_URL = 'account:dashboard'  # куди перенаправляти користувача при успішній авторизації
+LOGIN_URL = 'account:login'  # куди перенаправляти для входу в систему
+LOGOUT_URL = 'account:logout'
+# LOGOUT_REDIRECT_URL = 'logout'
