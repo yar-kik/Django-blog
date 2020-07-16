@@ -132,3 +132,6 @@ LOGIN_REDIRECT_URL = 'account:dashboard'  # куди перенаправлят�
 LOGIN_URL = 'account:login'  # куди перенаправляти для входу в систему
 LOGOUT_URL = 'account:logout'
 # LOGOUT_REDIRECT_URL = 'logout'
+
+MEDIA_URL = '/media/'  # базовий URL, від якого будуть формуватися адреси файлів
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')  # шлях у файловій системі
