@@ -135,3 +135,8 @@ LOGOUT_URL = 'account:logout'
 
 MEDIA_URL = '/media/'  # базовий URL, від якого будуть формуватися адреси файлів
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')  # шлях у файловій системі
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'account.authentication.EmailAuthBackend',
+]
