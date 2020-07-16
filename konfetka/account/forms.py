@@ -33,7 +33,7 @@ class UserEditForm(forms.ModelForm):
 
 
 class ProfileEditForm(forms.ModelForm):
-    """Дозволяє """
+    """Дозволяє модифікувати додаткові відомості (дата народження, аватар)"""
     class Meta:
         model = Profile
         fields = ('date_of_birth', 'photo')
