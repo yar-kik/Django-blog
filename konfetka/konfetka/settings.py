@@ -24,7 +24,7 @@ SECRET_KEY = '3qn*(k_ciy-)4rob7w77_nfgh8))ok$*96fdcbs@!vbwm8dy+u'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['konfetka.com', 'localhost', '127.0.0.1']
 
 SITE_ID = 1
 
@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'taggit',
     'django.contrib.sites',
     'django.contrib.sitemaps',
+    'social_django',
 ]
 
 MIDDLEWARE = [
@@ -139,4 +140,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')  # шлях у файловій с
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'account.authentication.EmailAuthBackend',
+    'social_core.backends.facebook.FacebookOAuth2',
 ]
+
+SOCIAL_AUTH_FACEBOOK_KEY = '586066032079653'  # Facebook App ID
+SOCIAL_AUTH_FACEBOOK_SECRET = '211d1158a30e52e3e1e272079c985bf6'  # Facebook App Secret
+SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
+
