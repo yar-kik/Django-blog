@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.urls import reverse
 from django.utils.text import slugify
 
 
@@ -27,7 +28,7 @@ class Image(models.Model):
     created = models.DateField(auto_now=True, db_index=True)
     # За допомогою related_name можна звертатися до зв'язаних объектів
     # у вигляді image.users_like.all() або із об'єкта користувача user
-    # як user.images_likes.all()
+    # як user.images_liked.all()
     users_like = models.ManyToManyField(settings.AUTH_USER_MODEL,
                                         related_name='images_liked',
                                         blank=True)
@@ -41,3 +42,6 @@ class Image(models.Model):
         if not self.slug:
             self.slug = slugify(self.title)
         super(Image, self).save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return reverse('images:detail', args=[self.id, self.slug])

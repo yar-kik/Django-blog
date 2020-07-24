@@ -1,11 +1,11 @@
+<!DOCTYPE html>
 {% load article_tags %}
 {% load static %}
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}{% endblock %}</title>
-    <!--<link href="{% static 'css/articles.css' %}" rel="stylesheet">-->
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
 </head>
 <body>
     <div id="header">
@@ -15,7 +15,7 @@
                     <a href="{% url 'account:dashboard' %}">My dashboard</a>
                 </li>
                 <li {% if section == "images" %}class="selected"{% endif %}>
-                    <a href="#">Images</a>
+                    <a href="{% url 'images:list' %}">Images</a>
                 </li>
                 <li {% if section == "people" %}class="selected"{% endif %}>
                     <a href="#">People</a>
@@ -46,6 +46,7 @@
     <div id="content">
         {% block content %}{% endblock %}
     </div>
+
     <div id="sidebar">
         <h2><a href="{% url 'articles:all_articles' %}">My blog</a></h2>
         <p>This is my blog. I've written {% total_articles %} posts so far</p>
@@ -65,5 +66,25 @@
 
         <!--<p><a href="{% url 'articles:article_feed' %}">Subscribe to my RSS feed</a></p>-->
     </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+    <script>
+        var csrftoken = Cookies.get('csrftoken');
+        function csrfSafeMethod(method) {
+            // Для этих методов токен не будет подставляться в заголовок.
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+        $.ajaxSetup({beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+        });
+        $(document).ready(function(){
+            {% block domready %}
+            {% endblock %}
+        });
+    </script>
 </body>
 </html>
