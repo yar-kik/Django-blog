@@ -1,6 +1,6 @@
 (function(){
     var jquery_version = '3.3.1';
-    var site_url = 'https://2863fdd210ce.ngrok.io/';
+    var site_url = 'https://265895eaf79e.ngrok.io/';
     var static_url = site_url + 'static/';
     var min_width = 100;
     var min_height = 100;
@@ -28,10 +28,23 @@
                 jQuery('#bookmarklet .images').append('<a href="#"><img src="'+image_url +'" /></a>');
             }
         });
+
+               // when an image is selected open URL with it
+        jQuery('#bookmarklet .images a').click(function(e){
+            selected_image = jQuery(this).children('img').attr('src');
+            // hide bookmarklet
+            jQuery('#bookmarklet').hide();
+            // open new window to submit the image
+            window.open(site_url +'images/create/?url='
+                      + encodeURIComponent(selected_image)
+                      + '&title='
+                      + encodeURIComponent(jQuery('title').text()),
+                      '_blank');
+        });
     };
 
     // Проверка, подключена ли jQuery.
-    if(typeofwindow.jQuery != 'undefined') {
+    if(typeof window.jQuery != 'undefined') {
         bookmarklet();
     } else {
         // Проверка, что атрибут $ окна не занят другим объектом.

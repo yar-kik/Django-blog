@@ -27,7 +27,7 @@ DEBUG = True
 ALLOWED_HOSTS = ['konfetka.com',
                  'localhost',
                  '127.0.0.1',
-                 '2863fdd210ce.ngrok.io'
+                 '265895eaf79e.ngrok.io'
 ]
 
 SITE_ID = 1
@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.sitemaps',
     'social_django',
+    'sorl.thumbnail',
 ]
 
 MIDDLEWARE = [
