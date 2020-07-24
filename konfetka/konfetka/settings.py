@@ -24,7 +24,11 @@ SECRET_KEY = '3qn*(k_ciy-)4rob7w77_nfgh8))ok$*96fdcbs@!vbwm8dy+u'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['konfetka.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['konfetka.com',
+                 'localhost',
+                 '127.0.0.1',
+                 '2863fdd210ce.ngrok.io'
+]
 
 SITE_ID = 1
 
@@ -120,6 +124,10 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
