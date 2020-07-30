@@ -1,4 +1,5 @@
 {% extends "../base.html" %}
+{% load static %}
 
 {% block title %}Log-in{% endblock %}
 
@@ -15,6 +16,7 @@
         <form action="{% url 'account:login' %}" method="post">
             {{ form.as_p }}
             {% csrf_token %}
+            <input type="checkbox" onclick="showPassword()">Show Password
             <input type="hidden" name="next" value="{{ next }}">
             <p><input type="submit" value="Log in"></p>
         </form>
@@ -34,4 +36,5 @@
             </li>
         </ul>
     </div>
+    <script src="{% static 'js/show_password.js' %}"></script>
 {% endblock %}

@@ -1,7 +1,9 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import Profile
+from phonenumber_field.widgets import PhoneNumberPrefixWidget
 
+from .models import Profile
+from phonenumber_field.formfields import PhoneNumberField
 
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=32)
@@ -11,12 +13,12 @@ class LoginForm(forms.Form):
 class UserRegistrationForm(forms.ModelForm):
     password = forms.CharField(max_length=32, widget=forms.PasswordInput,
                                label='Password')
-    password2 = forms.CharField(max_length=32, widget=forms.PasswordInput,
-                                label='Repeat password')
+    # password2 = forms.CharField(max_length=32, widget=forms.PasswordInput,
+    #                             label='Repeat password')
 
     class Meta:
         model = User
-        fields = ('username', 'first_name', 'email')
+        fields = ('username', 'email')
 
     def clean_password2(self):
         cd = self.cleaned_data
@@ -34,6 +36,8 @@ class UserEditForm(forms.ModelForm):
 
 class ProfileEditForm(forms.ModelForm):
     """Дозволяє модифікувати додаткові відомості (дата народження, аватар)"""
+    # phone = PhoneNumberField(widget=PhoneNumberPrefixWidget)
+
     class Meta:
         model = Profile
         fields = ('date_of_birth', 'photo')
