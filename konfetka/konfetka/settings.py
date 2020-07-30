@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+from django.urls import reverse_lazy
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
@@ -48,6 +50,7 @@ INSTALLED_APPS = [
     'django.contrib.sitemaps',
     'social_django',
     'sorl.thumbnail',
+    'phonenumber_field',
 ]
 
 MIDDLEWARE = [
@@ -162,3 +165,11 @@ SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
 # Google Consumer Key
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '993446255793-uihiuvmrgm71apevv8vpks31deiobfkt.apps.googleusercontent.com'
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'jM1LZMQyaZhpYua-oVKd5hUJ'  # Google Consumer Secret
+
+PHONENUMBER_DB_FORMAT = 'INTERNATIONAL'
+
+ABSOLUTE_URL_OVERRIDES = {
+    'auth.user': lambda u: reverse_lazy('account:user_detail', args=[u.username])
+}
+
+# THUMBNAIL_DEBUG = True

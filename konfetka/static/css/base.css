@@ -4,6 +4,7 @@ body {
     margin:0;
     padding:0;
     font-family:helvetica, sans-serif;
+    position: relative;
 }
 
 p {
@@ -280,3 +281,4 @@ img.user-detail {
     font-style:italic;
     color:#ccc;
 }
+
