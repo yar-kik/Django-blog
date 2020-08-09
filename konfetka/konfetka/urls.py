@@ -15,15 +15,17 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
+from django.shortcuts import redirect
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-
+from articles.views import articles_redirect
 from articles.sitemaps import ArticleSitemap
 
 sitemaps = {'articles': ArticleSitemap, }
 
 urlpatterns = [
+    path('', articles_redirect),
     path('articles/', include('articles.urls', namespace='articles')),
     path('account/', include('account.urls', namespace='account')),
     path('admin/', admin.site.urls),

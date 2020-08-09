@@ -5,7 +5,7 @@
 
 {% block content %}
     <h1>My Blog</h1>
-
+    <h2><a href="{% url 'articles:create_article' %}">Create new article</a></h2>
     {% if tag %}
         <h2>Articles tagged with "{{ tag.name }}"</h2>
     {% endif %}

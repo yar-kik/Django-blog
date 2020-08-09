@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Comment
+from .models import Comment, Article
 
 
 class EmailPostForm(forms.Form):
@@ -14,3 +14,9 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ('name', 'email', 'body')
+
+
+# class ArticleCreateForm(forms.ModelForm):
+#     class Meta:
+#         model = Article
+#         fields = ('title', 'text', 'tags')
