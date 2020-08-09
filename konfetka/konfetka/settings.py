@@ -29,7 +29,6 @@ DEBUG = True
 ALLOWED_HOSTS = ['konfetka.com',
                  'localhost',
                  '127.0.0.1',
-                 '265895eaf79e.ngrok.io'
 ]
 
 SITE_ID = 1
@@ -39,6 +38,7 @@ INSTALLED_APPS = [
     'account',
     'articles',
     'images',
+    'actions',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -173,3 +173,6 @@ ABSOLUTE_URL_OVERRIDES = {
 }
 
 # THUMBNAIL_DEBUG = True
+REDIS_HOST = 'localhost'
+REDIS_PORT = 6379
+REDIS_DB = 0

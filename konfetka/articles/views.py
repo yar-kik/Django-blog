@@ -1,11 +1,19 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.mail import send_mail
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.urls import reverse_lazy
+from django.views.generic import CreateView, UpdateView
 from taggit.models import Tag
 from django.db.models import Count
+from uuslug import slugify
 
 from .forms import EmailPostForm, CommentForm
 from .models import Article, Comment
+
+
+def articles_redirect(request):
+    return redirect('articles:all_articles', permanent=True)
 
 
 def all_articles(request, tag_slug=None):
@@ -25,7 +33,8 @@ def all_articles(request, tag_slug=None):
         articles = paginator.page(paginator.num_pages)
     return render(request, 'articles/post/list.html', {'page': page,
                                                        'articles': articles,
-                                                       'tag': tag})
+                                                       'tag': tag,
+                                                       'section': 'articles'})
 
 
 def article_detail(request, year, month, day, slug):
@@ -58,7 +67,8 @@ def article_detail(request, year, month, day, slug):
                                                          'comments': comments,
                                                          'new_comment': new_comment,
                                                          'comment_form': comment_form,
-                                                         'similar_articles': similar_articles})
+                                                         'similar_articles': similar_articles,
+                                                         'section': 'articles'})
 
 
 def post_share(request, article_id):
@@ -81,4 +91,35 @@ def post_share(request, article_id):
         form = EmailPostForm()
     return render(request, 'articles/post/share.html', {'article': article,
                                                         'form': form,
-                                                        'sent': sent})
+                                                        'sent': sent,
+                                                        'section': 'articles'})
+
+
+class CreateArticle(LoginRequiredMixin, CreateView):
+    """Функція публікації статті"""
+    model = Article
+    fields = ['title', 'text', 'tags']
+    template_name = 'articles/post/create_article.html'
+
+    # success_url = 'articles:all_articles'
+    # def form_valid(self, form):
+    #     self.object = form.save(commit=False)
+    #     self.object.author = self.request.user
+    #     self.object.slug = slugify(self.object.title)
+    #     self.object.save()
+    #     return super().form_valid(form)
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        form.instance.slug = slugify(form.instance.title)
+        return super().form_valid(form)
+
+
+class UpdateArticle(LoginRequiredMixin, UpdateView):
+    """"""
+    model = Article
+    fields = ['title', 'text', 'tags']
+    template_name = 'articles/post/update_article.html'
+
+    # success_url = reverse_lazy('articles:update_article')
+
