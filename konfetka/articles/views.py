@@ -3,7 +3,7 @@ from django.core.mail import send_mail
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, UpdateView
+from django.views.generic import CreateView, UpdateView, DeleteView
 from taggit.models import Tag
 from django.db.models import Count
 from uuslug import slugify
@@ -120,6 +120,11 @@ class UpdateArticle(LoginRequiredMixin, UpdateView):
     model = Article
     fields = ['title', 'text', 'tags']
     template_name = 'articles/post/update_article.html'
-
     # success_url = reverse_lazy('articles:update_article')
 
+
+class DeleteArticle(LoginRequiredMixin, DeleteView):
+    """"""
+    model = Article
+    template_name = 'articles/post/delete_article.html'
+    success_url = reverse_lazy('articles:all_articles')
