@@ -1,4 +1,4 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
 from django.core.mail import send_mail
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -95,11 +95,12 @@ def post_share(request, article_id):
                                                         'section': 'articles'})
 
 
-class CreateArticle(LoginRequiredMixin, CreateView):
+class CreateArticle(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
     """Функція публікації статті"""
     model = Article
     fields = ['title', 'text', 'tags']
     template_name = 'articles/post/create_article.html'
+    permission_required = 'articles.add_article'
 
     # success_url = 'articles:all_articles'
     # def form_valid(self, form):
@@ -115,16 +116,18 @@ class CreateArticle(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class UpdateArticle(LoginRequiredMixin, UpdateView):
+class UpdateArticle(PermissionRequiredMixin, LoginRequiredMixin, UpdateView):
     """"""
     model = Article
     fields = ['title', 'text', 'tags']
     template_name = 'articles/post/update_article.html'
     # success_url = reverse_lazy('articles:update_article')
+    permission_required = 'articles.change_article'
 
 
-class DeleteArticle(LoginRequiredMixin, DeleteView):
+class DeleteArticle(PermissionRequiredMixin, LoginRequiredMixin, DeleteView):
     """"""
     model = Article
     template_name = 'articles/post/delete_article.html'
     success_url = reverse_lazy('articles:all_articles')
+    permission_required = 'articles.delete_article'
