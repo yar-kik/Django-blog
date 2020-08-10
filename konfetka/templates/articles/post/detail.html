@@ -4,8 +4,11 @@
 {% block title %}{{ article.title }}{% endblock %}
 
 {% block content %}
-    <h2><a href="{% url 'articles:update_article' article.date_created.year article.date_created.month article.date_created.day article.slug %}">Update article</a></h2>
-    <h2><a href="{% url 'articles:delete_article' article.date_created.year article.date_created.month article.date_created.day article.slug %}">Delete article</a></h2>
+    {% if article.author == user %}
+        <h2><a href="{% url 'articles:update_article' article.date_created.year article.date_created.month article.date_created.day article.slug %}">Update article</a></h2>
+        <h2><a href="{% url 'articles:delete_article' article.date_created.year article.date_created.month article.date_created.day article.slug %}">Delete article</a></h2>
+    {% endif %}
+
     <h1>{{ article.title }}</h1>
 
     {% for tag in article.tags.all %}
