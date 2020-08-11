@@ -51,8 +51,10 @@ def article_detail(request, year, month, day, slug):
             new_comment = comment_form.save(commit=False)
             """Прив'язуємо коментар до поточної статті"""
             new_comment.article = article
+            new_comment.name = request.user
             """Зберігаємо коментар в базі даних"""
             new_comment.save()
+            return redirect(article.get_absolute_url())
     else:
         comment_form = CommentForm()
     """Формуванння списку схожих статей"""
