@@ -1,9 +1,9 @@
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.core.mail import send_mail
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, UpdateView, DeleteView
+from django.views.generic import CreateView, UpdateView, DeleteView, ListView
 from taggit.models import Tag
 from django.db.models import Count
 from uuslug import slugify
@@ -14,6 +14,27 @@ from .models import Article, Comment
 
 def articles_redirect(request):
     return redirect('articles:all_articles', permanent=True)
+
+
+class ArticlesList(ListView):
+    model = Article
+    template_name = 'articles/post/list.html'
+    context_object_name = 'articles'
+    extra_context = {'section': 'articles'}
+    paginate_by = 3
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if self.kwargs:
+            return queryset.filter(tags__slug__in=[self.kwargs['tag_slug']])
+        else:
+            return queryset
+
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # context['tag'] = get_object_or_404(Tag, slug=self.kwargs.tag_slug)
+        return context
 
 
 def all_articles(request, tag_slug=None):
@@ -35,11 +56,33 @@ def all_articles(request, tag_slug=None):
                                                        'articles': articles,
                                                        'tag': tag,
                                                        'section': 'articles'})
+"""
+class CreateComment(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
+    """"""
+    model = Comment
+    fields = ['body']
+    template_name = 'articles/post/detail.html'
+    # permission_required = 'articles.add_comment'
 
+    # def form_valid(self, form):
+    #     self.object = form.save(commit=False)
+    #     self.object.author = self.request.user
+    #     self.object.slug = slugify(self.object.title)
+    #     self.object.save()
+    #     return super().form_valid(form)
 
-def article_detail(request, year, month, day, slug):
-    article = get_object_or_404(Article, slug=slug, date_created__year=year,
+    def form_valid(self, form):
+        self.object.name = self.request.user
+        self.object.article = get_object_or_404(Article, slug=slug, date_created__year=year,
                                 date_created__month=month, date_created__day=day)
+        form.instance.name = self.request.user
+        form.instance.slug = slugify(form.instance.title)
+        return super().form_valid(form)
+"""
+
+
+def article_detail(request, slug):
+    article = get_object_or_404(Article, slug=slug)
     """Список активних коментарів цієї статті"""
     comments = article.comments.filter(active=True)
     new_comment = None

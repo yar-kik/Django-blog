@@ -30,5 +30,5 @@
         <p class="date">Published {{ article.date_created }} by {{ article.author }}</p>
         {{ article.text|markdown|truncatewords_html:30 }}
     {% endfor %}
-    {% include "pagination.html" with page=articles %}
+    {% include "pagination.html" with page=page_obj %}
 {% endblock %}

@@ -21,9 +21,7 @@ class Article(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse('articles:article_detail', args=[self.date_created.year,
-                                                        self.date_created.month,
-                                                        self.date_created.day, self.slug])
+        return reverse('articles:article_detail', args=[self.slug])
 
 
 class Comment(models.Model):
