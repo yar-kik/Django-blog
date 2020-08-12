@@ -5,8 +5,8 @@
 
 {% block content %}
     {% if article.author == user or user.is_staff %}
-        <h2><a href="{% url 'articles:update_article' article.date_created.year article.date_created.month article.date_created.day article.slug %}">Update article</a></h2>
-        <h2><a href="{% url 'articles:delete_article' article.date_created.year article.date_created.month article.date_created.day article.slug %}">Delete article</a></h2>
+        <h2><a href="{% url 'articles:update_article' article.slug %}">Update article</a></h2>
+        <h2><a href="{% url 'articles:delete_article' article.slug %}">Delete article</a></h2>
     {% endif %}
 
     <h1>{{ article.title }}</h1>
