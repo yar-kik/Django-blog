@@ -1,9 +1,9 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.core.mail import send_mail
 from django.shortcuts import render, get_object_or_404, redirect
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.paginator import EmptyPage, PageNotAnInteger
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, UpdateView, DeleteView, ListView
+from django.views.generic import CreateView, UpdateView, DeleteView, ListView, DetailView
 from taggit.models import Tag
 from django.db.models import Count
 from uuslug import slugify
@@ -23,6 +23,20 @@ class ArticlesList(ListView):
     extra_context = {'section': 'articles'}
     paginate_by = 3
 
+    def paginate_queryset(self, queryset, page_size):
+        paginator = self.get_paginator(queryset, page_size)
+        page_kwargs = self.page_kwarg
+        page = self.kwargs.get(page_kwargs) or self.request.GET.get('page')
+
+        try:
+            page = paginator.page(page)
+        except PageNotAnInteger:
+            page = paginator.page(1)
+        except EmptyPage:
+            page = paginator.page(paginator.num_pages)
+        finally:
+            return paginator, page, page.object_list, page.has_other_pages()
+
     def get_queryset(self):
         queryset = super().get_queryset()
         if self.kwargs:
@@ -30,13 +44,14 @@ class ArticlesList(ListView):
         else:
             return queryset
 
-
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        # context['tag'] = get_object_or_404(Tag, slug=self.kwargs.tag_slug)
+        if self.kwargs:
+            context['tag'] = get_object_or_404(Tag, slug=self.kwargs['tag_slug'])
         return context
 
 
+"""
 def all_articles(request, tag_slug=None):
     articles = Article.objects.all()
     tag = None
@@ -57,28 +72,17 @@ def all_articles(request, tag_slug=None):
                                                        'tag': tag,
                                                        'section': 'articles'})
 """
-class CreateComment(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
-    """"""
-    model = Comment
-    fields = ['body']
+
+
+class ArticleDetail(DetailView):
+    model = Article
+    context_object_name = 'article'
     template_name = 'articles/post/detail.html'
-    # permission_required = 'articles.add_comment'
 
-    # def form_valid(self, form):
-    #     self.object = form.save(commit=False)
-    #     self.object.author = self.request.user
-    #     self.object.slug = slugify(self.object.title)
-    #     self.object.save()
-    #     return super().form_valid(form)
-
-    def form_valid(self, form):
-        self.object.name = self.request.user
-        self.object.article = get_object_or_404(Article, slug=slug, date_created__year=year,
-                                date_created__month=month, date_created__day=day)
-        form.instance.name = self.request.user
-        form.instance.slug = slugify(form.instance.title)
-        return super().form_valid(form)
-"""
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        # context['comments'] = get_object_or_404(Comment, )
+        return context
 
 
 def article_detail(request, slug):
@@ -176,3 +180,28 @@ class DeleteArticle(PermissionRequiredMixin, LoginRequiredMixin, DeleteView):
     template_name = 'articles/post/delete_article.html'
     success_url = reverse_lazy('articles:all_articles')
     permission_required = 'articles.delete_article'
+
+
+"""
+class CreateComment(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
+    """"""
+    model = Comment
+    fields = ['body']
+    template_name = 'articles/post/detail.html'
+    # permission_required = 'articles.add_comment'
+
+    # def form_valid(self, form):
+    #     self.object = form.save(commit=False)
+    #     self.object.author = self.request.user
+    #     self.object.slug = slugify(self.object.title)
+    #     self.object.save()
+    #     return super().form_valid(form)
+
+    def form_valid(self, form):
+        self.object.name = self.request.user
+        self.object.article = get_object_or_404(Article, slug=slug, date_created__year=year,
+                                date_created__month=month, date_created__day=day)
+        form.instance.name = self.request.user
+        form.instance.slug = slugify(form.instance.title)
+        return super().form_valid(form)
+"""
