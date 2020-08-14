@@ -3,6 +3,7 @@ from django.core.mail import send_mail
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import EmptyPage, PageNotAnInteger
 from django.urls import reverse_lazy
+from django.views import View
 from django.views.generic import CreateView, UpdateView, DeleteView, ListView, DetailView
 from taggit.models import Tag
 from django.db.models import Count
@@ -50,49 +51,93 @@ class ArticlesList(ListView):
             context['tag'] = get_object_or_404(Tag, slug=self.kwargs['tag_slug'])
         return context
 
+"""
+class CreateComment(CreateView):
+    """"""
+    model = Comment
+    fields = ['body']
+    template_name = 'articles/post/detail.html'
+    context_object_name = 'new_comment'
+    # permission_required = 'articles.add_comment'
+
+    def form_valid(self, form):
+        form.instance.name = self.request.user
+        form.instance.article = get_object_or_404(Article, slug=self.kwargs['slug'])
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('articles:article_detail', kwargs={'slug': self.kwargs['slug']})
+
+
+# class ArticleDetail(DetailView):
+#     model = Article
+#     context_object_name = 'article'
+#     template_name = 'articles/post/detail.html'
+#
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data()
+#         # context['comments'] = get_object_or_404(Comment, )
+#         # context['new_comment'] = get_object_or_404(CreateComment, self.kwargs['slug'])
+#         return context
 
 """
-def all_articles(request, tag_slug=None):
-    articles = Article.objects.all()
-    tag = None
-    if tag_slug:
-        tag = get_object_or_404(Tag, slug=tag_slug)
-        articles = articles.filter(tags__in=[tag])
 
-    paginator = Paginator(articles, 3)
-    page = request.GET.get('page')
-    try:
-        articles = paginator.page(page)
-    except PageNotAnInteger:
-        articles = paginator.page(1)
-    except EmptyPage:
-        articles = paginator.page(paginator.num_pages)
-    return render(request, 'articles/post/list.html', {'page': page,
-                                                       'articles': articles,
-                                                       'tag': tag,
-                                                       'section': 'articles'})
-"""
-
-
-class ArticleDetail(DetailView):
-    model = Article
-    context_object_name = 'article'
+class ArticleView(View):
     template_name = 'articles/post/detail.html'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data()
-        # context['comments'] = get_object_or_404(Comment, )
-        return context
+    def get(self, request, *args, **kwargs):
+        updated_comment_id = request.GET.get('edit_comment')
+        # if updated_comment_id:
+        #     comment = get_object_or_404(Comment, id=updated_comment_id)
+        # else:
+        #     comment = None
+        # print(updated_comment_id, comment)
+        # comment_form = CommentForm(instance=comment)
 
 
-def article_detail(request, slug):
+        article = get_object_or_404(Article, slug=self.kwargs['slug'])
+        comment_form = CommentForm()
+        comments = article.comments.filter(active=True)
+        article_tags_ids = article.tags.values_list('id', flat=True)
+        similar_articles = Article.objects.filter(tags__in=article_tags_ids).exclude(id=article.id)
+        similar_articles = similar_articles.annotate(same_tags=Count('tags')).order_by('-same_tags', '-date_created')[:4]
+        return render(request, self.template_name, {'article': article,
+                                                    'comment_form': comment_form,
+                                                    'comments': comments,
+                                                    'similar_articles': similar_articles})
+
+    def post(self, request, *args, **kwargs):
+        updated_comment_id = request.GET.get('edit_comment')
+
+        if updated_comment_id:
+            comment = get_object_or_404(Comment, id=updated_comment_id)
+        else:
+            comment = None
+
+        article = get_object_or_404(Article, slug=self.kwargs['slug'])
+        # comments = article.comments.filter(active=True)
+        comment_form = CommentForm(request.POST or None, instance=comment)
+        if comment_form.is_valid():
+            new_comment = comment_form.save(commit=False)
+            new_comment.article = article
+            new_comment.name = request.user
+            new_comment.save()
+            return redirect(article.get_absolute_url())
+        return render(request, self.template_name, {'comment_form': comment_form})
+
+
+
+def article_detail(request, slug, comment_id=None):
+    instance_comment = None
+    if comment_id:
+        instance_comment = get_object_or_404(Comment, id=comment_id)
     article = get_object_or_404(Article, slug=slug)
     """Список активних коментарів цієї статті"""
     comments = article.comments.filter(active=True)
     new_comment = None
     if request.method == 'POST':
         """Користувач відправив коментар"""
-        comment_form = CommentForm(data=request.POST)
+        comment_form = CommentForm(instance=instance_comment, data=request.POST or None)
         if comment_form.is_valid():
             """Створюємо коментар, але не зберегігаємо в базі данних"""
             new_comment = comment_form.save(commit=False)
@@ -101,9 +146,11 @@ def article_detail(request, slug):
             new_comment.name = request.user
             """Зберігаємо коментар в базі даних"""
             new_comment.save()
-            return redirect(article.get_absolute_url())
+            return redirect(article.get_absolute_url(), permanent=True)
+            # return redirect(reverse_lazy('articles:article_detail', kwargs={'slug': slug}))
+
     else:
-        comment_form = CommentForm()
+        comment_form = CommentForm(instance=instance_comment)
     """Формуванння списку схожих статей"""
 
     """Отримання списку id тегів даної статті"""
@@ -180,28 +227,3 @@ class DeleteArticle(PermissionRequiredMixin, LoginRequiredMixin, DeleteView):
     template_name = 'articles/post/delete_article.html'
     success_url = reverse_lazy('articles:all_articles')
     permission_required = 'articles.delete_article'
-
-
-"""
-class CreateComment(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
-    """"""
-    model = Comment
-    fields = ['body']
-    template_name = 'articles/post/detail.html'
-    # permission_required = 'articles.add_comment'
-
-    # def form_valid(self, form):
-    #     self.object = form.save(commit=False)
-    #     self.object.author = self.request.user
-    #     self.object.slug = slugify(self.object.title)
-    #     self.object.save()
-    #     return super().form_valid(form)
-
-    def form_valid(self, form):
-        self.object.name = self.request.user
-        self.object.article = get_object_or_404(Article, slug=slug, date_created__year=year,
-                                date_created__month=month, date_created__day=day)
-        form.instance.name = self.request.user
-        form.instance.slug = slugify(form.instance.title)
-        return super().form_valid(form)
-"""

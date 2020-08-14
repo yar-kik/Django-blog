@@ -53,7 +53,7 @@
             <p class="info">
                 {{ comment.name }} {{ comment.created }}
                 {% if comment.name == user or user.is_staff %}
-                    <a href="{{ article.get_absolute_url }}?edit_comment={{ comment.id }}">Edit</a>
+                    <a href="{% url 'articles:update_comment' slug=article.slug comment_id=comment.id %}">Edit</a>
                     <a href="#">Delete</a>
                 {% endif %}
             </p>
