@@ -1,4 +1,6 @@
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mail
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import EmptyPage, PageNotAnInteger
@@ -51,6 +53,7 @@ class ArticlesList(ListView):
             context['tag'] = get_object_or_404(Tag, slug=self.kwargs['tag_slug'])
         return context
 
+
 """
 class CreateComment(CreateView):
     """"""
@@ -79,8 +82,8 @@ class CreateComment(CreateView):
 #         # context['comments'] = get_object_or_404(Comment, )
 #         # context['new_comment'] = get_object_or_404(CreateComment, self.kwargs['slug'])
 #         return context
-
 """
+
 
 class ArticleView(View):
     template_name = 'articles/post/detail.html'
@@ -94,13 +97,13 @@ class ArticleView(View):
         # print(updated_comment_id, comment)
         # comment_form = CommentForm(instance=comment)
 
-
         article = get_object_or_404(Article, slug=self.kwargs['slug'])
         comment_form = CommentForm()
         comments = article.comments.filter(active=True)
         article_tags_ids = article.tags.values_list('id', flat=True)
         similar_articles = Article.objects.filter(tags__in=article_tags_ids).exclude(id=article.id)
-        similar_articles = similar_articles.annotate(same_tags=Count('tags')).order_by('-same_tags', '-date_created')[:4]
+        similar_articles = similar_articles.annotate(same_tags=Count('tags')).order_by('-same_tags', '-date_created')[
+                           :4]
         return render(request, self.template_name, {'article': article,
                                                     'comment_form': comment_form,
                                                     'comments': comments,
@@ -126,18 +129,14 @@ class ArticleView(View):
         return render(request, self.template_name, {'comment_form': comment_form})
 
 
-
-def article_detail(request, slug, comment_id=None):
-    instance_comment = None
-    if comment_id:
-        instance_comment = get_object_or_404(Comment, id=comment_id)
+def article_detail(request, slug):
     article = get_object_or_404(Article, slug=slug)
     """Список активних коментарів цієї статті"""
     comments = article.comments.filter(active=True)
     new_comment = None
     if request.method == 'POST':
         """Користувач відправив коментар"""
-        comment_form = CommentForm(instance=instance_comment, data=request.POST or None)
+        comment_form = CommentForm(data=request.POST)
         if comment_form.is_valid():
             """Створюємо коментар, але не зберегігаємо в базі данних"""
             new_comment = comment_form.save(commit=False)
@@ -147,10 +146,8 @@ def article_detail(request, slug, comment_id=None):
             """Зберігаємо коментар в базі даних"""
             new_comment.save()
             return redirect(article.get_absolute_url(), permanent=True)
-            # return redirect(reverse_lazy('articles:article_detail', kwargs={'slug': slug}))
-
     else:
-        comment_form = CommentForm(instance=instance_comment)
+        comment_form = CommentForm()
     """Формуванння списку схожих статей"""
 
     """Отримання списку id тегів даної статті"""
@@ -165,6 +162,56 @@ def article_detail(request, slug, comment_id=None):
                                                          'comment_form': comment_form,
                                                          'similar_articles': similar_articles,
                                                          'section': 'articles'})
+
+
+# class UpdateComment(UpdateView):
+#     """"""
+#     pk_url_kwarg = 'comment_id'
+#     model = Comment
+#     fields = ['body']
+#     template_name = 'articles/post/detail.html'
+#     context_object_name = 'comment'
+#     # permission_required = 'articles.add_comment'
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data()
+#         article = Article.objects.get(slug=self.kwargs['slug'])
+#         context['comments'] = article.comments()
+#         return context
+#     def get_success_url(self):
+#         return reverse_lazy('articles:article_detail', kwargs={'slug': self.kwargs['slug']})
+
+
+def update_comment(request, slug, comment_id):
+    article = get_object_or_404(Article, slug=slug)
+    instance_comment = get_object_or_404(Comment, id=comment_id)
+    if instance_comment.name == request.user or request.user.is_staff:
+        comments = article.comments.filter(active=True)
+        if request.method == 'POST':
+            comment_form = CommentForm(instance=instance_comment, data=request.POST or None)
+            if comment_form.is_valid():
+                comment_form.save()
+                return redirect(article.get_absolute_url(), permanent=True)
+        else:
+            comment_form = CommentForm(instance=instance_comment)
+        article_tags_ids = article.tags.values_list('id', flat=True)
+        similar_articles = Article.objects.filter(tags__in=article_tags_ids).exclude(id=article.id)
+        similar_articles = similar_articles.annotate(same_tags=Count('tags')).order_by('-same_tags', '-date_created')[:4]
+        return render(request, 'articles/post/detail.html', {'article': article,
+                                                         'comments': comments,
+                                                         'comment_form': comment_form,
+                                                         'similar_articles': similar_articles,
+                                                         'section': 'articles'})
+    else:
+        raise PermissionDenied
+
+
+def delete_comment(request, slug, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+    if comment.name == request.user or request.user.is_staff:
+        comment.delete()
+        return redirect(reverse_lazy('articles:article_detail', kwargs={'slug': slug}))
+    else:
+        raise PermissionDenied
 
 
 def post_share(request, article_id):

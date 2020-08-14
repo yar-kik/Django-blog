@@ -21,9 +21,7 @@
     <p class="date">Published {{ article.date_created }} by {{ article.author }}</p>
     {{ article.text|markdown }}
 
-    <p>
-        <a href="{% url 'articles:post_share' article.id %}">Share this post</a>
-    </p>
+
 
     <h2>Similar posts</h2>
         {% for article in similar_articles %}
@@ -54,7 +52,7 @@
                 {{ comment.name }} {{ comment.created }}
                 {% if comment.name == user or user.is_staff %}
                     <a href="{% url 'articles:update_comment' slug=article.slug comment_id=comment.id %}">Edit</a>
-                    <a href="#">Delete</a>
+                    <a href="{% url 'articles:delete_comment' slug=article.slug comment_id=comment.id %}">Delete</a>
                 {% endif %}
             </p>
             {{ comment.body|linebreaks }}
