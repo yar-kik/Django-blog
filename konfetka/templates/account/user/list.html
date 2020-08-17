@@ -16,7 +16,11 @@
                 </a>
                 <div class="info">
                     <a href="{{ user.get_absolute_url }}" class="title">
-                        {{ user.get_full_name }}
+                        {% if user.get_full_name %}
+                            {{ user.get_full_name }}
+                        {% else %}
+                            {{ user.username }}
+                        {% endif %}
                     </a>
                 </div>
             </div>
