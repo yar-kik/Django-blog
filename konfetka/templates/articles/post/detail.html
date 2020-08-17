@@ -1,5 +1,6 @@
 {% extends "../../base.html" %}
 {% load article_tags %}
+{% load thumbnail %}
 
 {% block title %}{{ article.title }}{% endblock %}
 
@@ -49,7 +50,19 @@
     {% for comment in comments %}
         <div class="comment">
             <p class="info">
-                {{ comment.name }} {{ comment.created }}
+                <a href="{{ comment.name.get_absolute_url }}">
+                    {% thumbnail comment.name.profile.photo "50x50" crop="100%" as im %}
+                        <img src="{{ im.url }}">
+                    {% endthumbnail %}
+                </a>
+                <a href="{{ comment.name.get_absolute_url }}" class="title">
+                    {% if comment.name.get_full_name %}
+                        {{ comment.name.get_full_name }}
+                    {% else %}
+                        {{ comment.name.username }}
+                    {% endif %}
+                </a>
+                {{ comment.created }}
                 {% if comment.name == user or user.is_staff %}
                     <a href="{% url 'articles:update_comment' slug=article.slug comment_id=comment.id %}">Edit</a>
                     <a href="{% url 'articles:delete_comment' slug=article.slug comment_id=comment.id %}">Delete</a>
