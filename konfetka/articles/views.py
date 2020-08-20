@@ -1,19 +1,27 @@
+import redis
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mail
+from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import EmptyPage, PageNotAnInteger
 from django.urls import reverse_lazy
 from django.views import View
+from django.views.decorators.http import require_POST
 from django.views.generic import CreateView, UpdateView, DeleteView, ListView, DetailView
 from taggit.models import Tag
 from django.db.models import Count
 from uuslug import slugify
 
+# from actions.utils import create_action
 from .forms import EmailPostForm, CommentForm
 from .models import Article, Comment
 
+r = redis.StrictRedis(host=settings.REDIS_HOST,
+                      port=settings.REDIS_PORT,
+                      db=settings.REDIS_DB)
 
 def articles_redirect(request):
     return redirect('articles:all_articles', permanent=True)
@@ -133,6 +141,7 @@ def article_detail(request, slug):
     article = get_object_or_404(Article, slug=slug)
     """Список активних коментарів цієї статті"""
     comments = article.comments.filter(active=True)
+    total_views = r.incr(f'article:{article.id}:views')
     new_comment = None
     if request.method == 'POST':
         """Користувач відправив коментар"""
@@ -161,7 +170,8 @@ def article_detail(request, slug):
                                                          'new_comment': new_comment,
                                                          'comment_form': comment_form,
                                                          'similar_articles': similar_articles,
-                                                         'section': 'articles'})
+                                                         'section': 'articles',
+                                                         'total_views': total_views})
 
 
 # class UpdateComment(UpdateView):
@@ -274,3 +284,22 @@ class DeleteArticle(PermissionRequiredMixin, LoginRequiredMixin, DeleteView):
     template_name = 'articles/post/delete_article.html'
     success_url = reverse_lazy('articles:all_articles')
     permission_required = 'articles.delete_article'
+
+
+@login_required
+@require_POST
+def article_like(request):
+    article_id = request.POST.get('id')
+    action = request.POST.get('action')
+    if article_id and action:
+        try:
+            article = Article.objects.get(id=article_id)
+            if action == 'like':
+                article.users_like.add(request.user)
+                # create_action(request.user, 'likes', article)
+            else:
+                article.users_like.remove(request.user)
+            return JsonResponse({'status': 'ok'})
+        except:
+            pass
+    return JsonResponse({'status': 'ok'})

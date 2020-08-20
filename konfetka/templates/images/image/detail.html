@@ -48,7 +48,7 @@
 {% endblock %}
 
 {% block domready %}
-    $('a.like').click(function(e){
+    $('a.like').click(function(e) {
         e.preventDefault();
         $.post('{% url "images:like" %}',
             {

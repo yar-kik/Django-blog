@@ -13,6 +13,7 @@ class Article(models.Model):
     slug = models.SlugField(max_length=50)
     objects = models.Manager
     tags = TaggableManager()
+    users_like = models.ManyToManyField(User, related_name='articles_liked', blank=True)
 
     class Meta:
         ordering = ('-date_created',)

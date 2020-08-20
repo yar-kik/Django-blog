@@ -5,6 +5,7 @@ from .feeds import LatestArticlesFeed
 app_name = 'articles'
 urlpatterns = [
     path('', views.ArticlesList.as_view(), name='all_articles'),
+    path('like/', views.article_like, name='like'),
     path('create_article/', views.CreateArticle.as_view(), name='create_article'),
     path('<slug:slug>/', views.article_detail, name='article_detail'),
     # path('<slug:slug>/<int:comment_id>/update/', views.article_detail, name='update_comment'),

@@ -22,7 +22,25 @@
     <p class="date">Published {{ article.date_created }} by {{ article.author }}</p>
     {{ article.text|markdown }}
 
+    {% with total_likes=article.users_like.count users_like=article.users_like.all%}
+        <button data-id="{{ article.id }}" data-action="{% if request.user in users_like %}un{% endif %}like"
+        id="like">
+            {% if request.user not in users_like %}
+                Like
+            {% else %}
+                Unlike
+            {% endif %}
+        </button>
 
+        <span class="count">
+            <span class="total">{{ total_likes }}</span>
+            like{{ total_likes|pluralize }}
+        </span>
+
+        <span class="count">
+            {{ total_views }} view{{ total_views|pluralize }}
+        </span>
+    {% endwith %}
 
     <h2>Similar posts</h2>
         {% for article in similar_articles %}
@@ -74,4 +92,26 @@
         <p>There are no comments yet.</p>
     {% endfor %}
 
+{% endblock %}
+
+{% block domready %}
+    $('#like').click(function(e) {
+        e.preventDefault();
+        $.post('{% url "articles:like" %}',
+            {
+                id: $(this).data('id'),
+                action: $(this).data('action')
+            },
+                function(data) {
+                    if (data['status'] == 'ok')
+                    {
+                        var previous_action = $('#like').data('action');
+                        $('#like').data('action', previous_action == 'like' ? 'unlike' : 'like');
+                        $('#like').text(previous_action == 'like' ? 'Unlike' : 'Like');
+                        var previous_likes = parseInt($('span.count .total').text());
+                        $('span.count .total').text(previous_action == 'like' ? previous_likes + 1 : previous_likes - 1);
+                    }
+                }
+        );
+    });
 {% endblock %}
