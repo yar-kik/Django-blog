@@ -11,10 +11,11 @@ class EmailPostForm(forms.Form):
 
 
 class CommentForm(forms.ModelForm):
+    body = forms.CharField(widget=forms.Textarea, label="")
+
     class Meta:
         model = Comment
-        fields = ('name', 'email', 'body')
-
+        fields = ('body',)
 
 # class ArticleCreateForm(forms.ModelForm):
 #     class Meta:

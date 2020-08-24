@@ -5,7 +5,11 @@
 
 {% block content %}
     <h1>My Blog</h1>
-    <h2><a href="{% url 'articles:create_article' %}">Create new article</a></h2>
+
+    {% if perms.articles.add_article %}
+        <h2><a href="{% url 'articles:create_article' %}">Create new article</a></h2>
+    {% endif %}
+
     {% if tag %}
         <h2>Articles tagged with "{{ tag.name }}"</h2>
     {% endif %}
@@ -26,5 +30,5 @@
         <p class="date">Published {{ article.date_created }} by {{ article.author }}</p>
         {{ article.text|markdown|truncatewords_html:30 }}
     {% endfor %}
-    {% include "pagination.html" with page=articles %}
+    {% include "pagination.html" with page=page_obj %}
 {% endblock %}

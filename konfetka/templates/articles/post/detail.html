@@ -1,10 +1,15 @@
 {% extends "../../base.html" %}
 {% load article_tags %}
+{% load thumbnail %}
 
 {% block title %}{{ article.title }}{% endblock %}
 
 {% block content %}
-    <h2><a href="{% url 'articles:update_article' article.date_created.year article.date_created.month article.date_created.day article.slug %}">Update article</a></h2>
+    {% if article.author == user or user.is_staff %}
+        <h2><a href="{% url 'articles:update_article' article.slug %}">Update article</a></h2>
+        <h2><a href="{% url 'articles:delete_article' article.slug %}">Delete article</a></h2>
+    {% endif %}
+
     <h1>{{ article.title }}</h1>
 
     {% for tag in article.tags.all %}
@@ -17,9 +22,25 @@
     <p class="date">Published {{ article.date_created }} by {{ article.author }}</p>
     {{ article.text|markdown }}
 
-    <p>
-        <a href="{% url 'articles:post_share' article.id %}">Share this post</a>
-    </p>
+    {% with total_likes=article.users_like.count users_like=article.users_like.all%}
+        <button data-id="{{ article.id }}" data-action="{% if request.user in users_like %}un{% endif %}like"
+        id="like">
+            {% if request.user not in users_like %}
+                Like
+            {% else %}
+                Unlike
+            {% endif %}
+        </button>
+
+        <span class="count">
+            <span class="total">{{ total_likes }}</span>
+            like{{ total_likes|pluralize }}
+        </span>
+
+        <span class="count">
+            {{ total_views }} view{{ total_views|pluralize }}
+        </span>
+    {% endwith %}
 
     <h2>Similar posts</h2>
         {% for article in similar_articles %}
@@ -30,14 +51,40 @@
             <p>There are no similar article yet.</p>
         {% endfor %}
 
+    {% if user.is_authenticated %}
+        <h2>Add a new comment</h2>
+            <form action="." method="post">
+                {{ comment_form.as_p }}
+                {% csrf_token %}
+                <p><input type="submit" value="Add comment"></p>
+            </form>
+    {% else %}
+        <p>You should <a href="{% url 'account:login' %}">log-in</a></p>
+    {% endif %}
+
     {% with comments.count as total_comments %}
         <h2>{{ total_comments }} comment{{ total_comments|pluralize }}</h2>
     {% endwith %}
     {% for comment in comments %}
         <div class="comment">
             <p class="info">
-                Comment {{ forloop.counter }} by {{ comment.name }}
+                <a href="{{ comment.name.get_absolute_url }}">
+                    {% thumbnail comment.name.profile.photo "50x50" crop="100%" as im %}
+                        <img src="{{ im.url }}">
+                    {% endthumbnail %}
+                </a>
+                <a href="{{ comment.name.get_absolute_url }}" class="title">
+                    {% if comment.name.get_full_name %}
+                        {{ comment.name.get_full_name }}
+                    {% else %}
+                        {{ comment.name.username }}
+                    {% endif %}
+                </a>
                 {{ comment.created }}
+                {% if comment.name == user or user.is_staff %}
+                    <a href="{% url 'articles:update_comment' slug=article.slug comment_id=comment.id %}">Edit</a>
+                    <a href="{% url 'articles:delete_comment' slug=article.slug comment_id=comment.id %}">Delete</a>
+                {% endif %}
             </p>
             {{ comment.body|linebreaks }}
         </div>
@@ -45,14 +92,26 @@
         <p>There are no comments yet.</p>
     {% endfor %}
 
-    {% if new_comment %}
-        <h2>Your comment has been added.</h2>
-    {% else %}
-        <h2>Add a new comment</h2>
-        <form action="." method="post">
-            {{ comment_form.as_p }}
-            {% csrf_token %}
-            <p><input type="submit" value="Add comment"></p>
-        </form>
-    {% endif %}
+{% endblock %}
+
+{% block domready %}
+    $('#like').click(function(e) {
+        e.preventDefault();
+        $.post('{% url "articles:like" %}',
+            {
+                id: $(this).data('id'),
+                action: $(this).data('action')
+            },
+                function(data) {
+                    if (data['status'] == 'ok')
+                    {
+                        var previous_action = $('#like').data('action');
+                        $('#like').data('action', previous_action == 'like' ? 'unlike' : 'like');
+                        $('#like').text(previous_action == 'like' ? 'Unlike' : 'Like');
+                        var previous_likes = parseInt($('span.count .total').text());
+                        $('span.count .total').text(previous_action == 'like' ? previous_likes + 1 : previous_likes - 1);
+                    }
+                }
+        );
+    });
 {% endblock %}
