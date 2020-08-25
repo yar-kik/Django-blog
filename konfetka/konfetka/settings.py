@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'phonenumber_field',
     'debug_toolbar',
     "template_profiler_panel",
+    'django.contrib.postgres',
 ]
 
 MIDDLEWARE = [
@@ -95,6 +96,15 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'blog',
+#         'USER': 'blog',
+#         'PASSWORD': 'agent0071604YAR00',
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
