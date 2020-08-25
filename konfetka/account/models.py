@@ -11,8 +11,7 @@ class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL,
                                 on_delete=models.CASCADE)
     date_of_birth = models.DateField(blank=True, null=True)
-    photo = models.ImageField(upload_to='user/%Y/%m/%d/', blank=True, default='default/profile-picture.png.')
-
+    photo = models.ImageField(upload_to='user/profile_photo', blank=True, default='default/profile-picture.png')
     # phone = PhoneField(blank=True, help_text='Enter phone number')
     # phone = PhoneNumberField()
 
