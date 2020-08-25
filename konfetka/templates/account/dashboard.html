@@ -1,24 +1,37 @@
 {% extends "../base.html" %}
+{% load thumbnail %}
 
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
     <h1>Dashboard</h1>
-    {% with total_images_created=request.user.images_created.count %}
-        <p>Welcome to your dashboard. You have bookmarked
-            {{total_images_created }} image{{ total_images_created|pluralize }}.</p>
-    {% endwith %}
+    <div class="user-info">
+        <img src="{{ profile.medium_photo.url }}" alt="Profile photo">
 
-    <p>Drag the following button to your bookmarks toolbar to bookmark images from other websites
-        <a href="javascript:{% include 'bookmarklet_launcher.js' %}" class="button">Bookmark it</a></p>
+        <p>Username: {{ request.user.username }}</p>
+        <p>Full name: {{ request.user.get_full_name|default:"You didn't add your fullname" }}</p>
+        <p>Email: {{ request.user.email|default:"example@mail.com" }}</p>
+        <p>Date of birth: {{ profile.date_of_birth }}</p>
+    </div>
+<!--    % with total_images_created=request.user.images_created.count %}-->
+<!--        <p>Welcome to your dashboard. You have bookmarked-->
+<!--            {total_images_created }} image{ total_images_created|pluralize }}.</p>-->
+<!--    % endwith %}-->
 
-    <p><a href="{% url 'account:edit' %}">Edit profile</a></p>
-    <p><a href="{% url 'account:password_change' %}">Change password</a></p>
+<!--    <p>Drag the following button to your bookmarks toolbar to bookmark images from other websites-->
+<!--        <a href="javascript:{% include 'bookmarklet_launcher.js' %}" class="button">Bookmark it</a></p>-->
 
-    <h2>What's happening</h2>
-        <div id="action-list">
-            {% for action in actions %}
-                {% include "actions/action/detail.html" %}
-            {% endfor %}
-        </div>
+    <button><a href="{% url 'account:edit' %}">Edit profile</a></button>
+    <button><a href="{% url 'account:password_change' %}">Change password</a></button>
+
+<!--    <h2>What's happening</h2>-->
+<!--        <div id="action-list">-->
+<!--            % for action in actions %}-->
+<!--                % include "actions/action/detail.html" %}-->
+<!--            % endfor %}-->
+<!--        </div>-->
+{% endblock %}
+
+{% block domready %}
+
 {% endblock %}
