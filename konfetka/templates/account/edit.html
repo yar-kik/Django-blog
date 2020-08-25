@@ -12,3 +12,6 @@
         <p><input type="submit" value="Save changes"></p>
     </form>
 {% endblock %}
+{% block domready %}
+    $('#id_phone').inputmask("+380(99)999-99-99", {"placeholder": "_", clearMaskOnLostFocus : false});
+{% endblock %}

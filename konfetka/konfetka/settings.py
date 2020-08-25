@@ -179,7 +179,8 @@ SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '993446255793-uihiuvmrgm71apevv8vpks31deiobfkt.apps.googleusercontent.com'
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'jM1LZMQyaZhpYua-oVKd5hUJ'  # Google Consumer Secret
 
-PHONENUMBER_DB_FORMAT = 'INTERNATIONAL'
+PHONENUMBER_DB_FORMAT = 'NATIONAL'
+PHONENUMBER_DEFAULT_REGION = 'UA'
 
 ABSOLUTE_URL_OVERRIDES = {
     'auth.user': lambda u: reverse_lazy('account:user_detail', args=[u.username])

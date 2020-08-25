@@ -5,6 +5,7 @@ from phonenumber_field.widgets import PhoneNumberPrefixWidget
 from .models import Profile
 from phonenumber_field.formfields import PhoneNumberField
 
+
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=32)
     password = forms.CharField(max_length=32, widget=forms.PasswordInput)
@@ -13,8 +14,6 @@ class LoginForm(forms.Form):
 class UserRegistrationForm(forms.ModelForm):
     password = forms.CharField(max_length=32, widget=forms.PasswordInput,
                                label='Password')
-    # password2 = forms.CharField(max_length=32, widget=forms.PasswordInput,
-    #                             label='Repeat password')
 
     class Meta:
         model = User
@@ -36,8 +35,8 @@ class UserEditForm(forms.ModelForm):
 
 class ProfileEditForm(forms.ModelForm):
     """Дозволяє модифікувати додаткові відомості (дата народження, аватар)"""
-    # phone = PhoneNumberField(widget=PhoneNumberPrefixWidget)
+    phone = PhoneNumberField()
 
     class Meta:
         model = Profile
-        fields = ('date_of_birth', 'photo')
+        fields = ('date_of_birth', 'photo', 'phone')
