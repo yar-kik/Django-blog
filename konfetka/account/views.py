@@ -47,6 +47,7 @@ def dashboard(request):
     """За замовчуванням відображаємо всі дії"""
     actions = Action.objects.exclude(user=request.user)
     following_ids = request.user.following.values_list('id', flat=True)
+    profile = request.user.profile
     if following_ids:
         """Якщо поточний користувач підписався на когось
         відображаємо тільки дії циї користувачів"""
@@ -54,7 +55,8 @@ def dashboard(request):
     actions = actions.select_related('user', 'user__profile').prefetch_related('target')[:10]
 
     return render(request, 'account/dashboard.html', {'section': 'dashboard',
-                                                      'actions': actions})
+                                                      'actions': actions,
+                                                      'profile': profile})
 
 
 def register(request):
