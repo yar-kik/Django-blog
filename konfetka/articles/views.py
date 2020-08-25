@@ -137,7 +137,8 @@ class ArticleView(View):
 
 
 def article_detail(request, slug):
-    article = get_object_or_404(Article, slug=slug)
+    article = Article.objects.filter(slug=slug).select_related('author').get()
+    # article = get_object_or_404(Article, slug=slug)
     """Список активних коментарів цієї статті"""
     comments = article.comments.filter(active=True).select_related("name", "name__profile")
     total_views = r.incr(f'article:{article.id}:views')
