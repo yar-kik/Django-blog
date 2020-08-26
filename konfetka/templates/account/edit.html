@@ -5,7 +5,7 @@
 {% block content %}
     <h1>Edit your account</h1>
     <p>You can edit your account using the following form:</p>
-    <form action="." method="post" enctype="multipart/form-data">
+    <form action="." method="post" enctype="multipart/form-data" id="profile-form">
         {{ user_form.as_p }}
         {{ profile_form.as_p }}
         {% csrf_token %}
@@ -13,5 +13,27 @@
     </form>
 {% endblock %}
 {% block domready %}
+    $('#id_phone').addClass('phone-field');
     $('#id_phone').inputmask("+380(99)999-99-99", {"placeholder": "_", clearMaskOnLostFocus : false});
+
+    jQuery.validator.addMethod("checkMaskPhone", function(value, element) {
+        return /\+\d{3}\(\d{2}\)\d{3}-\d{2}-\d{2}/g.test(value);
+    });
+
+    // получаем нашу форму по class
+    var form = $('#profile-form');
+
+    // включаем валидацию в форме
+    form.validate({
+        messages: {
+            phone: "Enter correct phone number"
+        }
+    });
+
+    // вешаем валидацию на поле с телефоном по классу
+    $.validator.addClassRules({
+        'phone-field': {
+            checkMaskPhone: true,
+        }
+    });
 {% endblock %}
