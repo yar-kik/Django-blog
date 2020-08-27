@@ -11,12 +11,16 @@ class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL,
                                 on_delete=models.CASCADE)
     date_of_birth = models.DateField(blank=True, null=True)
-    photo = models.ImageField(upload_to='user/profile_photo', blank=True, default='default/profile-picture.png')
-    phone = PhoneNumberField(blank=True, null=True, unique=True)
+    photo = models.ImageField(upload_to='user/%Y/%m/%d/', blank=True, default='default/profile-picture.png.')
+
+    # phone = PhoneField(blank=True, help_text='Enter phone number')
+    # phone = PhoneNumberField()
 
     def __str__(self):
         return f'Profile for user {self.user.username}'
 
+
+# Create your models here.
 
 class Contact(models.Model):
     """Проміжна модель для збережння додаткової інформації (дата і час створення).

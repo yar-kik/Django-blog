@@ -23,7 +23,6 @@ r = redis.StrictRedis(host=settings.REDIS_HOST,
                       port=settings.REDIS_PORT,
                       db=settings.REDIS_DB)
 
-
 def articles_redirect(request):
     return redirect('articles:all_articles', permanent=True)
 
@@ -111,7 +110,8 @@ class ArticleView(View):
         comments = article.comments.filter(active=True)
         article_tags_ids = article.tags.values_list('id', flat=True)
         similar_articles = Article.objects.filter(tags__in=article_tags_ids).exclude(id=article.id)
-        similar_articles = similar_articles.annotate(same_tags=Count('tags')).order_by('-same_tags', '-date_created')[:4]
+        similar_articles = similar_articles.annotate(same_tags=Count('tags')).order_by('-same_tags', '-date_created')[
+                           :4]
         return render(request, self.template_name, {'article': article,
                                                     'comment_form': comment_form,
                                                     'comments': comments,
@@ -138,19 +138,9 @@ class ArticleView(View):
 
 
 def article_detail(request, slug):
-    article = Article.objects.filter(slug=slug). \
-        select_related('author').only('title',
-                                      'date_created',
-                                      'slug',
-                                      'text',
-                                      'author__username',
-                                      'author__is_staff').get()
+    article = get_object_or_404(Article, slug=slug)
     """Список активних коментарів цієї статті"""
-    comments = article.comments.filter(active=True).\
-        select_related("name", "name__profile").only('body', 'created', 'updated',
-                                                     'name__username', 'name__first_name',
-                                                     'name__last_name', 'name__is_staff',
-                                                     'name__profile__photo', 'article')
+    comments = article.comments.filter(active=True)
     total_views = r.incr(f'article:{article.id}:views')
     new_comment = None
     if request.method == 'POST':
@@ -200,21 +190,6 @@ def article_detail(request, slug):
 #     def get_success_url(self):
 #         return reverse_lazy('articles:article_detail', kwargs={'slug': self.kwargs['slug']})
 
-def edit_comment(request):
-    comment = None
-    comment_id = request.POST.get('id')
-    comment = get_object_or_404(Comment, id=comment_id)
-    # if request.method == 'POST':
-    #     print('----')
-    comment_form = CommentForm(data=request.POST, instance=comment)
-    print(comment_id)
-    print(comment)
-    if comment_form.is_valid():
-        comment_form.save()
-    return JsonResponse({'status': 'ok'})
-    # else:
-    #     return JsonResponse({'text': comment})
-
 
 def update_comment(request, slug, comment_id):
     article = get_object_or_404(Article, slug=slug)
@@ -230,34 +205,14 @@ def update_comment(request, slug, comment_id):
             comment_form = CommentForm(instance=instance_comment)
         article_tags_ids = article.tags.values_list('id', flat=True)
         similar_articles = Article.objects.filter(tags__in=article_tags_ids).exclude(id=article.id)
-        similar_articles = similar_articles.annotate(same_tags=Count('tags')).order_by('-same_tags', '-date_created')[
-                           :4]
+        similar_articles = similar_articles.annotate(same_tags=Count('tags')).order_by('-same_tags', '-date_created')[:4]
         return render(request, 'articles/post/detail.html', {'article': article,
-                                                             'comments': comments,
-                                                             'comment_form': comment_form,
-                                                             'similar_articles': similar_articles,
-                                                             'section': 'articles'})
+                                                         'comments': comments,
+                                                         'comment_form': comment_form,
+                                                         'similar_articles': similar_articles,
+                                                         'section': 'articles'})
     else:
         raise PermissionDenied
-
-
-# def update_comment(request, slug, comment_id):
-#     instance_comment = get_object_or_404(Comment, id=comment_id)
-#     if instance_comment.name == request.user or request.user.is_staff:
-#         if request.method == 'POST':
-#             comment_form = CommentForm(instance=instance_comment, data=request.POST or None)
-#             if comment_form.is_valid():
-#                 comment_form.save()
-#                 return redirect(reverse_lazy('articles:article_detail', kwargs={'slug': slug}))
-#         else:
-#             comment_form = CommentForm(instance=instance_comment)
-#         return render(request, 'articles/post/detail.html', {'article': article,
-#                                                              'comments': comments,
-#                                                              'comment_form': comment_form,
-#                                                              'similar_articles': similar_articles,
-#                                                              'section': 'articles'})
-#     else:
-#         raise PermissionDenied
 
 
 def delete_comment(request, slug, comment_id):
