@@ -10,7 +10,7 @@ class Article(models.Model):
     text = models.TextField(max_length=10000)
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
-    slug = models.SlugField(max_length=50)
+    slug = models.SlugField(max_length=50, db_index=True)
     objects = models.Manager
     tags = TaggableManager()
     users_like = models.ManyToManyField(User, related_name='articles_liked', blank=True)

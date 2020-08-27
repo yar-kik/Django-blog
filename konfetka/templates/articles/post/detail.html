@@ -23,9 +23,9 @@
     {{ article.text|markdown }}
 
     {% with total_likes=article.users_like.count users_like=article.users_like.all%}
-        <button data-id="{{ article.id }}" data-action="{% if request.user in users_like %}un{% endif %}like"
+        <button data-id="{{ article.id }}" data-action="{% if user in users_like %}un{% endif %}like"
         id="like">
-            {% if request.user not in users_like %}
+            {% if user not in users_like %}
                 Like
             {% else %}
                 Unlike
