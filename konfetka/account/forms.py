@@ -19,19 +19,15 @@ class UserRegistrationForm(forms.ModelForm):
         model = User
         fields = ('username', 'email')
 
-    def clean_password2(self):
-        cd = self.cleaned_data
-        if cd['password'] != cd['password2']:
-            raise forms.ValidationError("Passwords don't match!")
-        return cd['password2']
-
 
 class UserEditForm(forms.ModelForm):
     """Дозволяє користувачам змінювати ім'я, прізвише та пошту"""
     class Meta:
         model = User
         fields = ('first_name', 'last_name', 'email')
-
+        widgets = {
+            'email': forms.TextInput(attrs={'placeholder': 'example@gmail.com'})
+        }
 
 class ProfileEditForm(forms.ModelForm):
     """Дозволяє модифікувати додаткові відомості (дата народження, аватар)"""
@@ -39,3 +35,12 @@ class ProfileEditForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ('date_of_birth', 'photo', 'phone')
+        error_messages = {
+            'phone': {
+                'invalid': 'Введіть коректний номер телефону, наприклад +38(098)152-27-15',
+                'unique': "Вибачте, але на цей номер вже зареєстровано інший акаунт"
+            },
+            'date_of_birth': {
+                'invalid': 'Введіть коректну дату народження',
+            }
+        }

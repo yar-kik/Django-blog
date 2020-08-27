@@ -13,28 +13,28 @@
     </form>
 {% endblock %}
 {% block domready %}
-    $('#id_phone').addClass('phone-field');
+<!--    $('#id_phone').addClass('phone-field');-->
     $('#id_phone').inputmask("+380(99)999-99-99", {"placeholder": "_", clearMaskOnLostFocus : false});
+    $('#id_date_of_birth').inputmask("99.99.9999", {"placeholder": "ДД.ММ.РРРР", clearMaskOnLostFocus : false});
+<!--    jQuery.validator.addMethod("checkMaskPhone", function(value, element) {-->
+<!--        return /\+\d{3}\(\d{2}\)\d{3}-\d{2}-\d{2}/g.test(value);-->
+<!--    });-->
 
-    jQuery.validator.addMethod("checkMaskPhone", function(value, element) {
-        return /\+\d{3}\(\d{2}\)\d{3}-\d{2}-\d{2}/g.test(value);
-    });
+<!--    // получаем нашу форму по class-->
+<!--    var form = $('#profile-form');-->
 
-    // получаем нашу форму по class
-    var form = $('#profile-form');
-
-    // включаем валидацию в форме
-    form.validate({
-        messages: {
-            phone: "Enter correct phone number"
-        }
-    });
+<!--    // включаем валидацию в форме-->
+<!--    form.validate({-->
+<!--        messages: {-->
+<!--            phone: "Enter correct phone number"-->
+<!--        }-->
+<!--    });-->
 
 
-    // вешаем валидацию на поле с телефоном по классу
-    $.validator.addClassRules({
-        'phone-field': {
-            checkMaskPhone: true
-        }
-    });
+<!--    // вешаем валидацию на поле с телефоном по классу-->
+<!--    $.validator.addClassRules({-->
+<!--        'phone-field': {-->
+<!--            checkMaskPhone: true-->
+<!--        }-->
+<!--    });-->
 {% endblock %}
