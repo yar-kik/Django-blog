@@ -35,7 +35,6 @@ class UserEditForm(forms.ModelForm):
 
 class ProfileEditForm(forms.ModelForm):
     """Дозволяє модифікувати додаткові відомості (дата народження, аватар)"""
-    phone = PhoneNumberField()
 
     class Meta:
         model = Profile

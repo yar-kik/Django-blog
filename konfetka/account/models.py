@@ -12,7 +12,7 @@ class Profile(models.Model):
                                 on_delete=models.CASCADE)
     date_of_birth = models.DateField(blank=True, null=True)
     photo = models.ImageField(upload_to='user/profile_photo', blank=True, default='default/profile-picture.png')
-    phone = PhoneNumberField(blank=True, null=True, unique=True)
+    phone = PhoneNumberField(blank=True, null=True)
 
     def __str__(self):
         return f'Profile for user {self.user.username}'
