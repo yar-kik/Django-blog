@@ -1,3 +1,4 @@
+from ckeditor.widgets import CKEditorWidget
 from django import forms
 
 from .models import Comment, Article
@@ -17,7 +18,11 @@ class CommentForm(forms.ModelForm):
         model = Comment
         fields = ('body',)
 
-# class ArticleCreateForm(forms.ModelForm):
-#     class Meta:
-#         model = Article
-#         fields = ('title', 'text', 'tags')
+
+class ArticleCreateForm(forms.ModelForm):
+    class Meta:
+        model = Article
+        fields = ('title', 'text', 'tags')
+        widgets = {
+            'text': CKEditorWidget()
+        }

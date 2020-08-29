@@ -16,7 +16,7 @@ from django.db.models import Count
 from uuslug import slugify
 
 # from actions.utils import create_action
-from .forms import EmailPostForm, CommentForm
+from .forms import EmailPostForm, CommentForm, ArticleCreateForm
 from .models import Article, Comment
 
 r = redis.StrictRedis(host=settings.REDIS_HOST,
@@ -250,18 +250,9 @@ def post_share(request, article_id):
 
 class CreateArticle(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
     """Функція публікації статті"""
-    model = Article
-    fields = ['title', 'text', 'tags']
+    form_class = ArticleCreateForm
     template_name = 'articles/post/create_article.html'
     permission_required = 'articles.add_article'
-
-    # success_url = 'articles:all_articles'
-    # def form_valid(self, form):
-    #     self.object = form.save(commit=False)
-    #     self.object.author = self.request.user
-    #     self.object.slug = slugify(self.object.title)
-    #     self.object.save()
-    #     return super().form_valid(form)
 
     def form_valid(self, form):
         form.instance.author = self.request.user

@@ -54,6 +54,8 @@ INSTALLED_APPS = [
     'debug_toolbar',
     "template_profiler_panel",
     'django.contrib.postgres',
+    'ckeditor',
+    'ckeditor_uploader'
 ]
 
 MIDDLEWARE = [
@@ -141,10 +143,35 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
-
+# STATIC_ROOT = 'konfetka/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
+CKEDITOR_BASEPATH = "/static/ckeditor/ckeditor/"
+CKEDITOR_UPLOAD_PATH = "uploads/"
+CKEDITOR_CONFIGS = {
+    'default': {
+         'toolbar': [
+            ['Undo', 'Redo',
+             '-', 'Bold', 'Italic', 'Underline', 'Strike', "Subscript", "Superscript",
+             '-', "RemoveFormat",
+             '-', 'NumberedList', 'BulletedList',
+             '-', 'Outdent', 'Indent',
+             '-', 'Blockquote',
+             '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock',
+            ],
+            ['Image',
+             '-', 'HorizontalRule',
+             '-', 'Link', 'Unlink',
+             '-', 'Format', "Styles", "FontSize",
+             '-', "TextColor",
+             '-', 'Maximize',
+            ]
+        ],
+        'height': 600,
+        'width': '100%',
+    },
+}
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
