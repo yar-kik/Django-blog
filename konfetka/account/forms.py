@@ -35,6 +35,10 @@ class ProfileEditForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ('date_of_birth', 'photo', 'phone')
+        widgets = {
+            'date_of_birth': forms.DateInput(attrs={'placeholder': 'ДД.ММ.РРРР'}),
+            'phone': forms.DateInput(attrs={'placeholder': '+380(__)___-__-__'})
+        }
         error_messages = {
             'phone': {
                 'invalid': 'Введіть коректний номер телефону, наприклад +38(098)152-27-15',
