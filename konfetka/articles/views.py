@@ -11,13 +11,13 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.decorators.http import require_POST
 from django.views.generic import CreateView, UpdateView, DeleteView, ListView, DetailView
-from taggit.models import Tag
 from django.db.models import Count
 from uuslug import slugify
 
 # from actions.utils import create_action
 from .forms import EmailPostForm, CommentForm, ArticleCreateForm
 from .models import Article, Comment
+from .tagging import CustomTag
 
 r = redis.StrictRedis(host=settings.REDIS_HOST,
                       port=settings.REDIS_PORT,
@@ -58,7 +58,7 @@ class ArticlesList(ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         if self.kwargs:
-            context['tag'] = get_object_or_404(Tag, slug=self.kwargs['tag_slug'])
+            context['tag'] = get_object_or_404(CustomTag, slug=self.kwargs['tag_slug'])
         return context
 
 
@@ -138,9 +138,16 @@ class ArticleView(View):
 
 
 def article_detail(request, slug):
-    article = get_object_or_404(Article, slug=slug)
+    article = Article.objects.filter(slug=slug).select_related('author').only('title', 'text', 'slug',
+                                                                              'author__username',
+                                                                              'author__is_staff',
+                                                                              'date_created', ).get()
     """Список активних коментарів цієї статті"""
-    comments = article.comments.filter(active=True)
+    comments = article.comments.filter(active=True).select_related('name', 'name__profile').only('article',
+                                                                                                 'body', 'name',
+                                                                                                 'created', 'updated',
+                                                                                                 'name__profile__photo',
+                                                                                                 'name__username')
     total_views = r.incr(f'article:{article.id}:views')
     new_comment = None
     if request.method == 'POST':

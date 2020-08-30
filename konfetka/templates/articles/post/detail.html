@@ -66,27 +66,34 @@
         <h2>{{ total_comments }} comment{{ total_comments|pluralize }}</h2>
     {% endwith %}
     {% for comment in comments %}
-        <div class="comment">
-            <p class="info">
+        <div class="comment" id="{{ comment.id }}">
+            <div class="comment-head">
                 <a href="{{ comment.name.get_absolute_url }}">
-                    {% thumbnail comment.name.profile.photo "50x50" crop="100%" as im %}
-                        <img src="{{ im.url }}">
-                    {% endthumbnail %}
-                </a>
-                <a href="{{ comment.name.get_absolute_url }}" class="title">
-                    {% if comment.name.get_full_name %}
-                        {{ comment.name.get_full_name }}
-                    {% else %}
-                        {{ comment.name.username }}
-                    {% endif %}
+                    <div class="user-info">
+                        {% thumbnail comment.name.profile.photo "50x50" crop="100%" as im %}
+                            <img src="{{ im.url }}">
+                        {% endthumbnail %}
+                    </div>
+                    <span>
+                        {% if comment.name.get_full_name %}
+                            {{ comment.name.get_full_name }}
+                        {% else %}
+                            {{ comment.name.username }}
+                        {% endif %}
+                    </span>
                 </a>
                 {{ comment.created }}
                 {% if comment.name == user or user.is_staff %}
                     <a href="{% url 'articles:update_comment' slug=article.slug comment_id=comment.id %}">Edit</a>
                     <a href="{% url 'articles:delete_comment' slug=article.slug comment_id=comment.id %}">Delete</a>
+<!--                    <button data-id="{{ comment.id }}" data-action="edit" class="edit">Edit</button>-->
+<!--                    <button data-id="{{ comment.id }}" data-action="delete" class="delete">Delete</button>-->
                 {% endif %}
-            </p>
-            {{ comment.body|linebreaks }}
+            </div>
+            <div class="comment-body" >{{ comment.body|linebreaks }}</div>
+<!--            <div class="comment-footer">-->
+<!--                <a href="#">Reply</a>-->
+<!--            </div>-->
         </div>
     {% empty %}
         <p>There are no comments yet.</p>
