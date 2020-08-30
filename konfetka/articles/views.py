@@ -15,7 +15,7 @@ from django.db.models import Count
 from uuslug import slugify
 
 # from actions.utils import create_action
-from .forms import EmailPostForm, CommentForm, ArticleCreateForm
+from .forms import EmailPostForm, CommentForm, ArticleForm
 from .models import Article, Comment
 from .tagging import CustomTag
 
@@ -257,7 +257,7 @@ def post_share(request, article_id):
 
 class CreateArticle(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
     """Функція публікації статті"""
-    form_class = ArticleCreateForm
+    form_class = ArticleForm
     template_name = 'articles/post/create_article.html'
     permission_required = 'articles.add_article'
 
@@ -270,9 +270,8 @@ class CreateArticle(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
 class UpdateArticle(PermissionRequiredMixin, LoginRequiredMixin, UpdateView):
     """"""
     model = Article
-    fields = ['title', 'text', 'tags']
+    form_class = ArticleForm
     template_name = 'articles/post/update_article.html'
-    # success_url = reverse_lazy('articles:update_article')
     permission_required = 'articles.change_article'
 
 

@@ -1,4 +1,5 @@
 from ckeditor.widgets import CKEditorWidget
+from ckeditor_uploader.widgets import CKEditorUploadingWidget
 from django import forms
 
 from .models import Comment, Article
@@ -19,10 +20,10 @@ class CommentForm(forms.ModelForm):
         fields = ('body',)
 
 
-class ArticleCreateForm(forms.ModelForm):
+class ArticleForm(forms.ModelForm):
     class Meta:
         model = Article
         fields = ('title', 'text', 'tags')
         widgets = {
-            'text': CKEditorWidget()
+            'text': CKEditorUploadingWidget()
         }

@@ -15,10 +15,7 @@
         <p>Email: {{ request.user.email|default:"example@mail.com" }}</p>
         <p>Date of birth: {{ profile.date_of_birth }}</p>
     </div>
-<!--    % with total_images_created=request.user.images_created.count %}-->
-<!--        <p>Welcome to your dashboard. You have bookmarked-->
-<!--            {total_images_created }} image{ total_images_created|pluralize }}.</p>-->
-<!--    % endwith %}-->
+
 
 <!--    <p>Drag the following button to your bookmarks toolbar to bookmark images from other websites-->
 <!--        <a href="javascript:{% include 'bookmarklet_launcher.js' %}" class="button">Bookmark it</a></p>-->
