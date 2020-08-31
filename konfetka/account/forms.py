@@ -29,12 +29,13 @@ class UserEditForm(forms.ModelForm):
             'email': forms.TextInput(attrs={'placeholder': 'example@gmail.com'})
         }
 
+
 class ProfileEditForm(forms.ModelForm):
     """Дозволяє модифікувати додаткові відомості (дата народження, аватар)"""
 
     class Meta:
         model = Profile
-        fields = ('date_of_birth', 'photo', 'phone')
+        fields = ('date_of_birth', 'photo', 'sex', 'phone')
         widgets = {
             'date_of_birth': forms.DateInput(attrs={'placeholder': 'ДД.ММ.РРРР'}),
             'phone': forms.DateInput(attrs={'placeholder': '+380(__)___-__-__'})

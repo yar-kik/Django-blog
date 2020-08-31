@@ -8,11 +8,18 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 
 class Profile(models.Model):
+    SEX = [
+        ('', 'Не обрано'),
+        ('M', 'Чоловіча'),
+        ('F', 'Жіноча')
+    ]
     user = models.OneToOneField(settings.AUTH_USER_MODEL,
                                 on_delete=models.CASCADE)
-    date_of_birth = models.DateField(blank=True, null=True)
-    photo = models.ImageField(upload_to='user/%Y/%m/%d/', blank=True, default='default/profile-picture.png.')
-    phone = PhoneNumberField(blank=True, null=True, unique=True)
+    date_of_birth = models.DateField(blank=True, null=True, verbose_name='дата народження')
+    sex = models.CharField(max_length=1, choices=SEX, blank=True, verbose_name='стать')
+    photo = models.ImageField(upload_to='user/%Y/%m/%d/', blank=True, default='default/profile-picture.png.',
+                              verbose_name='фото профілю')
+    phone = PhoneNumberField(blank=True, null=True, unique=True, verbose_name='номер телефону')
 
     def __str__(self):
         return f'Profile for user {self.user.username}'

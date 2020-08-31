@@ -23,6 +23,7 @@ r = redis.StrictRedis(host=settings.REDIS_HOST,
                       port=settings.REDIS_PORT,
                       db=settings.REDIS_DB)
 
+
 def articles_redirect(request):
     return redirect('articles:all_articles', permanent=True)
 
