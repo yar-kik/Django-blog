@@ -2,6 +2,7 @@ import redis
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mail
 from django.http import JsonResponse
@@ -15,7 +16,7 @@ from django.db.models import Count
 from uuslug import slugify
 
 # from actions.utils import create_action
-from .forms import EmailPostForm, CommentForm, ArticleForm
+from .forms import EmailPostForm, CommentForm, ArticleForm, SearchForm
 from .models import Article, Comment
 from .tagging import CustomTag
 
@@ -301,3 +302,21 @@ def article_like(request):
         except:
             pass
     return JsonResponse({'status': 'ok'})
+
+
+def article_search(request):
+    form = SearchForm()
+    query = ''
+    results = []
+    if 'query' in request.GET:
+        form = SearchForm(request.GET)
+        if form.is_valid():
+            query = form.cleaned_data['query']
+            search_vector = SearchVector('title', weight='A') + SearchVector('text', weight='B')
+            search_query = SearchQuery(query)
+            results = Article.objects.annotate(
+                search=search_vector, rank=SearchRank(search_vector, search_query)
+            ).filter(rank__gte=0.3).order_by('-rank')
+    return render(request, 'articles/post/search.html', {'form': form,
+                                                         'query': query,
+                                                         'results': results})

@@ -7,6 +7,7 @@ urlpatterns = [
     path('', views.ArticlesList.as_view(), name='all_articles'),
     path('like/', views.article_like, name='like'),
     path('create_article/', views.CreateArticle.as_view(), name='create_article'),
+    path('search/', views.article_search, name='article_search'),
     path('<slug:slug>/', views.article_detail, name='article_detail'),
     # path('<slug:slug>/<int:comment_id>/update/', views.article_detail, name='update_comment'),
     path('<slug:slug>/<int:comment_id>/update/', views.update_comment, name='update_comment'),

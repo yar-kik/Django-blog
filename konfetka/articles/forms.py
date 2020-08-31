@@ -25,3 +25,8 @@ class ArticleForm(forms.ModelForm):
         widgets = {
             'text': CKEditorUploadingWidget()
         }
+
+
+class SearchForm(forms.Form):
+    query = forms.CharField(max_length=50)
+
