@@ -6,11 +6,10 @@
 
 {% block content %}
     {% if article.author == user or user.is_staff %}
-        <h2><a href="{% url 'articles:update_article' article.slug %}">Update article</a></h2>
-        <h2><a href="{% url 'articles:delete_article' article.slug %}">Delete article</a></h2>
+        <h2><a href="% url 'articles:update_article' article.slug %}">Update article</a></h2>
+        <h2><a href="% url 'articles:delete_article' article.slug %}">Delete article</a></h2>
     {% endif %}
-
-    <h1>{{ article.title }}</h1>
+    <h1 id="hey">{{ article.title }}</h1>
 
     {% for tag in article.tags.all %}
         <a href="{% url 'articles:all_articles_by_tag' tag.slug %}">
@@ -53,7 +52,7 @@
 
     {% if user.is_authenticated %}
         <h2>Add a new comment</h2>
-            <form action="." method="post">
+            <form action="." method="post" id="new-comment">
                 {{ comment_form.as_p }}
                 {% csrf_token %}
                 <p><input type="submit" value="Add comment"></p>
@@ -75,19 +74,15 @@
                         {% endthumbnail %}
                     </div>
                     <span>
-                        {% if comment.name.get_full_name %}
-                            {{ comment.name.get_full_name }}
-                        {% else %}
-                            {{ comment.name.username }}
-                        {% endif %}
+                        {{ comment.name.username }}
                     </span>
                 </a>
                 {{ comment.created }}
                 {% if comment.name == user or user.is_staff %}
-                    <a href="{% url 'articles:update_comment' slug=article.slug comment_id=comment.id %}">Edit</a>
-                    <a href="{% url 'articles:delete_comment' slug=article.slug comment_id=comment.id %}">Delete</a>
-<!--                    <button data-id="{{ comment.id }}" data-action="edit" class="edit">Edit</button>-->
-<!--                    <button data-id="{{ comment.id }}" data-action="delete" class="delete">Delete</button>-->
+<!--                    <a href="% url 'articles:update_comment' slug=article.slug comment_id=comment.id %}">Edit</a>-->
+<!--                    <a href="% url 'articles:delete_comment' slug=article.slug comment_id=comment.id %}">Delete</a>-->
+                    <button data-url="{% url 'articles:edit_comment' comment_id=comment.id%}" class="edit">Edit</button>
+                    <button data-id="{{ comment.id }}" data-action="delete" class="delete">Delete</button>
                 {% endif %}
             </div>
             <div class="comment-body" >{{ comment.body|linebreaks }}</div>
@@ -120,5 +115,44 @@
                     }
                 }
         );
+    });
+
+    $(".edit").click(function (event) {
+        var button = $(this);
+        var text = button.parent().next();
+        console.log(text);
+        event.preventDefault();
+        $.ajax({
+            url: button.attr('data-url'),
+            type: 'get',
+            dataType: 'json',
+            beforeSend: function () {
+                $('#new-comment').hide();
+            },
+            success: function (data) {
+                $(text).replaceWith(data.html_form);
+            }
+        });
+    });
+
+    $('#edit-comment').submit(function () {
+        var form = $(this)
+        $.ajax({
+            url: form.attr("action"),
+            data: form.serialize(),
+            type: form.attr("method"),
+            dataType: 'json',
+            success: function (data) {
+                if (data.form_is_valid) {
+                        alert('Valid!');
+<!--                    $("#book-table tbody").html(data.html_book_list);-->
+<!--                    $("#modal-book").modal("hide");-->
+                }
+                else {
+<!--                    $('#hey').replaceWith(data.html_form);-->
+                }
+            }
+        });
+        return false;
     });
 {% endblock %}

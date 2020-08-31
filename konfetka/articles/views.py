@@ -8,6 +8,7 @@ from django.core.mail import send_mail
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import EmptyPage, PageNotAnInteger
+from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.decorators.http import require_POST
@@ -183,45 +184,70 @@ def article_detail(request, slug):
                                                          'total_views': total_views})
 
 
-# class UpdateComment(UpdateView):
-#     """"""
-#     pk_url_kwarg = 'comment_id'
-#     model = Comment
-#     fields = ['body']
-#     template_name = 'articles/post/detail.html'
-#     context_object_name = 'comment'
-#     # permission_required = 'articles.add_comment'
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data()
-#         article = Article.objects.get(slug=self.kwargs['slug'])
-#         context['comments'] = article.comments()
-#         return context
-#     def get_success_url(self):
-#         return reverse_lazy('articles:article_detail', kwargs={'slug': self.kwargs['slug']})
-
-
-def update_comment(request, slug, comment_id):
-    article = get_object_or_404(Article, slug=slug)
-    instance_comment = get_object_or_404(Comment, id=comment_id)
-    if instance_comment.name == request.user or request.user.is_staff:
-        comments = article.comments.filter(active=True)
-        if request.method == 'POST':
-            comment_form = CommentForm(instance=instance_comment, data=request.POST or None)
-            if comment_form.is_valid():
-                comment_form.save()
-                return redirect(article.get_absolute_url(), permanent=True)
+def save_comment(request, template, form):
+    data = dict()
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+            data['form_is_valid'] = True
+            # books = Book.objects.all()
+            # data['html_book_list'] = render_to_string('books/includes/partial_book_list.html', {
+            #     'books': books
         else:
-            comment_form = CommentForm(instance=instance_comment)
-        article_tags_ids = article.tags.values_list('id', flat=True)
-        similar_articles = Article.objects.filter(tags__in=article_tags_ids).exclude(id=article.id)
-        similar_articles = similar_articles.annotate(same_tags=Count('tags')).order_by('-same_tags', '-date_created')[:4]
-        return render(request, 'articles/post/detail.html', {'article': article,
-                                                         'comments': comments,
-                                                         'comment_form': comment_form,
-                                                         'similar_articles': similar_articles,
-                                                         'section': 'articles'})
+            data['form_is_valid'] = False
+    context = {'form': form}
+    data['html_form'] = render_to_string(template, context, request=request)
+    return JsonResponse(data)
+
+
+def create_comment(request, slug):
+    article = get_object_or_404(Article, slug=slug)
+    if request.method == 'POST':
+        comment_form = CommentForm(data=request.POST)
+        if comment_form.is_valid():
+            new_comment = comment_form.save(commit=False)
+            new_comment.article = article
+            new_comment.name = request.user
+            comment_form.save()
     else:
-        raise PermissionDenied
+        comment_form = CommentForm()
+    return save_comment(request, 'articles/post/detail.html', comment_form)
+
+
+def edit_comment(request, comment_id):
+    instance_comment = get_object_or_404(Comment, id=comment_id)
+    if request.method == 'POST':
+        comment_form = CommentForm(instance=instance_comment, data=request.POST)
+        if comment_form.is_valid():
+            comment_form.save()
+    else:
+        comment_form = CommentForm(instance=instance_comment)
+    return save_comment(request, 'articles/comment/comment_form.html', comment_form)
+
+
+#
+# def update_comment(request, slug, comment_id):
+#     article = get_object_or_404(Article, slug=slug)
+#     instance_comment = get_object_or_404(Comment, id=comment_id)
+#     if instance_comment.name == request.user or request.user.is_staff:
+#         comments = article.comments.filter(active=True)
+#         if request.method == 'POST':
+#             comment_form = CommentForm(instance=instance_comment, data=request.POST or None)
+#             if comment_form.is_valid():
+#                 comment_form.save()
+#                 return redirect(article.get_absolute_url(), permanent=True)
+#         else:
+#             comment_form = CommentForm(instance=instance_comment)
+#         article_tags_ids = article.tags.values_list('id', flat=True)
+#         similar_articles = Article.objects.filter(tags__in=article_tags_ids).exclude(id=article.id)
+#         similar_articles = similar_articles.annotate(same_tags=Count('tags')).order_by('-same_tags', '-date_created')[:4]
+#         return render(request, 'articles/post/detail.html', {'article': article,
+#                                                          'comments': comments,
+#                                                          'comment_form': comment_form,
+#                                                          'similar_articles': similar_articles,
+#                                                          'section': 'articles'})
+#     else:
+#         raise PermissionDenied
 
 
 def delete_comment(request, slug, comment_id):
