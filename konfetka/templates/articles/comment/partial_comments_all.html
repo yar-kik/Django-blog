@@ -1,0 +1,27 @@
+{% load thumbnail %}
+
+{% for comment in comments %}
+    <div class="comment" id="{{ comment.id }}">
+        <div class="comment-head">
+            <a href="{{ comment.name.get_absolute_url }}">
+                <div class="user-info">
+                    {% thumbnail comment.name.profile.photo "50x50" crop="100%" as im %}
+                        <img src="{{ im.url }}">
+                    {% endthumbnail %}
+                </div>
+                <span>
+                    {{ comment.name.username }}
+                </span>
+            </a>
+            {{ comment.created }}
+            <button data-url="{% url 'articles:edit_comment' comment_id=comment.id%}" class="edit">Edit</button>
+            <button data-url="{% url 'articles:delete_comment' comment_id=comment.id%}" class="delete">Delete</button>
+        </div>
+        <div class="comment-body" >{{ comment.body|linebreaks }}</div>
+<!--            <div class="comment-footer">-->
+<!--                <a href="#">Reply</a>-->
+<!--            </div>-->
+    </div>
+{% empty %}
+    <p>There are no comments yet.</p>
+{% endfor %}

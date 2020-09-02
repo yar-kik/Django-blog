@@ -1,5 +1,0 @@
-<form action="{% url 'articles:create_comment' form.instance.article.slug %}" method="post" class="new-comment-form">
-    {{ comment_form.as_p }}
-    {% csrf_token %}
-    <p><input type="submit" value="Add comment"></p>
-</form>

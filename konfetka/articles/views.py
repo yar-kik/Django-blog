@@ -148,25 +148,11 @@ def article_detail(request, slug):
     """Список активних коментарів цієї статті"""
     comments = article.comments.filter(active=True).select_related('name', 'name__profile').only('article',
                                                                                                  'body', 'name',
-                                                                                                 'created', 'updated',
+                                                                                                 'created',
+                                                                                                 'updated',
                                                                                                  'name__profile__photo',
                                                                                                  'name__username')
     total_views = r.incr(f'article:{article.id}:views')
-    new_comment = None
-    if request.method == 'POST':
-        """Користувач відправив коментар"""
-        comment_form = CommentForm(data=request.POST)
-        if comment_form.is_valid():
-            """Створюємо коментар, але не зберегігаємо в базі данних"""
-            new_comment = comment_form.save(commit=False)
-            """Прив'язуємо коментар до поточної статті"""
-            new_comment.article = article
-            new_comment.name = request.user
-            """Зберігаємо коментар в базі даних"""
-            new_comment.save()
-            return redirect(article.get_absolute_url(), permanent=True)
-    else:
-        comment_form = CommentForm()
     """Формуванння списку схожих статей"""
 
     """Отримання списку id тегів даної статті"""
@@ -176,21 +162,27 @@ def article_detail(request, slug):
     """Сортування статей в порядку зменшення кількості схожих тегів та дати."""
     similar_articles = similar_articles.annotate(same_tags=Count('tags')).order_by('-same_tags', '-date_created')[:4]
     return render(request, 'articles/post/detail.html', {'article': article,
-                                                         'comments': comments,
-                                                         'comment_form': comment_form,
                                                          'similar_articles': similar_articles,
+                                                         'comments': comments,
                                                          'section': 'articles',
                                                          'total_views': total_views})
 
 
 def save_comment(request, template, form):
     data = dict()
+    article = form.instance.article
     if request.method == 'POST':
         if form.is_valid():
             form.save()
             data['form_is_valid'] = True
-            # books = Book.objects.all()
-            # data['html_book_list'] = render_to_string('articles/post/detail.html')
+            comments = article.comments.filter(active=True).select_related('name', 'name__profile').only('article',
+                                                                                                         'body', 'name',
+                                                                                                         'created',
+                                                                                                         'updated',
+                                                                                                         'name__profile__photo',
+                                                                                                         'name__username')
+            data['html_comments_all'] = render_to_string('articles/comment/partial_comments_all.html',
+                                                      {'comments': comments})
         else:
             data['form_is_valid'] = False
     context = {'form': form}
@@ -209,7 +201,7 @@ def create_comment(request, slug):
             new_comment.save()
     else:
         comment_form = CommentForm()
-    return save_comment(request, 'articles/comment/partial_comment_create.html', comment_form)
+    return save_comment(request, 'articles/comment/partial_comments_all.html', comment_form)
 
 
 def edit_comment(request, comment_id):
@@ -225,9 +217,19 @@ def edit_comment(request, comment_id):
 
 def delete_comment(request, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
+    comments = comment.article.comments.filter(active=True).select_related('name', 'name__profile').only('article',
+                                                                                                         'body', 'name',
+                                                                                                         'created',
+                                                                                                         'updated',
+                                                                                                         'name__profile__photo',
+                                                                                                         'name__username')
     data = dict()
     if request.method == 'POST':
         comment.delete()
+        data['form_is_valid'] = True
+        data['html_comments_all'] = render_to_string('articles/comment/partial_comments_all.html', {
+            'comments': comments
+        })
     else:
         context = {'comment': comment}
         data['html_form'] = render_to_string('articles/comment/partial_comment_delete.html', context, request=request)

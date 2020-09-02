@@ -1,6 +1,5 @@
 {% extends "../../base.html" %}
 {% load article_tags %}
-{% load thumbnail %}
 
 {% block title %}{{ article.title }}{% endblock %}
 
@@ -54,11 +53,6 @@
     <div class="new-comment">
         {% if user.is_authenticated %}
             <form action="{% url 'articles:create_comment' article.slug %}" method="post" class="new-comment-form">
-                {{ comment_form.as_p }}
-                {% csrf_token %}
-                <p><input type="submit" value="Add comment"></p>
-            </form>
-            <form action="/articles/retsenziia-na-film-tenet-novii-pidrivaiuchii-mozok/create_comment/" method="post" class="new-comment-form">
                 <p> <textarea name="body" cols="40" rows="10" maxlength="2000" required="" id="id_body"></textarea></p>
                 {% csrf_token %}
                 <p><input type="submit" value="Add comment"></p>
@@ -71,36 +65,9 @@
     {% with comments.count as total_comments %}
         <h2>{{ total_comments }} comment{{ total_comments|pluralize }}</h2>
     {% endwith %}
+
     <div class="all-comments">
-        {% for comment in comments %}
-            <div class="comment" id="{{ comment.id }}">
-                <div class="comment-head">
-                    <a href="{{ comment.name.get_absolute_url }}">
-                        <div class="user-info">
-                            {% thumbnail comment.name.profile.photo "50x50" crop="100%" as im %}
-                                <img src="{{ im.url }}">
-                            {% endthumbnail %}
-                        </div>
-                        <span>
-                            {{ comment.name.username }}
-                        </span>
-                    </a>
-                    {{ comment.created }}
-                    {% if comment.name == user or user.is_staff %}
-    <!--                    <a href="% url 'articles:update_comment' slug=article.slug comment_id=comment.id %}">Edit</a>-->
-    <!--                    <a href="% url 'articles:delete_comment' slug=article.slug comment_id=comment.id %}">Delete</a>-->
-                        <button data-url="{% url 'articles:edit_comment' comment_id=comment.id%}" class="edit">Edit</button>
-                        <button data-url="{% url 'articles:delete_comment' comment_id=comment.id%}" class="delete">Delete</button>
-                    {% endif %}
-                </div>
-                <div class="comment-body" >{{ comment.body|linebreaks }}</div>
-    <!--            <div class="comment-footer">-->
-    <!--                <a href="#">Reply</a>-->
-    <!--            </div>-->
-            </div>
-        {% empty %}
-            <p>There are no comments yet.</p>
-        {% endfor %}
+        {% include 'articles/comment/partial_comments_all.html' %}
     </div>
 
 {% endblock %}
@@ -129,13 +96,12 @@
     var loadForm = function () {
         var button = $(this);
         var text = button.parent().next();
-        var request = null;
-        request = $.ajax({
+        $.ajax({
             url: button.attr('data-url'),
             type: 'get',
             dataType: 'json',
             beforeSend: function () {
-                $('#new-comment').hide();
+{#                $('#new-comment').hide();#}
             },
             success: function (data) {
                 $(text).html(data.html_form);
@@ -153,11 +119,10 @@
             dataType: 'json',
             success: function (data) {
                 if (data.form_is_valid) {
-                    $(text).html(form.find('textarea').val());
-                    $('#new-comment').show();
-                }
-                else {
-<!--                    $('#hey').replaceWith(data.html_form);-->
+                    $(".all-comments").html(data.html_comments_all);
+                    $(form.find('textarea')).val('');
+{#                    $(text).html(form.find('textarea').val());#}
+{#                    $('#new-comment').show();#}
                 }
             }
         });
@@ -170,11 +135,5 @@
     $('.all-comments').on("click", ".delete", loadForm);
     $('.all-comments').on('submit', '.delete-form', saveForm);
 
-    $('.new-comment').on("click", loadForm);
     $('.new-comment').on('submit', '.new-comment-form', saveForm);
-
-<!--    // Create book-->
-<!--  $(".js-create-book").click(loadForm);-->
-<!--  $("#modal-book").on("submit", ".js-book-create-form", saveForm);-->
-
 {% endblock %}
