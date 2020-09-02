@@ -6,8 +6,8 @@
 
 {% block content %}
     {% if article.author == user or user.is_staff %}
-        <h2><a href="% url 'articles:update_article' article.slug %}">Update article</a></h2>
-        <h2><a href="% url 'articles:delete_article' article.slug %}">Delete article</a></h2>
+        <h2><a href="{% url 'articles:update_article' article.slug %}">Update article</a></h2>
+        <h2><a href="{% url 'articles:delete_article' article.slug %}">Delete article</a></h2>
     {% endif %}
     <h1 id="hey">{{ article.title }}</h1>
 
@@ -50,49 +50,58 @@
             <p>There are no similar article yet.</p>
         {% endfor %}
 
-    {% if user.is_authenticated %}
-        <h2>Add a new comment</h2>
-            <form action="." method="post" id="new-comment">
+    <h2>Add a new comment</h2>
+    <div class="new-comment">
+        {% if user.is_authenticated %}
+            <form action="{% url 'articles:create_comment' article.slug %}" method="post" class="new-comment-form">
                 {{ comment_form.as_p }}
                 {% csrf_token %}
                 <p><input type="submit" value="Add comment"></p>
             </form>
-    {% else %}
-        <p>You should <a href="{% url 'account:login' %}">log-in</a></p>
-    {% endif %}
-
+            <form action="/articles/retsenziia-na-film-tenet-novii-pidrivaiuchii-mozok/create_comment/" method="post" class="new-comment-form">
+                <p> <textarea name="body" cols="40" rows="10" maxlength="2000" required="" id="id_body"></textarea></p>
+                {% csrf_token %}
+                <p><input type="submit" value="Add comment"></p>
+            </form>
+<!--            <button data-url="% url 'articles:create_comment' article.slug %}" class="new-comment">Add comment</button>-->
+        {% else %}
+            <p>You should <a href="{% url 'account:login' %}">log-in</a></p>
+        {% endif %}
+    </div>
     {% with comments.count as total_comments %}
         <h2>{{ total_comments }} comment{{ total_comments|pluralize }}</h2>
     {% endwith %}
-    {% for comment in comments %}
-        <div class="comment" id="{{ comment.id }}">
-            <div class="comment-head">
-                <a href="{{ comment.name.get_absolute_url }}">
-                    <div class="user-info">
-                        {% thumbnail comment.name.profile.photo "50x50" crop="100%" as im %}
-                            <img src="{{ im.url }}">
-                        {% endthumbnail %}
-                    </div>
-                    <span>
-                        {{ comment.name.username }}
-                    </span>
-                </a>
-                {{ comment.created }}
-                {% if comment.name == user or user.is_staff %}
-<!--                    <a href="% url 'articles:update_comment' slug=article.slug comment_id=comment.id %}">Edit</a>-->
-<!--                    <a href="% url 'articles:delete_comment' slug=article.slug comment_id=comment.id %}">Delete</a>-->
-                    <button data-url="{% url 'articles:edit_comment' comment_id=comment.id%}" class="edit">Edit</button>
-                    <button data-id="{{ comment.id }}" data-action="delete" class="delete">Delete</button>
-                {% endif %}
+    <div class="all-comments">
+        {% for comment in comments %}
+            <div class="comment" id="{{ comment.id }}">
+                <div class="comment-head">
+                    <a href="{{ comment.name.get_absolute_url }}">
+                        <div class="user-info">
+                            {% thumbnail comment.name.profile.photo "50x50" crop="100%" as im %}
+                                <img src="{{ im.url }}">
+                            {% endthumbnail %}
+                        </div>
+                        <span>
+                            {{ comment.name.username }}
+                        </span>
+                    </a>
+                    {{ comment.created }}
+                    {% if comment.name == user or user.is_staff %}
+    <!--                    <a href="% url 'articles:update_comment' slug=article.slug comment_id=comment.id %}">Edit</a>-->
+    <!--                    <a href="% url 'articles:delete_comment' slug=article.slug comment_id=comment.id %}">Delete</a>-->
+                        <button data-url="{% url 'articles:edit_comment' comment_id=comment.id%}" class="edit">Edit</button>
+                        <button data-url="{% url 'articles:delete_comment' comment_id=comment.id%}" class="delete">Delete</button>
+                    {% endif %}
+                </div>
+                <div class="comment-body" >{{ comment.body|linebreaks }}</div>
+    <!--            <div class="comment-footer">-->
+    <!--                <a href="#">Reply</a>-->
+    <!--            </div>-->
             </div>
-            <div class="comment-body" >{{ comment.body|linebreaks }}</div>
-<!--            <div class="comment-footer">-->
-<!--                <a href="#">Reply</a>-->
-<!--            </div>-->
-        </div>
-    {% empty %}
-        <p>There are no comments yet.</p>
-    {% endfor %}
+        {% empty %}
+            <p>There are no comments yet.</p>
+        {% endfor %}
+    </div>
 
 {% endblock %}
 
@@ -117,12 +126,11 @@
         );
     });
 
-    $(".edit").click(function (event) {
+    var loadForm = function () {
         var button = $(this);
         var text = button.parent().next();
-        console.log(text);
-        event.preventDefault();
-        $.ajax({
+        var request = null;
+        request = $.ajax({
             url: button.attr('data-url'),
             type: 'get',
             dataType: 'json',
@@ -130,13 +138,14 @@
                 $('#new-comment').hide();
             },
             success: function (data) {
-                $(text).replaceWith(data.html_form);
+                $(text).html(data.html_form);
             }
         });
-    });
+    }
 
-    $('#edit-comment').submit(function () {
+    var saveForm = function () {
         var form = $(this)
+        var text = form.parent()
         $.ajax({
             url: form.attr("action"),
             data: form.serialize(),
@@ -144,9 +153,8 @@
             dataType: 'json',
             success: function (data) {
                 if (data.form_is_valid) {
-                        alert('Valid!');
-<!--                    $("#book-table tbody").html(data.html_book_list);-->
-<!--                    $("#modal-book").modal("hide");-->
+                    $(text).html(form.find('textarea').val());
+                    $('#new-comment').show();
                 }
                 else {
 <!--                    $('#hey').replaceWith(data.html_form);-->
@@ -154,5 +162,19 @@
             }
         });
         return false;
-    });
+    }
+
+    $('.all-comments').on("click", ".edit", loadForm);
+    $('.all-comments').on('submit', '.edit-form', saveForm);
+
+    $('.all-comments').on("click", ".delete", loadForm);
+    $('.all-comments').on('submit', '.delete-form', saveForm);
+
+    $('.new-comment').on("click", loadForm);
+    $('.new-comment').on('submit', '.new-comment-form', saveForm);
+
+<!--    // Create book-->
+<!--  $(".js-create-book").click(loadForm);-->
+<!--  $("#modal-book").on("submit", ".js-book-create-form", saveForm);-->
+
 {% endblock %}

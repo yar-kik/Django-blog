@@ -1,4 +1,4 @@
-<form action="{% url 'articles:edit_comment' form.instance.id %}" method="post" id="edit-comment">
+<form action="{% url 'articles:edit_comment' form.instance.id %}" method="post" class="edit-form">
     {{ form.as_p }}
     {% csrf_token %}
     <p><input type="submit" value="Edit comment"></p>

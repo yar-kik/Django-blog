@@ -177,7 +177,6 @@ def article_detail(request, slug):
     similar_articles = similar_articles.annotate(same_tags=Count('tags')).order_by('-same_tags', '-date_created')[:4]
     return render(request, 'articles/post/detail.html', {'article': article,
                                                          'comments': comments,
-                                                         'new_comment': new_comment,
                                                          'comment_form': comment_form,
                                                          'similar_articles': similar_articles,
                                                          'section': 'articles',
@@ -191,8 +190,7 @@ def save_comment(request, template, form):
             form.save()
             data['form_is_valid'] = True
             # books = Book.objects.all()
-            # data['html_book_list'] = render_to_string('books/includes/partial_book_list.html', {
-            #     'books': books
+            # data['html_book_list'] = render_to_string('articles/post/detail.html')
         else:
             data['form_is_valid'] = False
     context = {'form': form}
@@ -208,10 +206,10 @@ def create_comment(request, slug):
             new_comment = comment_form.save(commit=False)
             new_comment.article = article
             new_comment.name = request.user
-            comment_form.save()
+            new_comment.save()
     else:
         comment_form = CommentForm()
-    return save_comment(request, 'articles/post/detail.html', comment_form)
+    return save_comment(request, 'articles/comment/partial_comment_create.html', comment_form)
 
 
 def edit_comment(request, comment_id):
@@ -222,10 +220,19 @@ def edit_comment(request, comment_id):
             comment_form.save()
     else:
         comment_form = CommentForm(instance=instance_comment)
-    return save_comment(request, 'articles/comment/comment_form.html', comment_form)
+    return save_comment(request, 'articles/comment/partial_comment_edit.html', comment_form)
 
 
-#
+def delete_comment(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+    data = dict()
+    if request.method == 'POST':
+        comment.delete()
+    else:
+        context = {'comment': comment}
+        data['html_form'] = render_to_string('articles/comment/partial_comment_delete.html', context, request=request)
+    return JsonResponse(data)
+
 # def update_comment(request, slug, comment_id):
 #     article = get_object_or_404(Article, slug=slug)
 #     instance_comment = get_object_or_404(Comment, id=comment_id)
@@ -250,13 +257,13 @@ def edit_comment(request, comment_id):
 #         raise PermissionDenied
 
 
-def delete_comment(request, slug, comment_id):
-    comment = get_object_or_404(Comment, id=comment_id)
-    if comment.name == request.user or request.user.is_staff:
-        comment.delete()
-        return redirect(reverse_lazy('articles:article_detail', kwargs={'slug': slug}))
-    else:
-        raise PermissionDenied
+# def delete_comment(request, slug, comment_id):
+#     comment = get_object_or_404(Comment, id=comment_id)
+#     if comment.name == request.user or request.user.is_staff:
+#         comment.delete()
+#         return redirect(reverse_lazy('articles:article_detail', kwargs={'slug': slug}))
+#     else:
+#         raise PermissionDenied
 
 
 def post_share(request, article_id):
