@@ -182,7 +182,7 @@ def save_comment(request, template, form):
                                                                                                          'name__profile__photo',
                                                                                                          'name__username')
             data['html_comments_all'] = render_to_string('articles/comment/partial_comments_all.html',
-                                                      {'comments': comments})
+                                                         {'comments': comments})
         else:
             data['form_is_valid'] = False
     context = {'form': form}
@@ -234,6 +234,7 @@ def delete_comment(request, comment_id):
         context = {'comment': comment}
         data['html_form'] = render_to_string('articles/comment/partial_comment_delete.html', context, request=request)
     return JsonResponse(data)
+
 
 # def update_comment(request, slug, comment_id):
 #     article = get_object_or_404(Article, slug=slug)

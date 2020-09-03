@@ -1,5 +1,5 @@
 <form method="post" action="{% url 'articles:delete_comment' comment.id %}" class="delete-form">
   {% csrf_token %}
-    <p>Are you sure you want to delete comment?</p>
-    <input type="submit" value="Confirm">
+    <p>Ви впевнені, що хочете видалити свій коментар?</p>
+    <input type="submit" value="Підтвердити">
 </form>

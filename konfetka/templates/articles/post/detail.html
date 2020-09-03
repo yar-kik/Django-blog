@@ -4,67 +4,75 @@
 {% block title %}{{ article.title }}{% endblock %}
 
 {% block content %}
-    {% if article.author == user or user.is_staff %}
-        <h2><a href="{% url 'articles:update_article' article.slug %}">Update article</a></h2>
-        <h2><a href="{% url 'articles:delete_article' article.slug %}">Delete article</a></h2>
-    {% endif %}
-    <h1 id="hey">{{ article.title }}</h1>
+    <div class="article-header">
+        {% if article.author == user or user.is_staff %}
+            <button><a href="{% url 'articles:update_article' article.slug %}">Редагувати статтю</a></button>
+            <button ><a href="{% url 'articles:delete_article' article.slug %}">Видалити статтю</a></button>
+        {% endif %}
 
-    {% for tag in article.tags.all %}
-        <a href="{% url 'articles:all_articles_by_tag' tag.slug %}">
-            {{ tag.name }}
-        </a>
-        {% if not forloop.last %}, {% endif %}
-    {% endfor %}
+        <h1>{{ article.title }}</h1>
 
-    <p class="date">Published {{ article.date_created }} by {{ article.author }}</p>
-    {{ article.text|markdown }}
+        <div class="tags">
+        {% for tag in article.tags.all %}
+            <a href="{% url 'articles:all_articles_by_tag' tag.slug %}">
+                {{ tag.name }}
+            </a>
+            {% if not forloop.last %}, {% endif %}
+        {% endfor %}
+        </div>
+
+        <div class="article-info">
+            <a href="{{ article.author.get_absolute_url }}">{{ article.author }}</a>
+            {{ article.date_created }}
+        </div>
+    </div>
+
+    <div class="article-body">
+        {{ article.text|markdown }}
+    </div>
 
     {% with total_likes=article.users_like.count users_like=article.users_like.all%}
         <button data-id="{{ article.id }}" data-action="{% if request.user in users_like %}un{% endif %}like"
         id="like">
             {% if request.user not in users_like %}
-                Like
+                Вподобайка
             {% else %}
-                Unlike
+                Розподобайка
             {% endif %}
         </button>
 
         <span class="count">
             <span class="total">{{ total_likes }}</span>
-            like{{ total_likes|pluralize }}
+            Вподобайок {{ total_likes }}
         </span>
 
         <span class="count">
-            {{ total_views }} view{{ total_views|pluralize }}
+            Споглядайок {{ total_views }}
         </span>
     {% endwith %}
 
-    <h2>Similar posts</h2>
+    <h2>Схожа писанина</h2>
         {% for article in similar_articles %}
             <p>
                 <a href="{{ article.get_absolute_url }}">{{article.title}}</a>
             </p>
         {% empty %}
-            <p>There are no similar article yet.</p>
+            <p>На жаль, нічого схожого ще немає</p>
         {% endfor %}
 
-    <h2>Add a new comment</h2>
+    <h3>Залишити коментар</h3>
     <div class="new-comment">
         {% if user.is_authenticated %}
             <form action="{% url 'articles:create_comment' article.slug %}" method="post" class="new-comment-form">
                 <p> <textarea name="body" cols="40" rows="10" maxlength="2000" required="" id="id_body"></textarea></p>
                 {% csrf_token %}
-                <p><input type="submit" value="Add comment"></p>
+                <p><input type="submit" value="Додати коментар"></p>
             </form>
 <!--            <button data-url="% url 'articles:create_comment' article.slug %}" class="new-comment">Add comment</button>-->
         {% else %}
-            <p>You should <a href="{% url 'account:login' %}">log-in</a></p>
+            <p>Спершу ти повинен <a href="{% url 'account:login' %}">увійти</a></p>
         {% endif %}
     </div>
-    {% with comments.count as total_comments %}
-        <h2>{{ total_comments }} comment{{ total_comments|pluralize }}</h2>
-    {% endwith %}
 
     <div class="all-comments">
         {% include 'articles/comment/partial_comments_all.html' %}
@@ -85,7 +93,7 @@
                     {
                         var previous_action = $('#like').data('action');
                         $('#like').data('action', previous_action == 'like' ? 'unlike' : 'like');
-                        $('#like').text(previous_action == 'like' ? 'Unlike' : 'Like');
+                        $('#like').text(previous_action == 'like' ? 'Розподобайка' : 'Вподобайка');
                         var previous_likes = parseInt($('span.count .total').text());
                         $('span.count .total').text(previous_action == 'like' ? previous_likes + 1 : previous_likes - 1);
                     }
@@ -101,7 +109,8 @@
             type: 'get',
             dataType: 'json',
             beforeSend: function () {
-{#                $('#new-comment').hide();#}
+                $('.edit-form').not(this).hide();
+                $('.delete-form').not(this).hide();
             },
             success: function (data) {
                 $(text).html(data.html_form);
