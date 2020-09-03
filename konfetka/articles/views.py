@@ -3,16 +3,14 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
-from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mail
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import EmptyPage, PageNotAnInteger
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
-from django.views import View
 from django.views.decorators.http import require_POST
-from django.views.generic import CreateView, UpdateView, DeleteView, ListView, DetailView
+from django.views.generic import CreateView, UpdateView, DeleteView, ListView
 from django.db.models import Count
 from uuslug import slugify
 
@@ -31,6 +29,7 @@ def articles_redirect(request):
 
 
 class ArticlesList(ListView):
+    """Клас списку коментарів із пагінацією"""
     model = Article
     template_name = 'articles/post/list.html'
     context_object_name = 'articles'
@@ -38,10 +37,10 @@ class ArticlesList(ListView):
     paginate_by = 3
 
     def paginate_queryset(self, queryset, page_size):
+        """Функція пагінації набору даних з обробкою виключень GET-запитів"""
         paginator = self.get_paginator(queryset, page_size)
         page_kwargs = self.page_kwarg
         page = self.kwargs.get(page_kwargs) or self.request.GET.get('page')
-
         try:
             page = paginator.page(page)
         except PageNotAnInteger:
@@ -52,6 +51,7 @@ class ArticlesList(ListView):
             return paginator, page, page.object_list, page.has_other_pages()
 
     def get_queryset(self):
+        """Отримання набору даних з можливістю відсортувати дані за тегами"""
         queryset = super().get_queryset()
         if self.kwargs:
             return queryset.filter(tags__slug__in=[self.kwargs['tag_slug']])
@@ -59,85 +59,11 @@ class ArticlesList(ListView):
             return queryset
 
     def get_context_data(self, *, object_list=None, **kwargs):
+        """Введення в контекст шаблону тегів"""
         context = super().get_context_data(**kwargs)
         if self.kwargs:
             context['tag'] = get_object_or_404(CustomTag, slug=self.kwargs['tag_slug'])
         return context
-
-
-"""
-class CreateComment(CreateView):
-    """"""
-    model = Comment
-    fields = ['body']
-    template_name = 'articles/post/detail.html'
-    context_object_name = 'new_comment'
-    # permission_required = 'articles.add_comment'
-
-    def form_valid(self, form):
-        form.instance.name = self.request.user
-        form.instance.article = get_object_or_404(Article, slug=self.kwargs['slug'])
-        return super().form_valid(form)
-
-    def get_success_url(self):
-        return reverse_lazy('articles:article_detail', kwargs={'slug': self.kwargs['slug']})
-
-
-# class ArticleDetail(DetailView):
-#     model = Article
-#     context_object_name = 'article'
-#     template_name = 'articles/post/detail.html'
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data()
-#         # context['comments'] = get_object_or_404(Comment, )
-#         # context['new_comment'] = get_object_or_404(CreateComment, self.kwargs['slug'])
-#         return context
-"""
-
-
-class ArticleView(View):
-    template_name = 'articles/post/detail.html'
-
-    def get(self, request, *args, **kwargs):
-        updated_comment_id = request.GET.get('edit_comment')
-        # if updated_comment_id:
-        #     comment = get_object_or_404(Comment, id=updated_comment_id)
-        # else:
-        #     comment = None
-        # print(updated_comment_id, comment)
-        # comment_form = CommentForm(instance=comment)
-
-        article = get_object_or_404(Article, slug=self.kwargs['slug'])
-        comment_form = CommentForm()
-        comments = article.comments.filter(active=True)
-        article_tags_ids = article.tags.values_list('id', flat=True)
-        similar_articles = Article.objects.filter(tags__in=article_tags_ids).exclude(id=article.id)
-        similar_articles = similar_articles.annotate(same_tags=Count('tags')).order_by('-same_tags', '-date_created')[
-                           :4]
-        return render(request, self.template_name, {'article': article,
-                                                    'comment_form': comment_form,
-                                                    'comments': comments,
-                                                    'similar_articles': similar_articles})
-
-    def post(self, request, *args, **kwargs):
-        updated_comment_id = request.GET.get('edit_comment')
-
-        if updated_comment_id:
-            comment = get_object_or_404(Comment, id=updated_comment_id)
-        else:
-            comment = None
-
-        article = get_object_or_404(Article, slug=self.kwargs['slug'])
-        # comments = article.comments.filter(active=True)
-        comment_form = CommentForm(request.POST or None, instance=comment)
-        if comment_form.is_valid():
-            new_comment = comment_form.save(commit=False)
-            new_comment.article = article
-            new_comment.name = request.user
-            new_comment.save()
-            return redirect(article.get_absolute_url())
-        return render(request, self.template_name, {'comment_form': comment_form})
 
 
 def article_detail(request, slug):
@@ -152,6 +78,7 @@ def article_detail(request, slug):
                                                                                                  'updated',
                                                                                                  'name__profile__photo',
                                                                                                  'name__username')
+    comment_form = CommentForm()
     total_views = r.incr(f'article:{article.id}:views')
     """Формуванння списку схожих статей"""
 
@@ -165,22 +92,23 @@ def article_detail(request, slug):
                                                          'similar_articles': similar_articles,
                                                          'comments': comments,
                                                          'section': 'articles',
+                                                         'comment_form': comment_form,
                                                          'total_views': total_views})
 
 
 def save_comment(request, template, form):
+    """Функція збереження коментарю (при створенні, зміні чи видаленні) через AJAX.
+    Data містить значення про валідність коментарю, його форма (при видаленні чи редагуванні),
+    шаблон із усіма коментарями даної статті"""
     data = dict()
     article = form.instance.article
     if request.method == 'POST':
         if form.is_valid():
             form.save()
             data['form_is_valid'] = True
-            comments = article.comments.filter(active=True).select_related('name', 'name__profile').only('article',
-                                                                                                         'body', 'name',
-                                                                                                         'created',
-                                                                                                         'updated',
-                                                                                                         'name__profile__photo',
-                                                                                                         'name__username')
+            comments = article.comments.filter(active=True).\
+                select_related('name', 'name__profile').only('article', 'body', 'name', 'created', 'updated',
+                                                             'name__profile__photo', 'name__username')
             data['html_comments_all'] = render_to_string('articles/comment/partial_comments_all.html',
                                                          {'comments': comments})
         else:
@@ -191,6 +119,7 @@ def save_comment(request, template, form):
 
 
 def create_comment(request, slug):
+    """Створення коментарю із закріпленням до статті та користувача-автора"""
     article = get_object_or_404(Article, slug=slug)
     if request.method == 'POST':
         comment_form = CommentForm(data=request.POST)
@@ -205,6 +134,7 @@ def create_comment(request, slug):
 
 
 def edit_comment(request, comment_id):
+    """Редагування коментарю, значення якого отримується через id"""
     instance_comment = get_object_or_404(Comment, id=comment_id)
     if request.method == 'POST':
         comment_form = CommentForm(instance=instance_comment, data=request.POST)
@@ -216,13 +146,11 @@ def edit_comment(request, comment_id):
 
 
 def delete_comment(request, comment_id):
+    """Видалення коментарю, отриманого через його id."""
     comment = get_object_or_404(Comment, id=comment_id)
-    comments = comment.article.comments.filter(active=True).select_related('name', 'name__profile').only('article',
-                                                                                                         'body', 'name',
-                                                                                                         'created',
-                                                                                                         'updated',
-                                                                                                         'name__profile__photo',
-                                                                                                         'name__username')
+    comments = comment.article.comments.filter(active=True).\
+        select_related('name', 'name__profile').only('article', 'body', 'name', 'created', 'updated',
+                                                     'name__profile__photo', 'name__username')
     data = dict()
     if request.method == 'POST':
         comment.delete()
@@ -234,39 +162,6 @@ def delete_comment(request, comment_id):
         context = {'comment': comment}
         data['html_form'] = render_to_string('articles/comment/partial_comment_delete.html', context, request=request)
     return JsonResponse(data)
-
-
-# def update_comment(request, slug, comment_id):
-#     article = get_object_or_404(Article, slug=slug)
-#     instance_comment = get_object_or_404(Comment, id=comment_id)
-#     if instance_comment.name == request.user or request.user.is_staff:
-#         comments = article.comments.filter(active=True)
-#         if request.method == 'POST':
-#             comment_form = CommentForm(instance=instance_comment, data=request.POST or None)
-#             if comment_form.is_valid():
-#                 comment_form.save()
-#                 return redirect(article.get_absolute_url(), permanent=True)
-#         else:
-#             comment_form = CommentForm(instance=instance_comment)
-#         article_tags_ids = article.tags.values_list('id', flat=True)
-#         similar_articles = Article.objects.filter(tags__in=article_tags_ids).exclude(id=article.id)
-#         similar_articles = similar_articles.annotate(same_tags=Count('tags')).order_by('-same_tags', '-date_created')[:4]
-#         return render(request, 'articles/post/detail.html', {'article': article,
-#                                                          'comments': comments,
-#                                                          'comment_form': comment_form,
-#                                                          'similar_articles': similar_articles,
-#                                                          'section': 'articles'})
-#     else:
-#         raise PermissionDenied
-
-
-# def delete_comment(request, slug, comment_id):
-#     comment = get_object_or_404(Comment, id=comment_id)
-#     if comment.name == request.user or request.user.is_staff:
-#         comment.delete()
-#         return redirect(reverse_lazy('articles:article_detail', kwargs={'slug': slug}))
-#     else:
-#         raise PermissionDenied
 
 
 def post_share(request, article_id):
@@ -294,7 +189,7 @@ def post_share(request, article_id):
 
 
 class CreateArticle(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
-    """Функція публікації статті"""
+    """Клас створення статті (необхідний відповідний дозвіл)"""
     form_class = ArticleForm
     template_name = 'articles/post/create_article.html'
     permission_required = 'articles.add_article'
@@ -306,7 +201,7 @@ class CreateArticle(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
 
 
 class UpdateArticle(PermissionRequiredMixin, LoginRequiredMixin, UpdateView):
-    """"""
+    """Класс редагування статті (необхідний дозвіл на це)"""
     model = Article
     form_class = ArticleForm
     template_name = 'articles/post/update_article.html'
@@ -314,7 +209,7 @@ class UpdateArticle(PermissionRequiredMixin, LoginRequiredMixin, UpdateView):
 
 
 class DeleteArticle(PermissionRequiredMixin, LoginRequiredMixin, DeleteView):
-    """"""
+    """Видалення статті (необхідний дозвіл або статус персонала)"""
     model = Article
     template_name = 'articles/post/delete_article.html'
     success_url = reverse_lazy('articles:all_articles')
@@ -324,6 +219,7 @@ class DeleteArticle(PermissionRequiredMixin, LoginRequiredMixin, DeleteView):
 @login_required
 @require_POST
 def article_like(request):
+    """Функція уподобання статті"""
     article_id = request.POST.get('id')
     action = request.POST.get('action')
     if article_id and action:
@@ -341,6 +237,9 @@ def article_like(request):
 
 
 def article_search(request):
+    """Пошук статті і використанням вектору пошуку (за полями заголовку і тексту з
+    ваговими коефіцієнтами 1 та 0.4 відповідно. Пошуковий набір проходить стемінг.
+    При пошуку враховується близькість шуканих слів одне до одного"""
     form = SearchForm()
     query = ''
     results = []
