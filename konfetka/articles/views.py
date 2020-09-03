@@ -67,17 +67,13 @@ class ArticlesList(ListView):
 
 
 def article_detail(request, slug):
-    article = Article.objects.filter(slug=slug).select_related('author').only('title', 'text', 'slug',
-                                                                              'author__username',
-                                                                              'author__is_staff',
-                                                                              'date_created', ).get()
+    article = Article.objects.filter(slug=slug).\
+        select_related('author').only('title', 'text', 'slug', 'author__username',
+                                      'author__is_staff', 'date_created', ).get()
     """Список активних коментарів цієї статті"""
-    comments = article.comments.filter(active=True).select_related('name', 'name__profile').only('article',
-                                                                                                 'body', 'name',
-                                                                                                 'created',
-                                                                                                 'updated',
-                                                                                                 'name__profile__photo',
-                                                                                                 'name__username')
+    comments = article.comments.filter(active=True).\
+        select_related('name', 'name__profile').only('article', 'body', 'name', 'created', 'updated',
+                                                     'name__profile__photo', 'name__username')
     comment_form = CommentForm()
     total_views = r.incr(f'article:{article.id}:views')
     """Формуванння списку схожих статей"""
