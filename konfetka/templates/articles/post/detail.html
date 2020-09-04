@@ -28,7 +28,7 @@
     </div>
 
     <div class="article-body">
-        {{ article.text|markdown }}
+        {{ article.text|safe }}
     </div>
 
     {% with total_likes=article.users_like.count users_like=article.users_like.all%}
@@ -67,7 +67,6 @@
                 {% csrf_token %}
                 <p><input type="submit" value="Додати коментар"></p>
             </form>
-<!--            <button data-url="% url 'articles:create_comment' article.slug %}" class="new-comment">Add comment</button>-->
         {% else %}
             <p>Спершу ти повинен <a href="{% url 'account:login' %}">увійти</a></p>
         {% endif %}

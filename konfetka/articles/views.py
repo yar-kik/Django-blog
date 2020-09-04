@@ -52,7 +52,9 @@ class ArticlesList(ListView):
 
     def get_queryset(self):
         """Отримання набору даних з можливістю відсортувати дані за тегами"""
-        queryset = super().get_queryset()
+        queryset = super().get_queryset().prefetch_related('tags').select_related('author').\
+            annotate(total_comments=Count('comments'),
+                     total_likes=Count('users_like'))
         if self.kwargs:
             return queryset.filter(tags__slug__in=[self.kwargs['tag_slug']])
         else:
@@ -243,8 +245,9 @@ def article_search(request):
         form = SearchForm(request.GET)
         if form.is_valid():
             query = form.cleaned_data['query']
-            search_vector = SearchVector('title', weight='A') + SearchVector('text', weight='B')
-            search_query = SearchQuery(query)
+            search_vector = SearchVector('title', weight='A', config='russian') + SearchVector('text', weight='B',
+                                                                                               config='russian')
+            search_query = SearchQuery(query, config='russian')
             results = Article.objects.annotate(
                 search=search_vector, rank=SearchRank(search_vector, search_query)
             ).filter(rank__gte=0.3).order_by('-rank')
