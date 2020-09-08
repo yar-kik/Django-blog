@@ -254,3 +254,16 @@ def article_search(request):
     return render(request, 'articles/post/search.html', {'form': form,
                                                          'query': query,
                                                          'results': results})
+
+
+def bookmark_article(request):
+    article_id = request.POST.get('id')
+    action = request.POST.get('action')
+    if article_id and action:
+        article = Article.objects.only('id', 'users_bookmark').get(id=article_id)
+        if action == 'bookmark':
+            article.users_bookmark.add(request.user)
+        else:
+            article.users_bookmark.remove(request.user)
+        return JsonResponse({'status': 'ok'})
+    return JsonResponse({'status': 'ok'})

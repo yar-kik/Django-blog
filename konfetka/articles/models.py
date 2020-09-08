@@ -28,6 +28,7 @@ class Article(models.Model):
     objects = models.Manager
     tags = TaggableManager(through=TaggedWhatever)
     users_like = models.ManyToManyField(User, related_name='articles_liked', blank=True)
+    users_bookmark = models.ManyToManyField(User, related_name='articles_bookmarked', blank=True)
 
     class Meta:
         ordering = ('-date_created',)

@@ -23,6 +23,15 @@
     <button><a href="{% url 'account:edit' %}">Edit profile</a></button>
     <button><a href="{% url 'account:password_change' %}">Change password</a></button>
 
+    <div>
+    <p>Збережені статті:</p>
+    {% for article in user.articles_bookmarked.all %}
+        <ul>
+            <li><a href="{{ article.get_absolute_url }}">{{ article.title }}</a></li>
+        </ul>
+    {% endfor %}
+
+    </div>
 <!--    <h2>What's happening</h2>-->
 <!--        <div id="action-list">-->
 <!--            % for action in actions %}-->
