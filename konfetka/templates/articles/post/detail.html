@@ -71,7 +71,7 @@
     <h3>Залишити коментар</h3>
     <div class="new-comment">
         {% if user.is_authenticated %}
-            <form action="{% url 'articles:create_comment' article.slug %}" method="post" class="new-comment-form">
+            <form action="{% url 'articles:create_comment' article.id %}" method="post" class="new-comment-form">
                 {{ comment_form }}
                 {% csrf_token %}
                 <p><input type="submit" value="Додати коментар"></p>

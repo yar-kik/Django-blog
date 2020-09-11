@@ -73,7 +73,7 @@ def article_detail(request, slug):
         select_related('author').only('title', 'text', 'slug', 'author__username',
                                       'author__is_staff', 'date_created', ).get()
     """Список активних коментарів цієї статті"""
-    comments = article.comments.filter(active=True).\
+    comments = article.comments.\
         select_related('name', 'name__profile').only('article', 'body', 'name', 'created', 'updated',
                                                      'name__profile__photo', 'name__username')
     comment_form = CommentForm()
@@ -104,7 +104,7 @@ def save_comment(request, template, form):
         if form.is_valid():
             form.save()
             data['form_is_valid'] = True
-            comments = article.comments.filter(active=True).\
+            comments = article.comments.\
                 select_related('name', 'name__profile').only('article', 'body', 'name', 'created', 'updated',
                                                              'name__profile__photo', 'name__username')
             data['html_comments_all'] = render_to_string('articles/comment/partial_comments_all.html',
@@ -116,16 +116,15 @@ def save_comment(request, template, form):
     return JsonResponse(data)
 
 
-def create_comment(request, slug):
+def create_comment(request, article_id):
     """Створення коментарю із закріпленням до статті та користувача-автора"""
-    article = get_object_or_404(Article, slug=slug)
+    article = Article.objects.only('id').get(id=article_id)
     if request.method == 'POST':
         comment_form = CommentForm(data=request.POST)
         if comment_form.is_valid():
             new_comment = comment_form.save(commit=False)
             new_comment.article = article
             new_comment.name = request.user
-            new_comment.save()
     else:
         comment_form = CommentForm()
     return save_comment(request, 'articles/comment/partial_comments_all.html', comment_form)
@@ -136,8 +135,6 @@ def edit_comment(request, comment_id):
     instance_comment = get_object_or_404(Comment, id=comment_id)
     if request.method == 'POST':
         comment_form = CommentForm(instance=instance_comment, data=request.POST)
-        if comment_form.is_valid():
-            comment_form.save()
     else:
         comment_form = CommentForm(instance=instance_comment)
     return save_comment(request, 'articles/comment/partial_comment_edit.html', comment_form)
@@ -146,7 +143,7 @@ def edit_comment(request, comment_id):
 def delete_comment(request, comment_id):
     """Видалення коментарю, отриманого через його id."""
     comment = get_object_or_404(Comment, id=comment_id)
-    comments = comment.article.comments.filter(active=True).\
+    comments = comment.article.comments.\
         select_related('name', 'name__profile').only('article', 'body', 'name', 'created', 'updated',
                                                      'name__profile__photo', 'name__username')
     data = dict()

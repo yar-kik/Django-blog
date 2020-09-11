@@ -24,7 +24,7 @@ class Article(models.Model):
     text = models.TextField(max_length=15000)
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
-    slug = models.SlugField(max_length=100, db_index=True)
+    slug = models.SlugField(max_length=100)
     objects = models.Manager
     tags = TaggableManager(through=TaggedWhatever)
     users_like = models.ManyToManyField(User, related_name='articles_liked', blank=True)
@@ -32,6 +32,9 @@ class Article(models.Model):
 
     class Meta:
         ordering = ('-date_created',)
+        indexes = [
+            models.Index(fields=['slug']),
+        ]
 
     def __str__(self):
         return self.title

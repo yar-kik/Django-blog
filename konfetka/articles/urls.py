@@ -11,7 +11,7 @@ urlpatterns = [
     path('bookmark_article/', views.bookmark_article, name='bookmark_article'),
     path('<int:comment_id>/update/', views.edit_comment, name='edit_comment'),
     path('<int:comment_id>/delete/', views.delete_comment, name='delete_comment'),
-    path('<slug:slug>/create_comment/', views.create_comment, name='create_comment'),
+    path('<int:article_id>/create_comment/', views.create_comment, name='create_comment'),
     path('<slug:slug>/update_article/', views.UpdateArticle.as_view(),
          name='update_article'),
     path('<slug:slug>/delete_article/', views.DeleteArticle.as_view(),
