@@ -9,6 +9,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import EmptyPage, PageNotAnInteger
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
+from django.views.decorators.cache import cache_page
 from django.views.decorators.http import require_POST
 from django.views.generic import CreateView, UpdateView, DeleteView, ListView
 from django.db.models import Count
@@ -68,6 +69,7 @@ class ArticlesList(ListView):
         return context
 
 
+@cache_page(60 * 15)
 def article_detail(request, slug):
     article = Article.objects.filter(slug=slug).\
         select_related('author').only('title', 'text', 'slug', 'author__username',

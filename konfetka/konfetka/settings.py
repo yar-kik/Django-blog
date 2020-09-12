@@ -105,6 +105,7 @@ DATABASES = {
         'NAME': 'blog',
         'USER': 'blog',
         'PASSWORD': 'agent0071604YAR00',
+        'CONN_MAX_AGE': None,
     }
 }
 
@@ -240,3 +241,13 @@ DEBUG_TOOLBAR_PANELS = [
     'debug_toolbar.panels.profiling.ProfilingPanel',
     "template_profiler_panel.panels.template.TemplateProfilerPanel",
 ]
+
+CACHES = {
+    "default": {
+        "BACKEND": "redis_cache.RedisCache",
+        "LOCATION": 'localhost:6379',
+        "OPTIONS": {
+            "DB": 0,
+        }
+    }
+}
