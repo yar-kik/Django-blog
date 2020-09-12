@@ -49,3 +49,15 @@ class ProfileEditForm(forms.ModelForm):
                 'invalid': 'Введіть коректну дату народження',
             }
         }
+
+
+class FeedbackEmailForm(forms.Form):
+    """Форма для відгуків, пропозицій, скарг.
+    Атрибути:
+    subject - тема листа;
+    sender - пошта відправника;
+    message - зміст повідомлення;
+    """
+    subject = forms.CharField(max_length=100)
+    sender = forms.EmailField()
+    message = forms.CharField(max_length=5000, widget=forms.Textarea)

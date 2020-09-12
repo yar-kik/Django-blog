@@ -59,6 +59,8 @@
         </span>
     {% endwith %}
 
+{#    <h2><a href="{% url 'articles:post_share' article.id %}">Поділитися</a></h2>#}
+
     <h2>Схожа писанина</h2>
         {% for article in similar_articles %}
             <p>

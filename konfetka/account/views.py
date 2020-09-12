@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.core.mail import send_mail, BadHeaderError
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib import messages
@@ -9,7 +10,7 @@ from django.utils.http import urlunquote, is_safe_url
 
 from actions.models import Action
 from actions.utils import create_action
-from .forms import LoginForm, UserRegistrationForm, UserEditForm, ProfileEditForm
+from .forms import LoginForm, UserRegistrationForm, UserEditForm, ProfileEditForm, FeedbackEmailForm
 from .models import Profile, Contact
 from common.decorators import ajax_required
 from django.http import JsonResponse
@@ -136,6 +137,24 @@ def user_follow(request):
         except User.DoesNotExist:
             return JsonResponse({'status': 'ok'})
     return JsonResponse({'status': 'ok'})
+
+
+def feedback(request):
+    if request.method == 'POST':
+        form = FeedbackEmailForm(request.POST)
+        if form.is_valid():
+            cd = form.cleaned_data
+            try:
+                send_mail(subject=cd['subject'],
+                          message=cd['message'],
+                          from_email=cd['sender'],
+                          recipient_list=[settings.EMAIL_HOST])
+            except BadHeaderError:
+                return HttpResponse('Invalid header found!')
+            return redirect('articles:all_articles')
+    else:
+        form = FeedbackEmailForm()
+    return render(request, 'account/site/feedback_form.html', {'form': form})
 
 
 def get_client_ip(request):

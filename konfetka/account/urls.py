@@ -8,6 +8,7 @@ urlpatterns = [
     path('', views.dashboard, name='dashboard'),
     # Для уточнення місцезнаходження шаблона
     # path('login/', auth_views.LoginView.as_view(template_name='account/registration/login.html'), name='login'),
+    path('feedback/', views.feedback, name='feedback'),
     path('login/', auth_views.LoginView.as_view(redirect_authenticated_user=True),
          name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
