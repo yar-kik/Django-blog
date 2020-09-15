@@ -1,0 +1,18 @@
+{% extends "../base.html" %}
+
+{% block title %}Edit your account{% endblock %}
+
+{% block content %}
+    <h1>Edit your account</h1>
+    <p>You can edit your account using the following form:</p>
+    <form action="." method="post" enctype="multipart/form-data" id="profile-form">
+        {{ user_form.as_p }}
+        {{ profile_form.as_p }}
+        {% csrf_token %}
+        <p><input type="submit" value="Save changes"></p>
+    </form>
+{% endblock %}
+{% block domready %}
+    $('#id_phone').inputmask("+380(99)999-99-99", {"placeholder": "_"});
+    $('#id_date_of_birth').inputmask("99.99.9999", {"placeholder": "ДД.ММ.РРРР"});
+{% endblock %}

@@ -1,0 +1,36 @@
+{% load thumbnail %}
+
+{% with comments.count as total_comments %}
+    <h2>Коментарів {{ total_comments }}</h2>
+{% endwith %}
+
+{% for comment in comments %}
+    <div class="comment" id="{{ comment.id }}">
+        <div class="comment-head">
+            <a href="{{ comment.name.get_absolute_url }}">
+                <div class="user-info">
+                    {% thumbnail comment.name.profile.photo "50x50" crop="100%" as im %}
+                        <img src="{{ im.url }}">
+                    {% endthumbnail %}
+                </div>
+                <span>
+                    {{ comment.name.username }}
+                </span>
+            </a>
+        {% if comment.created|date:"i H d m Y" == comment.updated|date:"i H d m Y" %}
+            Опубліковано: {{ comment.created|date:"l, j E Y" }} о {{ comment.created|date:"H:i" }}
+        {% else %}
+            Редаговано: {{ comment.created|date:"l, j E Y" }} о {{ comment.created|date:"H:i" }}
+        {% endif %}
+
+            <button data-url="{% url 'articles:edit_comment' comment_id=comment.id%}" class="edit">Редагувати</button>
+            <button data-url="{% url 'articles:delete_comment' comment_id=comment.id%}" class="delete">Видалити</button>
+        </div>
+        <div class="comment-body" >{{ comment.body|linebreaks }}</div>
+<!--            <div class="comment-footer">-->
+<!--                <a href="#">Reply</a>-->
+<!--            </div>-->
+    </div>
+{% empty %}
+    <p>Поки що немає жодного коментарю. Будь першим!)</p>
+{% endfor %}

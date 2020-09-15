@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+{% load article_tags %}
+{% load static %}
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/base1.css' %}">
+</head>
+<body>
+    <header class="header">
+    	<nav class="menu">
+	        <ul class="main-menu">
+	            <li {% if section == "articles" %}class="nav-item selected"{% else %} class="nav-item"{% endif %}>
+	                <a href="{% url 'articles:all_articles' %}">Статьи</a>
+	            </li>
+	            <li {% if section == "images" %}class="nav-item selected"{% else %} class="nav-item"{% endif %}>
+	                <a href="{% url 'images:list' %}">Images</a>
+	            </li>
+	            <li {% if section == "people" %}class="nav-item selected"{% else %} class="nav-item"{% endif %}>
+	                <a href="{% url 'account:user_list' %}">Люди</a>
+	            </li>
+	        </ul>
+        </nav>
+        <nav class="menu">
+	        <ul class="user-menu">
+                <li class="nav-item">
+                    <form action="{% url 'articles:article_search' %}" method="get">
+                        <p><input type="text" name="query" maxlength="50" placeholder="Шукати на сайті..."
+                                   required="" id="id_query">
+                        </p>
+                        <input type="submit" value="Search">
+                    </form>
+                </li>
+	        	<li {% if section == "dashboard" %}class="nav-item selected"{% else %} class="nav-item"{% endif %}>
+	                    <a href="{% url 'account:dashboard' %}">Мой аккаунт</a>
+                </li>
+                {% if user.is_authenticated %}
+	                <!-- Привет {{ request.user.first_name }}, -->
+                <li class="nav-item"> 
+                    <a href="{% url 'account:logout' %}">Выйти</a>
+                </li>
+	            {% else %}
+                <li class="nav-item">
+	                <a href="{% url 'account:login' %}">Войти</a>
+                </li>
+	            {% endif %}
+
+	        </ul>
+        </nav>
+    </header>
+
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li class="{{ message.tags }}">
+                    {{ message|safe }}
+                    <a href="#" class="close">x</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <div id="content">
+        {% block content %}{% endblock %}
+    </div>
+
+    <div id="sidebar">
+        <h2><a href="{% url 'articles:all_articles' %}">My blog</a></h2>
+
+        <h3>Latest posts</h3>
+        {% show_latest_articles 3 %}
+
+        <h3>Most commented posts</h3>
+        {% get_most_commented_articles 3 as most_commented_articles %}
+        <ul>
+            {% for article in most_commented_articles %}
+                <li>
+                    <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+{#    <p><a href="{% url 'account:feedback' %}">Побажання та пропозиції?</a></p>#}
+{#        <p><a href="{% url 'articles:article_feed' %}">Subscribe to my RSS feed</a></p>#}
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.16.0/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.5/jquery.inputmask.min.js"></script>
+    <script>
+        var csrftoken = Cookies.get('csrftoken');
+        function csrfSafeMethod(method) {
+            // Для этих методов токен не будет подставляться в заголовок.
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+        $.ajaxSetup({beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+        });
+        $(document).ready(function(){
+            {% block domready %}
+            {% endblock %}
+        });
+    </script>
+    {% block script %}
+    {% endblock %}
+</body>
+</html>

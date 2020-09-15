@@ -1,0 +1,13 @@
+{% extends "../../base.html" %}
+
+{% block title %}Зауваження стосовно сайту{% endblock %}
+
+{% block content %}
+    <h1>Лишити відгук</h1>
+    <p>Якщо маєте якісь зауваження чи побажання, будь ласка напишіть нам!</p>
+    <form action="." method="post">
+        {{ form.as_p }}
+        {% csrf_token %}
+        <button type="submit">Відправити!</button>
+    </form>
+{% endblock %}

@@ -1,0 +1,37 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+
+header {
+	width: 100%;
+	background-color: green;
+	display: flex;
+	justify-content: space-between;
+	position: fixed;
+	top: 0;
+}
+
+.main-menu, .user-menu {
+	display: flex;
+	list-style: none;
+}
+
+.nav-item a:hover {
+	/*background-color: lightgreen;*/
+	color: black;
+}
+li.selected a{
+	/*background-color: darkgreen;*/
+	color: black;
+
+}
+.nav-item a{
+	display: block;
+	text-decoration: none;
+	color: white;
+	padding: 1em 3em;
+}
+
+#content {
+margin-top: 70px;}
