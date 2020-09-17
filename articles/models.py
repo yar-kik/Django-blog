@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.urls import reverse
 from taggit.managers import TaggableManager
@@ -58,6 +59,9 @@ class Comment(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     active = models.BooleanField(default=True)
+    path = ArrayField(models.IntegerField(blank=True, null=True), default=list)
+    reply_to = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reply',
+                                 null=True, blank=True)
 
     class Meta:
         ordering = ('-created',)
@@ -65,3 +69,8 @@ class Comment(models.Model):
     def __str__(self):
         return f'Comment by {self.name} on {self.article}'
 
+    def save(self):
+        if self.id is None:
+            super().save()
+            self.path.append(self.id)
+        super().save()

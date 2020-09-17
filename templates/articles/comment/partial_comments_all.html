@@ -26,10 +26,16 @@
             <button data-url="{% url 'articles:edit_comment' comment_id=comment.id%}" class="edit">Редагувати</button>
             <button data-url="{% url 'articles:delete_comment' comment_id=comment.id%}" class="delete">Видалити</button>
         </div>
-        <div class="comment-body" >{{ comment.body|linebreaks }}</div>
-<!--            <div class="comment-footer">-->
-<!--                <a href="#">Reply</a>-->
-<!--            </div>-->
+
+        <div class="comment-body" >
+            {% if comment.path|length > 1 %}
+                Hello!
+            {% endif %}
+            {{ comment.body|linebreaks }}</div>
+
+        <div class="comment-footer">
+            <button data-action="reply" data-url="{% url 'articles:reply_comment' comment_id=comment.id %}" class="reply">Reply</button>
+        </div>
     </div>
 {% empty %}
     <p>Поки що немає жодного коментарю. Будь першим!)</p>

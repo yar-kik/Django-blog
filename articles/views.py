@@ -75,7 +75,7 @@ def article_detail(request, slug):
         select_related('author').only('title', 'text', 'slug', 'author__username',
                                       'author__is_staff', 'date_created', ).get()
     """Список активних коментарів цієї статті"""
-    comments = article.comments.\
+    comments = article.comments.order_by('path').\
         select_related('name', 'name__profile').only('article', 'body', 'name', 'created', 'updated',
                                                      'name__profile__photo', 'name__username')
     comment_form = CommentForm()
@@ -101,12 +101,12 @@ def save_comment(request, template, form):
     Data містить значення про валідність коментарю, його форма (при видаленні чи редагуванні),
     шаблон із усіма коментарями даної статті"""
     data = dict()
-    article = form.instance.article
     if request.method == 'POST':
+        article = form.instance.article
         if form.is_valid():
             form.save()
             data['form_is_valid'] = True
-            comments = article.comments.\
+            comments = article.comments.order_by('path').\
                 select_related('name', 'name__profile').only('article', 'body', 'name', 'created', 'updated',
                                                              'name__profile__photo', 'name__username')
             data['html_comments_all'] = render_to_string('articles/comment/partial_comments_all.html',
@@ -116,6 +116,26 @@ def save_comment(request, template, form):
     context = {'form': form}
     data['html_form'] = render_to_string(template, context, request=request)
     return JsonResponse(data)
+
+
+def reply_comment(request, comment_id):
+    parent_comment = Comment.objects.only('id', 'article_id').get(id=comment_id)
+    data = dict()
+    if request.method == 'POST':
+        comment_form = CommentForm(data=request.POST)
+        if comment_form.is_valid():
+            new_comment = comment_form.save(commit=False)
+            new_comment.article = parent_comment.article
+            new_comment.name = request.user
+            new_comment.path.extend(parent_comment.path)
+            new_comment.reply_to = parent_comment.name
+            return save_comment(request, 'articles/comment/partial_comments_all.html', comment_form)
+    else:
+        comment_form = CommentForm()
+        context = {'form': comment_form, 'comment_id': comment_id}
+        data['action'] = 'reply'
+        data['html_form'] = render_to_string('articles/comment/partial_comment_create.html', context, request=request)
+        return JsonResponse(data)
 
 
 def create_comment(request, article_id):
@@ -145,7 +165,7 @@ def edit_comment(request, comment_id):
 def delete_comment(request, comment_id):
     """Видалення коментарю, отриманого через його id."""
     comment = get_object_or_404(Comment, id=comment_id)
-    comments = comment.article.comments.\
+    comments = comment.article.comments.order_by('path').\
         select_related('name', 'name__profile').only('article', 'body', 'name', 'created', 'updated',
                                                      'name__profile__photo', 'name__username')
     data = dict()

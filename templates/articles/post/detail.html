@@ -112,16 +112,26 @@
     var loadForm = function () {
         var button = $(this);
         var text = button.parent().next();
+        var form = button.parent();
         $.ajax({
+            data: {
+                action: $(this).data('action')
+            },
             url: button.attr('data-url'),
             type: 'get',
             dataType: 'json',
             beforeSend: function () {
                 $('.edit-form').not(this).hide();
                 $('.delete-form').not(this).hide();
+                $('.reply-form').not(this).hide();
             },
             success: function (data) {
-                $(text).html(data.html_form);
+                if (data.action) {
+                    $(form).append(data.html_form);
+
+                } else {
+                    $(text).html(data.html_form);
+                }
             }
         });
     }
@@ -151,6 +161,11 @@
     $('.all-comments').on('submit', '.delete-form', saveForm);
 
     $('.new-comment').on('submit', '.new-comment-form', saveForm);
+
+    $('.all-comments').on("click", ".reply", loadForm);
+    $('.all-comments').on('submit', '.reply-form', saveForm);
+
+
 
 
     $('#bookmark').click(function(e) {
