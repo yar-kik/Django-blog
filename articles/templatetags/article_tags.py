@@ -28,3 +28,8 @@ def get_most_commented_articles(count=5):
 @register.filter(name='markdown')
 def markdown_format(text):
     return mark_safe(markdown.markdown(text))
+
+
+@register.filter
+def index(element, i):
+    return element[i]

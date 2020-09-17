@@ -1,4 +1,5 @@
 {% load thumbnail %}
+{% load article_tags %}
 
 {% with comments.count as total_comments %}
     <h2>Коментарів {{ total_comments }}</h2>
@@ -29,7 +30,7 @@
 
         <div class="comment-body" >
             {% if comment.path|length > 1 %}
-                Hello!
+                <p>Відповідь <a href="#{{ comment.path|index:-2 }}">{{ comment.reply_to }}</a></p>
             {% endif %}
             {{ comment.body|linebreaks }}</div>
 
