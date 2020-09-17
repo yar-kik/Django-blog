@@ -69,7 +69,7 @@ class ArticlesList(ListView):
         return context
 
 
-@cache_page(60 * 15)
+# @cache_page(60 * 15)
 def article_detail(request, slug):
     article = Article.objects.filter(slug=slug).\
         select_related('author').only('title', 'text', 'slug', 'author__username',
