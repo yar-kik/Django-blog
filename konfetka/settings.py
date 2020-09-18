@@ -55,7 +55,8 @@ INSTALLED_APPS = [
     "template_profiler_panel",
     'django.contrib.postgres',
     'ckeditor',
-    'ckeditor_uploader'
+    'ckeditor_uploader',
+    'bootstrap4'
 ]
 
 MIDDLEWARE = [

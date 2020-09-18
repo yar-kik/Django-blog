@@ -74,3 +74,15 @@ class Comment(models.Model):
             super().save()
             self.path.append(self.id)
         super().save()
+
+    def get_offset(self):
+        level = len(self.path)
+        if level > 5:
+            level = 5
+        return level
+
+    def get_col(self):
+        level = len(self.path)
+        if level > 5:
+            level = 5
+        return 24 - level

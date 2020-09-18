@@ -1,5 +1,6 @@
 {% extends "../../base.html" %}
 {% load article_tags %}
+{% load bootstrap4 %}
 
 {% block title %}{{ article.title }}{% endblock %}
 
@@ -83,7 +84,7 @@
         {% endif %}
     </div>
 
-    <div class="all-comments">
+    <div class="all-comments" style="display: grid; grid-template-columns: repeat(24, 1fr);">
         {% include 'articles/comment/partial_comments_all.html' %}
     </div>
 {% endblock %}
