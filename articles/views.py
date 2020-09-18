@@ -77,7 +77,7 @@ def article_detail(request, slug):
     """Список активних коментарів цієї статті"""
     comments = article.comments.order_by('path').\
         select_related('name', 'name__profile').only('article', 'body', 'name', 'created', 'updated',
-                                                     'name__profile__photo', 'name__username')
+                                                     'name__profile__photo', 'name__username', 'path')
     comment_form = CommentForm()
     total_views = r.incr(f'article:{article.id}:views')
     """Формуванння списку схожих статей"""
@@ -108,7 +108,7 @@ def save_comment(request, template, form):
             data['form_is_valid'] = True
             comments = article.comments.order_by('path').\
                 select_related('name', 'name__profile').only('article', 'body', 'name', 'created', 'updated',
-                                                             'name__profile__photo', 'name__username')
+                                                             'name__profile__photo', 'name__username', 'path')
             data['html_comments_all'] = render_to_string('articles/comment/partial_comments_all.html',
                                                          {'comments': comments})
         else:
@@ -119,7 +119,7 @@ def save_comment(request, template, form):
 
 
 def reply_comment(request, comment_id):
-    parent_comment = Comment.objects.only('id', 'article_id').get(id=comment_id)
+    parent_comment = Comment.objects.only('id', 'article', 'name').get(id=comment_id)
     data = dict()
     if request.method == 'POST':
         comment_form = CommentForm(data=request.POST)
@@ -167,7 +167,7 @@ def delete_comment(request, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
     comments = comment.article.comments.order_by('path').\
         select_related('name', 'name__profile').only('article', 'body', 'name', 'created', 'updated',
-                                                     'name__profile__photo', 'name__username')
+                                                     'name__profile__photo', 'name__username', 'path')
     data = dict()
     if request.method == 'POST':
         comment.delete()
