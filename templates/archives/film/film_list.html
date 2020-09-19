@@ -1,0 +1,29 @@
+{% extends '../../base.html' %}
+
+{% block title %}Всі фільми{% endblock %}
+
+{% block content %}
+    <a href="{% url 'archives:add_film' %}"><button>Додати новий фільм</button></a>
+   {% for film in films %}
+       <h1>{{ film.title }}</h1>
+       <p class="tags">
+            {% for tag in film.tags.all %}
+                <a href="{% url 'articles:all_articles_by_tag' tag.slug %}">
+                    {{ tag.name }}
+                </a>
+                {% if not forloop.last %}, {% endif %}
+            {% endfor %}
+       </p>
+       <p class="genres">
+            {% for genre in film.genres.all %}
+                <a href="{% url 'articles:all_articles_by_tag' genre.slug %}">
+                    {{ genre.name }}
+                </a>
+                {% if not forloop.last %}, {% endif %}
+            {% endfor %}
+       </p>
+       <p>{{ film.description|truncatewords:50 }}</p>
+   {% empty %}
+       <h3>Ще немаэ жодного фільму</h3>
+   {% endfor %}
+{% endblock %}

@@ -29,6 +29,7 @@ urlpatterns = [
     path('articles/', include('articles.urls', namespace='articles')),
     path('account/', include('account.urls', namespace='account')),
     path('admin/', admin.site.urls),
+    path('archives/', include('archives.urls', namespace='archives')),
     path('social_auth/', include('social_django.urls', namespace='social')),
     path('images/', include('images.urls', namespace='images')),
     path('ckeditor/', include('ckeditor_uploader.urls')),

@@ -8,6 +8,11 @@ from articles.tagging import TaggedWhatever
 
 
 class Article(models.Model):
+    CATEGORIES = [
+        ('F', "Фільми"),
+        ('G', "Ігри"),
+        ('A', 'Аніме')
+    ]
     """
     Клас для збереження статей.
     Атрибути:
@@ -20,8 +25,9 @@ class Article(models.Model):
         tags - теги;
         users_like - лайки користувачів;
     """
+    category = models.CharField(max_length=1, choices=CATEGORIES, default='', verbose_name='категорія')
     title = models.CharField(max_length=100)
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="автор")
     text = models.TextField(max_length=15000)
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)

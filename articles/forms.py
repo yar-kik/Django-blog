@@ -21,7 +21,7 @@ class CommentForm(forms.ModelForm):
 class ArticleForm(forms.ModelForm):
     class Meta:
         model = Article
-        fields = ('title', 'text', 'tags')
+        fields = ('title', 'text', 'tags', 'category')
         widgets = {
             'text': CKEditorUploadingWidget()
         }

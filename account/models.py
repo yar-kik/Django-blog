@@ -25,8 +25,6 @@ class Profile(models.Model):
         return f'Profile for user {self.user.username}'
 
 
-# Create your models here.
-
 class Contact(models.Model):
     """Проміжна модель для збережння додаткової інформації (дата і час створення).
     Відтворює форму ManyToManyField. Також можна і надалі використовувати стандартну модель
