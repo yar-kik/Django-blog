@@ -11,7 +11,7 @@
         <div class="comment-head">
             <a href="{{ comment.name.get_absolute_url }}">
                 <div class="user-info">
-                    {% thumbnail comment.name.profile.photo "50x50" crop="100%" as im %}
+                    {% thumbnail comment.name.profile.photo "50x50" crop="center" as im %}
                         <img src="{{ im.url }}">
                     {% endthumbnail %}
                 </div>
@@ -40,5 +40,5 @@
         </div>
     </div>
 {% empty %}
-<p>Поки що немає жодного коментарю. Будь першим!)</p>
+<p style="grid-column: 1/24">Поки що немає жодного коментарю. Будь першим!)</p>
 {% endfor %}
