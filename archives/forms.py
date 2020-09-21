@@ -1,4 +1,6 @@
+from dal import autocomplete
 from django import forms
+from django.urls import reverse_lazy
 
 from archives.models import Film, Anime, Game
 
@@ -12,8 +14,12 @@ class FilmForm(forms.ModelForm):
             'genres': 'Жанри',
         }
         widgets = {
-            'release_date': forms.NumberInput(attrs={'min_value': 1900, 'max_value': 2025})
+            'tags': autocomplete.TaggitSelect2('archives:tag_autocomplete'),
+            'genres': autocomplete.TaggitSelect2('archives:genre_autocomplete')
         }
+        # widgets = {
+        #     'release_date': forms.NumberInput(attrs={'min_value': 1900, 'max_value': 2025})
+        # }
 
 
 class AnimeForm(forms.ModelForm):
