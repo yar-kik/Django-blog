@@ -26,14 +26,13 @@ class Article(models.Model):
         users_like - лайки користувачів;
     """
     category = models.CharField(max_length=1, choices=CATEGORIES, default='', verbose_name='категорія')
-    title = models.CharField(max_length=100)
+    title = models.CharField(max_length=100, verbose_name='назва статті')
     author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="автор")
-    text = models.TextField(max_length=15000)
-    date_created = models.DateTimeField(auto_now_add=True)
-    date_updated = models.DateTimeField(auto_now=True)
+    text = models.TextField(max_length=15000, verbose_name='текст')
+    date_created = models.DateTimeField(auto_now_add=True, verbose_name='дата створення')
+    date_updated = models.DateTimeField(auto_now=True, verbose_name='дата редагування')
     slug = models.SlugField(max_length=100)
     objects = models.Manager
-    tags = TaggableManager(through=TaggedWhatever)
     users_like = models.ManyToManyField(User, related_name='articles_liked', blank=True)
     users_bookmark = models.ManyToManyField(User, related_name='articles_bookmarked', blank=True)
 

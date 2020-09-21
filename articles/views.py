@@ -53,7 +53,7 @@ class ArticlesList(ListView):
 
     def get_queryset(self):
         """Отримання набору даних з можливістю відсортувати дані за тегами"""
-        queryset = super().get_queryset().prefetch_related('tags').select_related('author').\
+        queryset = super().get_queryset().select_related('author').\
             annotate(total_comments=Count('comments'),
                      total_likes=Count('users_like'))
         if self.kwargs:
@@ -83,13 +83,13 @@ def article_detail(request, slug):
     """Формуванння списку схожих статей"""
 
     """Отримання списку id тегів даної статті"""
-    article_tags_ids = article.tags.values_list('id', flat=True)
+    # article_tags_ids = article.tags.values_list('id', flat=True)
     """Всі статті, що містять хоча б один заданий тег (за виключенням поточної статті)"""
-    similar_articles = Article.objects.filter(tags__in=article_tags_ids).exclude(id=article.id)
+    # similar_articles = Article.objects.filter(tags__in=article_tags_ids).exclude(id=article.id)
     """Сортування статей в порядку зменшення кількості схожих тегів та дати."""
-    similar_articles = similar_articles.annotate(same_tags=Count('tags')).order_by('-same_tags', '-date_created')[:4]
+    # similar_articles = similar_articles.annotate(same_tags=Count('tags')).order_by('-same_tags', '-date_created')[:4]
     return render(request, 'articles/post/detail.html', {'article': article,
-                                                         'similar_articles': similar_articles,
+                                                         # 'similar_articles': similar_articles,
                                                          'comments': comments,
                                                          'section': 'articles',
                                                          'comment_form': comment_form,
