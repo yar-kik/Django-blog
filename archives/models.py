@@ -8,15 +8,13 @@ from articles.tagging import TaggedWhatever, TaggedGenres
 YEARS = [(x, x) for x in range(1950, 2026)]
 
 
-class Film(models.Model):
-    title = models.CharField(max_length=150)
-    original_title = models.CharField(max_length=150, blank=True, default='')
-    release_date = models.PositiveSmallIntegerField(verbose_name='Дата виходу', choices=YEARS, default=2020)
-    genres = TaggableManager(through=TaggedGenres)
-    tags = TaggableManager(through=TaggedWhatever)
-    directors = ArrayField(models.CharField(max_length=100), default=list)
-    actors = ArrayField(models.CharField(max_length=100), default=list)
-    description = models.TextField(max_length=10000)
+class InfoBase(models.Model):
+    title = models.CharField(max_length=150, verbose_name='назва')
+    original_title = models.CharField(max_length=150, blank=True, default='', verbose_name='оригінальна назва')
+    release_date = models.PositiveSmallIntegerField(verbose_name='дата виходу', choices=YEARS, default=2020)
+    genres = TaggableManager(through=TaggedGenres, verbose_name='теги')
+    tags = TaggableManager(through=TaggedWhatever, verbose_name='жанри')
+    description = models.TextField(max_length=10000, verbose_name='опис')
 
     def __str__(self):
         return self.title
@@ -25,37 +23,16 @@ class Film(models.Model):
         ordering = ('title',)
 
 
-class Anime(models.Model):
-    title = models.CharField(max_length=150)
-    original_title = models.CharField(max_length=150, blank=True, default='')
-    release_date = models.PositiveSmallIntegerField(verbose_name='Дата виходу', validators=[MinValueValidator(1900),
-                                                                                            MaxValueValidator(2025)])
-    genres = TaggableManager(through=TaggedGenres)
-    tags = TaggableManager(through=TaggedWhatever)
-    studio = models.CharField(max_length=100)
-    description = models.TextField(max_length=10000)
-    episodes = models.PositiveSmallIntegerField()
-
-    def __str__(self):
-        return self.title
-
-    class Meta:
-        ordering = ('title',)
+class Film(InfoBase):
+    directors = ArrayField(models.CharField(max_length=100), default=list, verbose_name='режисер')
+    actors = ArrayField(models.CharField(max_length=100), default=list, verbose_name='актори')
 
 
-class Game(models.Model):
-    title = models.CharField(max_length=150)
-    original_title = models.CharField(max_length=150, blank=True, default='')
-    release_date = models.PositiveSmallIntegerField(verbose_name='Дата виходу', validators=[MinValueValidator(1900),
-                                                                                            MaxValueValidator(2025)])
-    genres = TaggableManager(through=TaggedGenres)
-    tags = TaggableManager(through=TaggedWhatever)
-    developer = models.CharField(max_length=100)
-    description = models.TextField(max_length=10000)
-    platforms = ArrayField(models.CharField(max_length=100), default=list)
+class Anime(InfoBase):
+    studio = models.CharField(max_length=100, verbose_name='студія')
+    episodes = models.PositiveSmallIntegerField(verbose_name='кількість епізодів')
 
-    def __str__(self):
-        return self.title
 
-    class Meta:
-        ordering = ('title',)
+class Game(InfoBase):
+    developer = models.CharField(max_length=100, verbose_name='розробник')
+    platforms = ArrayField(models.CharField(max_length=100), default=list, verbose_name='платформи')

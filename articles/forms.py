@@ -1,5 +1,6 @@
 from ckeditor.widgets import CKEditorWidget
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
+from dal import autocomplete
 from django import forms
 
 from .models import Comment, Article
@@ -21,9 +22,10 @@ class CommentForm(forms.ModelForm):
 class ArticleForm(forms.ModelForm):
     class Meta:
         model = Article
-        fields = ('title', 'text', 'category')
+        fields = ('title', 'text', 'category', 'related_item')
         widgets = {
-            'text': CKEditorUploadingWidget()
+            'text': CKEditorUploadingWidget(),
+            'related_item': autocomplete.ModelSelect2('articles:item_autocomplete')
         }
 
 

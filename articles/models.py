@@ -2,9 +2,7 @@ from django.contrib.auth.models import User
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.urls import reverse
-from taggit.managers import TaggableManager
-
-from articles.tagging import TaggedWhatever
+from archives.models import InfoBase, Film
 
 
 class Article(models.Model):
@@ -15,17 +13,9 @@ class Article(models.Model):
     ]
     """
     Клас для збереження статей.
-    Атрибути:
-        title - назва статті;
-        author - модель користувача-автора статті;
-        text - текст статті;
-        date_created - дата створення;
-        date_updated - дата редагування;
-        slug - слаг;
-        tags - теги;
-        users_like - лайки користувачів;
     """
     category = models.CharField(max_length=1, choices=CATEGORIES, default='', verbose_name='категорія')
+    related_item = models.ForeignKey(InfoBase, on_delete=models.CASCADE, null=True)
     title = models.CharField(max_length=100, verbose_name='назва статті')
     author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="автор")
     text = models.TextField(max_length=15000, verbose_name='текст')

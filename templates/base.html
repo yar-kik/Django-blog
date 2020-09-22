@@ -74,8 +74,8 @@
     <div id="sidebar">
         <h2><a href="{% url 'articles:all_articles' %}">My blog</a></h2>
 
-        <h3>Latest posts</h3>
-        {% show_latest_articles 3 %}
+{#        <h3>Latest posts</h3>#}
+{#        {% show_latest_articles 3 %}#}
 
         <h3>Most commented posts</h3>
         {% get_most_commented_articles 3 as most_commented_articles %}
