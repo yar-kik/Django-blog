@@ -107,8 +107,7 @@ def comments_list(request, slug):
         comments = paginator.page(1)
     except EmptyPage:
         return HttpResponse('')
-    return render(request, 'articles/comment/partial_comments_all.html', {'comments': comments,
-                                                                          'comments_count': total_comments})
+    return render(request, 'articles/comment/partial_comments_all.html', {'comments': comments})
 
 
 def save_comment(request, template, form, **kwargs):
