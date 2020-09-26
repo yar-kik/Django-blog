@@ -4,9 +4,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.core.mail import send_mail
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
-from django.core.paginator import EmptyPage, PageNotAnInteger
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.views.decorators.cache import cache_page
@@ -18,6 +18,8 @@ from uuslug import slugify
 # from actions.utils import create_action
 from .forms import EmailPostForm, CommentForm, ArticleForm, SearchForm
 from .models import Article, Comment
+from .selectors import get_article, get_comments, get_parent_comment
+from .services import create_comment_form, create_reply_form
 from .tagging import CustomTag
 
 r = redis.StrictRedis(host=settings.REDIS_HOST,
@@ -71,15 +73,11 @@ class ArticlesList(ListView):
 
 # @cache_page(60 * 15)
 def article_detail(request, slug):
-    article = Article.objects.filter(slug=slug).\
-        select_related('author').only('title', 'text', 'slug', 'author__username',
-                                      'author__is_staff', 'date_created', ).get()
-    """Список активних коментарів цієї статті"""
-    comments = article.comments.order_by('path').\
-        select_related('name', 'name__profile').only('article', 'body', 'name', 'created', 'updated',
-                                                     'name__profile__photo', 'name__username', 'path')
+    article = get_article(slug=slug)
+    comments = get_comments(article)
     comment_form = CommentForm()
     total_views = r.incr(f'article:{article.id}:views')
+
     """Формуванння списку схожих статей"""
 
     """Отримання списку id тегів даної статті"""
@@ -96,7 +94,32 @@ def article_detail(request, slug):
                                                          'total_views': total_views})
 
 
-def save_comment(request, template, form):
+# @login_required
+# def comments_list(request):
+#     """"""
+#     comments = get_comments()
+#     paginator = Paginator(comments, 8)
+#     page = request.GET.get('page')
+#     try:
+#         images = paginator.page(page)
+#     except PageNotAnInteger:
+#         # Если переданная страница не является числом, возвращаем первую.
+#         images = paginator.page(1)
+#     except EmptyPage:
+#         if request.is_ajax():
+#             # Если получили AJAX-запрос с номером страницы, большим, чем их количество,
+#             # возвращаем пустую страницу.
+#             return HttpResponse('')
+#         # Если номер страницы больше, чем их количество, возвращаем последнюю.
+#         images = paginator.page(paginator.num_pages)
+#     if request.is_ajax():
+#         return render(request, 'images/image/list_ajax.html',
+#                       {'section': 'images', 'images': images})
+#     return render(request, 'images/image/list.html',
+#                   {'section': 'images', 'images': images})
+
+
+def save_comment(request, template, form, **kwargs):
     """Функція збереження коментарю (при створенні, зміні чи видаленні) через AJAX.
     Data містить значення про валідність коментарю, його форма (при видаленні чи редагуванні),
     шаблон із усіма коментарями даної статті"""
@@ -106,30 +129,27 @@ def save_comment(request, template, form):
         if form.is_valid():
             form.save()
             data['form_is_valid'] = True
-            comments = article.comments.order_by('path').\
-                select_related('name', 'name__profile').only('article', 'body', 'name', 'created', 'updated',
-                                                             'name__profile__photo', 'name__username', 'path')
+            comments = get_comments(article)
             data['html_comments_all'] = render_to_string('articles/comment/partial_comments_all.html',
                                                          {'comments': comments})
         else:
             data['form_is_valid'] = False
-    context = {'form': form}
-    data['html_form'] = render_to_string(template, context, request=request)
+    else:
+        context = {'form': form}
+        data['html_form'] = render_to_string(template, context, request=request)
+        if kwargs:
+            context['comment_id'] = kwargs['comment_id']
+            data['action'] = kwargs['action']
     return JsonResponse(data)
 
 
 def reply_comment(request, comment_id):
-    parent_comment = Comment.objects.only('id', 'article', 'name').get(id=comment_id)
+    parent_comment = get_parent_comment(comment_id)
     data = dict()
     if request.method == 'POST':
         comment_form = CommentForm(data=request.POST)
-        if comment_form.is_valid():
-            new_comment = comment_form.save(commit=False)
-            new_comment.article = parent_comment.article
-            new_comment.name = request.user
-            new_comment.path.extend(parent_comment.path)
-            new_comment.reply_to = parent_comment.name
-            return save_comment(request, 'articles/comment/partial_comments_all.html', comment_form)
+        create_reply_form(request, comment_form, parent_comment)
+        return save_comment(request, 'articles/comment/partial_comments_all.html', comment_form)
     else:
         comment_form = CommentForm()
         context = {'form': comment_form, 'comment_id': comment_id}
@@ -140,13 +160,9 @@ def reply_comment(request, comment_id):
 
 def create_comment(request, article_id):
     """Створення коментарю із закріпленням до статті та користувача-автора"""
-    article = Article.objects.only('id').get(id=article_id)
     if request.method == 'POST':
         comment_form = CommentForm(data=request.POST)
-        if comment_form.is_valid():
-            new_comment = comment_form.save(commit=False)
-            new_comment.article = article
-            new_comment.name = request.user
+        create_comment_form(request, comment_form, article_id)
     else:
         comment_form = CommentForm()
     return save_comment(request, 'articles/comment/partial_comments_all.html', comment_form)
@@ -165,9 +181,8 @@ def edit_comment(request, comment_id):
 def delete_comment(request, comment_id):
     """Видалення коментарю, отриманого через його id."""
     comment = get_object_or_404(Comment, id=comment_id)
-    comments = comment.article.comments.order_by('path').\
-        select_related('name', 'name__profile').only('article', 'body', 'name', 'created', 'updated',
-                                                     'name__profile__photo', 'name__username', 'path')
+    article = comment.article
+    comments = get_comments(article)
     data = dict()
     if request.method == 'POST':
         comment.delete()
@@ -241,7 +256,7 @@ def article_like(request):
     action = request.POST.get('action')
     if article_id and action:
         try:
-            article = Article.objects.get(id=article_id)
+            article = get_object_or_404(Article, id=article_id)
             if action == 'like':
                 article.users_like.add(request.user)
                 # create_action(request.user, 'likes', article)
