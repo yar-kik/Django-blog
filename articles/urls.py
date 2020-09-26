@@ -17,6 +17,7 @@ urlpatterns = [
     path('<int:comment_id>/delete_comment/', views.delete_comment, name='delete_comment'),
     path('<int:comment_id>/reply_comment/', views.reply_comment, name='reply_comment'),
     path('<int:article_id>/create_comment/', views.create_comment, name='create_comment'),
+    path('<slug:slug>/all_comments/', views.comments_list, name='all_comments'),
     path('<slug:slug>/update_article/', views.UpdateArticle.as_view(),
          name='update_article'),
     path('<slug:slug>/delete_article/', views.DeleteArticle.as_view(),

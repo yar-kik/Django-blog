@@ -74,7 +74,7 @@ class ArticlesList(ListView):
 # @cache_page(60 * 15)
 def article_detail(request, slug):
     article = get_article(slug=slug)
-    comments = get_comments(article)
+    # comments = get_comments(article)
     comment_form = CommentForm()
     total_views = r.incr(f'article:{article.id}:views')
 
@@ -88,35 +88,27 @@ def article_detail(request, slug):
     # similar_articles = similar_articles.annotate(same_tags=Count('tags')).order_by('-same_tags', '-date_created')[:4]
     return render(request, 'articles/post/detail.html', {'article': article,
                                                          # 'similar_articles': similar_articles,
-                                                         'comments': comments,
+                                                         # 'comments': comments,
                                                          'section': 'articles',
                                                          'comment_form': comment_form,
                                                          'total_views': total_views})
 
 
 # @login_required
-# def comments_list(request):
-#     """"""
-#     comments = get_comments()
-#     paginator = Paginator(comments, 8)
-#     page = request.GET.get('page')
-#     try:
-#         images = paginator.page(page)
-#     except PageNotAnInteger:
-#         # Если переданная страница не является числом, возвращаем первую.
-#         images = paginator.page(1)
-#     except EmptyPage:
-#         if request.is_ajax():
-#             # Если получили AJAX-запрос с номером страницы, большим, чем их количество,
-#             # возвращаем пустую страницу.
-#             return HttpResponse('')
-#         # Если номер страницы больше, чем их количество, возвращаем последнюю.
-#         images = paginator.page(paginator.num_pages)
-#     if request.is_ajax():
-#         return render(request, 'images/image/list_ajax.html',
-#                       {'section': 'images', 'images': images})
-#     return render(request, 'images/image/list.html',
-#                   {'section': 'images', 'images': images})
+def comments_list(request, slug):
+    """"""
+    article = get_article(slug)
+    comments = get_comments(article)
+    paginator = Paginator(comments, 8)
+    page = request.GET.get('page')
+    try:
+        comments = paginator.page(page)
+    except PageNotAnInteger:
+        comments = paginator.page(1)
+    except EmptyPage:
+        return HttpResponse('')
+    return render(request, 'articles/comment/partial_comments_all.html', {'comments': comments,
+                                                                          'comments_count': total_comments})
 
 
 def save_comment(request, template, form, **kwargs):

@@ -84,6 +84,10 @@
         {% endif %}
     </div>
 
+    {% with comments.count as total_comments %}
+        <h2>Коментарів {{ total_comments }}</h2>
+    {% endwith %}
+
     <div class="all-comments" style="display: grid; grid-template-columns: repeat(24, 1fr);">
         {% include 'articles/comment/partial_comments_all.html' %}
     </div>
@@ -186,39 +190,45 @@
         );
     });
 
-    var page = 1;
+
+{#    $(window).scroll(function() {#}
+{#        var margin = $(document).height() - $(window).height() - 200;#}
+{#        if ($(window).scrollTop() > margin && empty_page == false &&#}
+{#            block_request == false) {#}
+{#                block_request = true;#}
+{#                page += 1;#}
+{#                $.get('?page=' + page, function(data) {#}
+{#                    if(data == '') {empty_page = true;}#}
+{#                    else {#}
+{#                        block_request = false;#}
+{#                        $('#image-list').append(data);#}
+{#                    }#}
+{#                });#}
+{#            }#}
+{#    });#}
+
+    var page = 0;
     var empty_page = false;
     var block_request = false;
 
-{#    $(window).scroll(function() {#}
-{#        var margin = $(document).height() - $(window).height() - 200;#}
-{#        if ($(window).scrollTop() > margin && empty_page == false &&#}
-{#            block_request == false) {#}
-{#                block_request = true;#}
-{#                page += 1;#}
-{#                $.get('?page=' + page, function(data) {#}
-{#                    if(data == '') {empty_page = true;}#}
-{#                    else {#}
-{#                        block_request = false;#}
-{#                        $('#image-list').append(data);#}
-{#                    }#}
-{#                });#}
-{#            }#}
-{#    });#}
-
-{#    $(window).scroll(function() {#}
-{#        var margin = $(document).height() - $(window).height() - 200;#}
-{#        if ($(window).scrollTop() > margin && empty_page == false &&#}
-{#            block_request == false) {#}
-{#                block_request = true;#}
-{#                page += 1;#}
-{#                $.get('?page=' + page, function(data) {#}
-{#                    if(data == '') {empty_page = true;}#}
-{#                    else {#}
-{#                        block_request = false;#}
-{#                        $('#image-list').append(data);#}
-{#                    }#}
-{#                });#}
-{#            }#}
-{#    });#}
+    $(window).scroll(function() {
+        var margin = $(document).height() - $(window).height() - 200;
+        if ($(window).scrollTop() > margin && empty_page == false &&
+            block_request == false) {
+                block_request = true;
+                page += 1;
+                $.get(
+                    '{% url "articles:all_comments" article.slug %}?page=' + page,
+                    function(data) {
+                        if(data == '') {
+                            console.log('end comment');
+                            empty_page = true;
+                        } else {
+                            console.log(page);
+                            block_request = false;
+                            $('.all-comments').append(data);
+                        }
+                    });
+            }
+    });
 {% endblock %}
