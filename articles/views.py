@@ -136,26 +136,23 @@ def save_comment(request, template, form, **kwargs):
             data['form_is_valid'] = False
     else:
         context = {'form': form}
-        data['html_form'] = render_to_string(template, context, request=request)
         if kwargs:
             context['comment_id'] = kwargs['comment_id']
             data['action'] = kwargs['action']
+        data['html_form'] = render_to_string(template, context, request=request)
     return JsonResponse(data)
 
 
 def reply_comment(request, comment_id):
     parent_comment = get_parent_comment(comment_id)
-    data = dict()
     if request.method == 'POST':
         comment_form = CommentForm(data=request.POST)
         create_reply_form(request, comment_form, parent_comment)
-        return save_comment(request, 'articles/comment/partial_comments_all.html', comment_form)
     else:
         comment_form = CommentForm()
-        context = {'form': comment_form, 'comment_id': comment_id}
-        data['action'] = 'reply'
-        data['html_form'] = render_to_string('articles/comment/partial_comment_create.html', context, request=request)
-        return JsonResponse(data)
+    return save_comment(request, 'articles/comment/partial_comment_create.html', comment_form,
+                        action='reply',
+                        comment_id=comment_id)
 
 
 def create_comment(request, article_id):
