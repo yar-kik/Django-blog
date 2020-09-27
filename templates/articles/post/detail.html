@@ -207,25 +207,23 @@
 {#            }#}
 {#    });#}
 
-    var page = 0;
+    var page = 1;
     var empty_page = false;
     var block_request = false;
 
     $(window).scroll(function() {
-        var margin = $(document).height() - $(window).height() - 200;
+        var margin = $(document).height() - $(window).height() - 2000;
         if ($(window).scrollTop() > margin && empty_page == false &&
             block_request == false) {
                 block_request = true;
-                page += 1;
                 $.get(
-                    '{% url "articles:all_comments" article.slug %}?page=' + page,
+                    '{% url "articles:all_comments" article.id %}?page=' + page,
                     function(data) {
                         if(data == '') {
-                            console.log('end comment');
                             empty_page = true;
                         } else {
-                            console.log(page);
                             block_request = false;
+                            page += 1;
                             $('.all-comments').append(data);
                         }
                     });

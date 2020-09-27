@@ -35,6 +35,6 @@
             <button data-action="reply" data-url="{% url 'articles:reply_comment' comment_id=comment.id %}" class="reply">Відповісти</button>
         </div>
     </div>
-{% empty %}
-    <p style="grid-column: 1/24">Поки що немає жодного коментарю. Будь першим!)</p>
+{#{% empty %}#}
+{#    <p style="grid-column: 1/24">Поки що немає жодного коментарю. Будь першим!)</p>#}
 {% endfor %}

@@ -18,7 +18,7 @@ from uuslug import slugify
 # from actions.utils import create_action
 from .forms import EmailPostForm, CommentForm, ArticleForm, SearchForm
 from .models import Article, Comment
-from .selectors import get_article, get_comments, get_parent_comment
+from .selectors import get_article, get_comments_by_instance, get_parent_comment, get_comments_by_id
 from .services import create_comment_form, create_reply_form
 from .tagging import CustomTag
 
@@ -95,11 +95,11 @@ def article_detail(request, slug):
 
 
 # @login_required
-def comments_list(request, slug):
+def comments_list(request, article_id):
     """"""
-    article = get_article(slug)
-    comments = get_comments(article)
-    paginator = Paginator(comments, 8)
+    comments = get_comments_by_id(article_id)
+    total_comments = len(comments)
+    paginator = Paginator(comments, 16)
     page = request.GET.get('page')
     try:
         comments = paginator.page(page)
@@ -107,7 +107,8 @@ def comments_list(request, slug):
         comments = paginator.page(1)
     except EmptyPage:
         return HttpResponse('')
-    return render(request, 'articles/comment/partial_comments_all.html', {'comments': comments})
+    return render(request, 'articles/comment/partial_comments_all.html', {'comments': comments,
+                                                                          'total_comments': total_comments})
 
 
 def save_comment(request, template, form, **kwargs):
@@ -120,7 +121,7 @@ def save_comment(request, template, form, **kwargs):
         if form.is_valid():
             form.save()
             data['form_is_valid'] = True
-            comments = get_comments(article)
+            comments = get_comments_by_instance(article)
             data['html_comments_all'] = render_to_string('articles/comment/partial_comments_all.html',
                                                          {'comments': comments})
         else:
@@ -170,7 +171,7 @@ def delete_comment(request, comment_id):
     """Видалення коментарю, отриманого через його id."""
     comment = get_object_or_404(Comment, id=comment_id)
     article = comment.article
-    comments = get_comments(article)
+    comments = get_comments_by_instance(article)
     data = dict()
     if request.method == 'POST':
         comment.delete()
