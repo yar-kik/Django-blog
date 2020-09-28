@@ -91,9 +91,7 @@
     <div class="all-comments" style="display: grid; grid-template-columns: repeat(24, 1fr);">
         {% include 'articles/comment/partial_comments_all.html' %}
     </div>
-    {% if not total_comments %}
-        <p id="empty">Поки що немає жодного коментарю. Будь першим!)</p>
-    {% endif %}
+    <p id="empty" {% if total_comments %}style="display: none"{% endif %}>Поки що немає жодного коментарю. Будь першим!)</p>
 {% endblock %}
 
 {% block domready %}

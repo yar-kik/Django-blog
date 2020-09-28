@@ -100,7 +100,6 @@ def article_detail(request, slug):
 def comments_list(request, article_id):
     """"""
     comments = get_comments_by_id(article_id)
-    total_comments = len(comments)
     paginator = Paginator(comments, 16)
     page = request.GET.get('page')
     try:
@@ -109,8 +108,7 @@ def comments_list(request, article_id):
         comments = paginator.page(1)
     except EmptyPage:
         return HttpResponse('')
-    return render(request, 'articles/comment/partial_comments_all.html', {'comments': comments,
-                                                                          'total_comments': total_comments})
+    return render(request, 'articles/comment/partial_comments_all.html', {'comments': comments})
 
 
 def save_comment(request, template, form, **kwargs):
