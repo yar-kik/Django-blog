@@ -34,7 +34,7 @@
 
     {% with total_likes=article.users_like.count users_like=article.users_like.all users_bookmark=article.users_bookmark.all %}
         <button data-id="{{ article.id }}" data-action="{% if request.user in users_like %}un{% endif %}like"
-        id="like">
+                data-url="{% url "articles:like" %}" id="like">
             {% if request.user not in users_like %}
                 Вподобайка
             {% else %}
@@ -43,7 +43,7 @@
         </button>
 
         <button data-id="{{ article.id }}" data-action="{% if request.user in users_bookmark %}un{% endif %}bookmark"
-        id="bookmark">
+                data-url="{% url "articles:bookmark_article" %}" id="bookmark">
             {% if request.user not in users_bookmark %}
                 Додати в закладки
             {% else %}
@@ -84,19 +84,22 @@
         {% endif %}
     </div>
 
-    {% with comments.count as total_comments %}
-        <h2>Коментарів {{ total_comments }}</h2>
-    {% endwith %}
+{#    {% with comments.count as total_comments %}#}
+        <h2 class="count">Коментарів <span id="total-comments">{{ total_comments }}</span></h2>
+{#    {% endwith %}#}
 
     <div class="all-comments" style="display: grid; grid-template-columns: repeat(24, 1fr);">
         {% include 'articles/comment/partial_comments_all.html' %}
     </div>
+    {% if not total_comments %}
+        <p id="empty">Поки що немає жодного коментарю. Будь першим!)</p>
+    {% endif %}
 {% endblock %}
 
 {% block domready %}
     $('#like').click(function(e) {
         e.preventDefault();
-        $.post('{% url "articles:like" %}',
+        $.post($(this).data('url'),
             {
                 id: $(this).data('id'),
                 action: $(this).data('action')
@@ -141,8 +144,9 @@
     }
 
     var saveForm = function () {
-        var form = $(this)
-        var text = form.parent()
+        var form = $(this);
+        var text = form.parent();
+        var total_comments = +($("#total-comments").text());
         $.ajax({
             url: form.attr("action"),
             data: form.serialize(),
@@ -150,6 +154,17 @@
             dataType: 'json',
             success: function (data) {
                 if (data.form_is_valid) {
+                    if (form.attr("class") == "delete-form") {
+                        $('#total-comments').text(total_comments - 1);
+                        if (total_comments-1 == 0) {
+                            $("#empty").show();
+                        }
+                    }
+                    else if (form.attr("class") == "reply-form" ||
+                             form.attr("class") == "new-comment-form") {
+                        $('#total-comments').text(total_comments + 1);
+                        $("#empty").hide();
+                    }
                     $(".all-comments").html(data.html_comments_all);
                     $(form.find('textarea')).val('');
                 }
@@ -174,7 +189,7 @@
 
     $('#bookmark').click(function(e) {
         e.preventDefault();
-        $.post('{% url "articles:bookmark_article" %}',
+        $.post($(this).data('url'),
             {
                 id: $(this).data('id'),
                 action: $(this).data('action')
@@ -189,23 +204,6 @@
                 }
         );
     });
-
-
-{#    $(window).scroll(function() {#}
-{#        var margin = $(document).height() - $(window).height() - 200;#}
-{#        if ($(window).scrollTop() > margin && empty_page == false &&#}
-{#            block_request == false) {#}
-{#                block_request = true;#}
-{#                page += 1;#}
-{#                $.get('?page=' + page, function(data) {#}
-{#                    if(data == '') {empty_page = true;}#}
-{#                    else {#}
-{#                        block_request = false;#}
-{#                        $('#image-list').append(data);#}
-{#                    }#}
-{#                });#}
-{#            }#}
-{#    });#}
 
     var page = 1;
     var empty_page = false;

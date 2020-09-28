@@ -29,3 +29,8 @@ def get_article(slug: str) -> Article:
 def get_parent_comment(comment_id: int) -> Comment:
     parent_comment = Comment.objects.only('id', 'article', 'name').get(id=comment_id)
     return parent_comment
+
+
+def get_total_comments(article_id: int) -> int:
+    total_comments = Comment.objects.filter(article_id=article_id).count()
+    return total_comments

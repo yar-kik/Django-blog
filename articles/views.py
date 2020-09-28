@@ -18,7 +18,7 @@ from uuslug import slugify
 # from actions.utils import create_action
 from .forms import EmailPostForm, CommentForm, ArticleForm, SearchForm
 from .models import Article, Comment
-from .selectors import get_article, get_comments_by_instance, get_parent_comment, get_comments_by_id
+from .selectors import get_article, get_comments_by_instance, get_parent_comment, get_comments_by_id, get_total_comments
 from .services import create_comment_form, create_reply_form
 from .tagging import CustomTag
 
@@ -75,6 +75,7 @@ class ArticlesList(ListView):
 def article_detail(request, slug):
     article = get_article(slug=slug)
     # comments = get_comments(article)
+    total_comments = get_total_comments(article.id)
     comment_form = CommentForm()
     total_views = r.incr(f'article:{article.id}:views')
 
@@ -89,6 +90,7 @@ def article_detail(request, slug):
     return render(request, 'articles/post/detail.html', {'article': article,
                                                          # 'similar_articles': similar_articles,
                                                          # 'comments': comments,
+                                                         'total_comments': total_comments,
                                                          'section': 'articles',
                                                          'comment_form': comment_form,
                                                          'total_views': total_views})

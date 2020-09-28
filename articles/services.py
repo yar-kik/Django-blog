@@ -19,3 +19,4 @@ def create_comment_form(request, comment_form: CommentForm, article_id: int) -> 
         new_comment.name = request.user
         return new_comment
 
+
