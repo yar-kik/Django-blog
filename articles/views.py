@@ -55,7 +55,7 @@ class ArticlesList(ListView):
 
     def get_queryset(self):
         """Отримання набору даних з можливістю відсортувати дані за тегами"""
-        queryset = super().get_queryset().select_related('author').\
+        queryset = super().get_queryset().filter(status='publish').select_related('author').\
             annotate(total_comments=Count('comments'),
                      total_likes=Count('users_like'))
         if self.kwargs:
@@ -70,6 +70,18 @@ class ArticlesList(ListView):
             context['tag'] = get_object_or_404(CustomTag, slug=self.kwargs['tag_slug'])
         return context
 
+
+class ArticleModerationList(ArticlesList):
+
+    def get_queryset(self):
+        """Отримання набору даних з можливістю відсортувати дані за тегами"""
+        queryset = super().get_queryset().filter(status='moderation').select_related('author').\
+            annotate(total_comments=Count('comments'),
+                     total_likes=Count('users_like'))
+        if self.kwargs:
+            return queryset.filter(tags__slug__in=[self.kwargs['tag_slug']])
+        else:
+            return queryset
 
 # @cache_page(60 * 15)
 def article_detail(request, slug):
@@ -212,12 +224,19 @@ def post_share(request, article_id):
 class CreateArticle(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
     """Клас створення статті (необхідний відповідний дозвіл)"""
     form_class = ArticleForm
+    model = Article
     template_name = 'articles/post/create_article.html'
     permission_required = 'articles.add_article'
 
     def form_valid(self, form):
         form.instance.author = self.request.user
         form.instance.slug = slugify(form.instance.title)
+        if 'draft' in self.request.POST:
+            form.instance.status = 'draft'
+        elif 'moderation' in self.request.POST:
+            form.instance.status = 'moderation'
+        else:
+            form.instance.status = 'publish'
         return super().form_valid(form)
 
 

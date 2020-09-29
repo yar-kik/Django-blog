@@ -7,15 +7,20 @@ from archives.models import InfoBase, Film
 
 class Article(models.Model):
     CATEGORIES = [
-        ('F', "Фільми"),
-        ('G', "Ігри"),
-        ('A', 'Аніме')
+        ('film', "Фільми"),
+        ('game', "Ігри"),
+        ('anime', 'Аніме')
+    ]
+    STATUS_CHOICES = [
+        ('draft', 'Чернетка'),
+        ('moderation', 'На модерації'),
+        ('publish', 'Опублікований')
     ]
     """
     Клас для збереження статей.
     """
-    category = models.CharField(max_length=1, choices=CATEGORIES, default='', verbose_name='категорія')
-    related_item = models.ForeignKey(InfoBase, on_delete=models.CASCADE, null=True)
+    category = models.CharField(max_length=16, choices=CATEGORIES, default='', verbose_name='категорія')
+    related_item = models.ForeignKey(InfoBase, on_delete=models.CASCADE, null=True, blank=True)
     title = models.CharField(max_length=100, verbose_name='назва статті')
     author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="автор")
     text = models.TextField(max_length=15000, verbose_name='текст')
@@ -25,6 +30,7 @@ class Article(models.Model):
     objects = models.Manager
     users_like = models.ManyToManyField(User, related_name='articles_liked', blank=True)
     users_bookmark = models.ManyToManyField(User, related_name='articles_bookmarked', blank=True)
+    status = models.CharField(max_length=16, choices=STATUS_CHOICES, default='draft', verbose_name='статус')
 
     class Meta:
         ordering = ('-date_created',)

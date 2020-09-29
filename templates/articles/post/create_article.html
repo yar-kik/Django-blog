@@ -1,12 +1,19 @@
 {% extends "../../base.html" %}
 {% load static %}
 
-{% block title %}Create new article{% endblock %}
+{% block title %}Створити нову статтю{% endblock %}
 
 {% block content %}
-    <form method="post">{% csrf_token %}
+    <form method="post">
+        {% csrf_token %}
         {{ form.as_p }}
-        <input type="submit" value="Save">
+        {% if user.is_staff %}
+            <input type="submit" value="Додати в чернетки" name="draft">
+            <input type="submit" value="Опублікувати" name="publish">
+        {% else %}
+            <input type="submit" value="Додати в чернетки" name="draft">
+            <input type="submit" value="Відправити на модерацію" name="moderation">
+        {% endif %}
     </form>
 {% endblock %}
 
