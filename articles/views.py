@@ -11,9 +11,7 @@ from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.views.decorators.cache import cache_page
 from django.views.decorators.http import require_POST
-from django.views.generic import CreateView, UpdateView, DeleteView, ListView
-from django.db.models import Count, QuerySet
-from django.views.generic.base import View
+from django.views.generic import CreateView, UpdateView, DeleteView
 from django.views.generic.edit import ModelFormMixin
 from uuslug import slugify
 
@@ -21,7 +19,7 @@ from uuslug import slugify
 from .forms import EmailPostForm, CommentForm, ArticleForm, SearchForm
 from .models import Article, Comment
 from .selectors import get_article, get_comments_by_instance, get_parent_comment, get_comments_by_id, \
-    get_total_comments, get_all_articles, get_moderation_articles, get_published_articles, get_draft_articles
+    get_total_comments, get_moderation_articles, get_published_articles, get_draft_articles
 from .services import create_comment_form, create_reply_form
 from .tagging import CustomTag
 
