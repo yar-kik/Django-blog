@@ -33,13 +33,18 @@ def get_all_articles() -> Article:
     return articles
 
 
-def get_published_articles():
+def get_published_articles() -> Article:
     articles = get_all_articles().filter(status__in=['publish'])
     return articles
 
 
-def get_moderation_articles():
+def get_moderation_articles() -> Article:
     articles = get_all_articles().filter(status__in=['moderation'])
+    return articles
+
+
+def get_draft_articles(request) -> Article:
+    articles = get_all_articles().filter(status__in=['draft'], author=request.user)
     return articles
 
 

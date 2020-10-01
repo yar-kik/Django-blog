@@ -7,9 +7,9 @@ from .feeds import LatestArticlesFeed
 
 app_name = 'articles'
 urlpatterns = [
-    # path('', views.ArticlesList.as_view(), name='all_articles'),
-    path('', views.articles_list, name='all_articles'),
+    path('', views.publish_list, name='all_articles'),
     path('moderation_list/', views.moderation_list, name='moderation_list'),
+    path('draft_list/', views.draft_list, name='draft_list'),
     path('like/', views.article_like, name='like'),
     path('create_article/', views.CreateArticle.as_view(), name='create_article'),
     path('search/', views.article_search, name='article_search'),
@@ -26,7 +26,7 @@ urlpatterns = [
          name='delete_article'),
     path('<slug:slug>/', views.article_detail, name='article_detail'),
     path('<int:article_id>/share/', views.post_share, name='post_share'),
-    path('tag/<slug:tag_slug>/', views.ArticlesList.as_view(), name='all_articles_by_tag'),
+    # path('tag/<slug:tag_slug>/', views.ArticlesList.as_view(), name='all_articles_by_tag'),
     path('feed/', LatestArticlesFeed(), name='article_feed'),
 ]
 

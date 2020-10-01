@@ -19,7 +19,7 @@ from uuslug import slugify
 from .forms import EmailPostForm, CommentForm, ArticleForm, SearchForm
 from .models import Article, Comment
 from .selectors import get_article, get_comments_by_instance, get_parent_comment, get_comments_by_id, \
-    get_total_comments, get_all_articles, get_moderation_articles, get_published_articles
+    get_total_comments, get_all_articles, get_moderation_articles, get_published_articles, get_draft_articles
 from .services import create_comment_form, create_reply_form
 from .tagging import CustomTag
 
@@ -32,48 +32,7 @@ def articles_redirect(request):
     return redirect('articles:all_articles', permanent=True)
 
 
-class ArticlesList(ListView):
-    """Клас списку коментарів із пагінацією"""
-    model = Article
-    template_name = 'articles/post/list.html'
-    context_object_name = 'articles'
-    extra_context = {'section': 'articles'}
-    paginate_by = 3
-
-    def paginate_queryset(self, queryset, page_size):
-        """Функція пагінації набору даних з обробкою виключень GET-запитів"""
-        paginator = self.get_paginator(queryset, page_size)
-        page_kwargs = self.page_kwarg
-        page = self.kwargs.get(page_kwargs) or self.request.GET.get('page')
-        try:
-            page = paginator.page(page)
-        except PageNotAnInteger:
-            page = paginator.page(1)
-        except EmptyPage:
-            page = paginator.page(paginator.num_pages)
-        finally:
-            return paginator, page, page.object_list, page.has_other_pages()
-
-    def get_queryset(self):
-        """Отримання набору даних з можливістю відсортувати дані за тегами"""
-        queryset = super().get_queryset().filter(status='publish').select_related('author').\
-            annotate(total_comments=Count('comments'),
-                     total_likes=Count('users_like'))
-        if self.kwargs:
-            return queryset.filter(tags__slug__in=[self.kwargs['tag_slug']])
-        else:
-            return queryset
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        """Введення в контекст шаблону тегів"""
-        context = super().get_context_data(**kwargs)
-        if self.kwargs:
-            context['tag'] = get_object_or_404(CustomTag, slug=self.kwargs['tag_slug'])
-        return context
-
-
-def articles_list(request):
-    object_list = get_published_articles()
+def articles_list(request, object_list):
     paginator = Paginator(object_list, 3)
     page = request.GET.get('page')
     try:
@@ -82,6 +41,12 @@ def articles_list(request):
         articles = paginator.page(1)
     except EmptyPage:
         articles = paginator.page(paginator.num_pages)
+    return page, articles
+
+
+def publish_list(request):
+    object_list = get_published_articles()
+    page, articles = articles_list(request, object_list)
     return render(request, 'articles/post/list.html', {'section': 'articles',
                                                        'page': page,
                                                        'articles': articles})
@@ -89,31 +54,18 @@ def articles_list(request):
 
 def moderation_list(request):
     object_list = get_moderation_articles()
-    paginator = Paginator(object_list, 3)
-    page = request.GET.get('page')
-    try:
-        articles = paginator.page(page)
-    except PageNotAnInteger:
-        articles = paginator.page(1)
-    except EmptyPage:
-        articles = paginator.page(paginator.num_pages)
+    page, articles = articles_list(request, object_list)
     return render(request, 'articles/post/list.html', {'section': 'articles',
                                                        'page': page,
                                                        'articles': articles})
 
 
-class ArticleModerationList(ArticlesList):
-
-    def get_queryset(self):
-        """Отримання набору даних з можливістю відсортувати дані за тегами"""
-        queryset = super().get_queryset().filter(status='moderation').select_related('author').\
-            annotate(total_comments=Count('comments'),
-                     total_likes=Count('users_like'))
-        if self.kwargs:
-            return queryset.filter(tags__slug__in=[self.kwargs['tag_slug']])
-        else:
-            return queryset
-
+def draft_list(request):
+    object_list = get_draft_articles(request)
+    page, articles = articles_list(request, object_list)
+    return render(request, 'articles/post/list.html', {'section': 'articles',
+                                                       'page': page,
+                                                       'articles': articles})
 
 # @cache_page(60 * 15)
 def article_detail(request, slug):
