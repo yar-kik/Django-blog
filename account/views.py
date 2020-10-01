@@ -75,9 +75,13 @@ def register(request):
                 new_user.save()
                 # Створення профілю користувача
                 Profile.objects.create(user=new_user)
-                create_action(new_user, 'has created an account')
-                return render(request, 'account/register_done.html',
-                              {'new_user': new_user})
+                new_user = authenticate(request, username=user_form.cleaned_data['username'],
+                                        password=user_form.cleaned_data['password'])
+                login(request, new_user)
+                return redirect('articles:all_articles')
+                # create_action(new_user, 'has created an account')
+                # return render(request, 'account/register_done.html',
+                #               {'new_user': new_user})
         else:
             user_form = UserRegistrationForm()
         return render(request, 'account/register.html',
@@ -167,9 +171,9 @@ def get_client_ip(request):
 
 
 def get_next_url(request):
-    next = request.META.get('HTTP_REFERER')
-    if next:
-        next = urlunquote(next)  # HTTP_REFERER may be encoded.
-    if not is_safe_url(url=next, allowed_hosts=request.get_host()):
-        next = '/'
-    return next
+    next_url = request.META.get('HTTP_REFERER')
+    if next_url:
+        next_url = urlunquote(next_url)  # HTTP_REFERER may be encoded.
+    if not is_safe_url(url=next_url, allowed_hosts=request.get_host()):
+        next_url = '/'
+    return next_url
