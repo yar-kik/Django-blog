@@ -13,6 +13,8 @@ from django.views.decorators.cache import cache_page
 from django.views.decorators.http import require_POST
 from django.views.generic import CreateView, UpdateView, DeleteView, ListView
 from django.db.models import Count, QuerySet
+from django.views.generic.base import View
+from django.views.generic.edit import ModelFormMixin
 from uuslug import slugify
 
 # from actions.utils import create_action
@@ -204,13 +206,7 @@ def post_share(request, article_id):
                                                         'section': 'articles'})
 
 
-class CreateArticle(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
-    """Клас створення статті (необхідний відповідний дозвіл)"""
-    form_class = ArticleForm
-    model = Article
-    template_name = 'articles/post/create_article.html'
-    permission_required = 'articles.add_article'
-
+class ArticleBaseValidation(ModelFormMixin):
     def form_valid(self, form):
         form.instance.author = self.request.user
         form.instance.slug = slugify(form.instance.title)
@@ -223,21 +219,20 @@ class CreateArticle(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class UpdateArticle(PermissionRequiredMixin, LoginRequiredMixin, UpdateView):
+class CreateArticle(PermissionRequiredMixin, LoginRequiredMixin, CreateView, ArticleBaseValidation):
+    """Клас створення статті (необхідний відповідний дозвіл)"""
+    form_class = ArticleForm
+    model = Article
+    template_name = 'articles/post/create_article.html'
+    permission_required = 'articles.add_article'
+
+
+class UpdateArticle(PermissionRequiredMixin, LoginRequiredMixin, UpdateView, ArticleBaseValidation):
     """Класс редагування статті (необхідний дозвіл на це)"""
     model = Article
     form_class = ArticleForm
     template_name = 'articles/post/update_article.html'
     permission_required = 'articles.change_article'
-
-    def form_valid(self, form):
-        if 'draft' in self.request.POST:
-            form.instance.status = 'draft'
-        elif 'moderation' in self.request.POST:
-            form.instance.status = 'moderation'
-        elif 'publish' in self.request.POST:
-            form.instance.status = 'publish'
-        return super().form_valid(form)
 
 
 class DeleteArticle(PermissionRequiredMixin, LoginRequiredMixin, DeleteView):
