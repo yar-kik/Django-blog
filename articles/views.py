@@ -12,7 +12,7 @@ from django.urls import reverse_lazy
 from django.views.decorators.cache import cache_page
 from django.views.decorators.http import require_POST
 from django.views.generic import CreateView, UpdateView, DeleteView, ListView
-from django.db.models import Count
+from django.db.models import Count, QuerySet
 from uuslug import slugify
 
 # from actions.utils import create_action
@@ -33,6 +33,7 @@ def articles_redirect(request):
 
 
 def articles_list(request, object_list):
+    """Get QuerySet of Article model and return paginated articles"""
     paginator = Paginator(object_list, 3)
     page = request.GET.get('page')
     try:
@@ -41,31 +42,29 @@ def articles_list(request, object_list):
         articles = paginator.page(1)
     except EmptyPage:
         articles = paginator.page(paginator.num_pages)
-    return page, articles
+    return articles
 
 
 def publish_list(request):
     object_list = get_published_articles()
-    page, articles = articles_list(request, object_list)
+    articles = articles_list(request, object_list)
     return render(request, 'articles/post/list.html', {'section': 'articles',
-                                                       'page': page,
                                                        'articles': articles})
 
 
 def moderation_list(request):
     object_list = get_moderation_articles()
-    page, articles = articles_list(request, object_list)
+    articles = articles_list(request, object_list)
     return render(request, 'articles/post/list.html', {'section': 'articles',
-                                                       'page': page,
                                                        'articles': articles})
 
 
 def draft_list(request):
     object_list = get_draft_articles(request)
-    page, articles = articles_list(request, object_list)
+    articles = articles_list(request, object_list)
     return render(request, 'articles/post/list.html', {'section': 'articles',
-                                                       'page': page,
                                                        'articles': articles})
+
 
 # @cache_page(60 * 15)
 def article_detail(request, slug):
