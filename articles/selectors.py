@@ -27,9 +27,19 @@ def get_article(slug: str) -> Article:
 
 
 def get_all_articles() -> Article:
-    articles = Article.objects.filter(status__in=['publish']).select_related('author').\
+    articles = Article.objects.all().select_related('author').\
         only('title', 'text', 'slug', 'author__username', 'author__is_staff', 'date_created').\
         annotate(total_comments=Count('comments', distinct=True), total_likes=Count('users_like', distinct=True))
+    return articles
+
+
+def get_published_articles():
+    articles = get_all_articles().filter(status__in=['publish'])
+    return articles
+
+
+def get_moderation_articles():
+    articles = get_all_articles().filter(status__in=['moderation'])
     return articles
 
 

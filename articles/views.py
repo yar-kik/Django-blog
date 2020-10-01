@@ -19,7 +19,7 @@ from uuslug import slugify
 from .forms import EmailPostForm, CommentForm, ArticleForm, SearchForm
 from .models import Article, Comment
 from .selectors import get_article, get_comments_by_instance, get_parent_comment, get_comments_by_id, \
-    get_total_comments, get_all_articles
+    get_total_comments, get_all_articles, get_moderation_articles, get_published_articles
 from .services import create_comment_form, create_reply_form
 from .tagging import CustomTag
 
@@ -73,7 +73,22 @@ class ArticlesList(ListView):
 
 
 def articles_list(request):
-    object_list = get_all_articles()
+    object_list = get_published_articles()
+    paginator = Paginator(object_list, 3)
+    page = request.GET.get('page')
+    try:
+        articles = paginator.page(page)
+    except PageNotAnInteger:
+        articles = paginator.page(1)
+    except EmptyPage:
+        articles = paginator.page(paginator.num_pages)
+    return render(request, 'articles/post/list.html', {'section': 'articles',
+                                                       'page': page,
+                                                       'articles': articles})
+
+
+def moderation_list(request):
+    object_list = get_moderation_articles()
     paginator = Paginator(object_list, 3)
     page = request.GET.get('page')
     try:
@@ -252,7 +267,7 @@ class CreateArticle(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
             form.instance.status = 'draft'
         elif 'moderation' in self.request.POST:
             form.instance.status = 'moderation'
-        else:
+        elif 'publish' in self.request.POST:
             form.instance.status = 'publish'
         return super().form_valid(form)
 
@@ -263,6 +278,15 @@ class UpdateArticle(PermissionRequiredMixin, LoginRequiredMixin, UpdateView):
     form_class = ArticleForm
     template_name = 'articles/post/update_article.html'
     permission_required = 'articles.change_article'
+
+    def form_valid(self, form):
+        if 'draft' in self.request.POST:
+            form.instance.status = 'draft'
+        elif 'moderation' in self.request.POST:
+            form.instance.status = 'moderation'
+        elif 'publish' in self.request.POST:
+            form.instance.status = 'publish'
+        return super().form_valid(form)
 
 
 class DeleteArticle(PermissionRequiredMixin, LoginRequiredMixin, DeleteView):

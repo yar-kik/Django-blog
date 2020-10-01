@@ -6,7 +6,13 @@
 {% block content %}
     <form method="post">{% csrf_token %}
         {{ form.as_p }}
-        <input type="submit" value="Update">
+        {% if user.is_staff %}
+            <input type="submit" value="Додати в чернетки" name="draft">
+            <input type="submit" value="Опублікувати" name="publish">
+        {% else %}
+            <input type="submit" value="Додати в чернетки" name="draft">
+            <input type="submit" value="Відправити на модерацію" name="moderation">
+        {% endif %}
     </form>
 {% endblock %}
 
