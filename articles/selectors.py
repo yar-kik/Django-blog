@@ -26,6 +26,13 @@ def get_article(slug: str) -> Article:
     return article
 
 
+def get_all_articles() -> Article:
+    articles = Article.objects.filter(status__in=['publish']).select_related('author').\
+        only('title', 'text', 'slug', 'author__username', 'author__is_staff', 'date_created').\
+        annotate(total_comments=Count('comments', distinct=True), total_likes=Count('users_like', distinct=True))
+    return articles
+
+
 def get_parent_comment(comment_id: int) -> Comment:
     parent_comment = Comment.objects.only('id', 'article', 'name').get(id=comment_id)
     return parent_comment

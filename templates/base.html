@@ -77,15 +77,15 @@
 {#        <h3>Latest posts</h3>#}
 {#        {% show_latest_articles 3 %}#}
 
-        <h3>Most commented posts</h3>
-        {% get_most_commented_articles 3 as most_commented_articles %}
-        <ul>
-            {% for article in most_commented_articles %}
-                <li>
-                    <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
-                </li>
-            {% endfor %}
-        </ul>
+{#        <h3>Most commented posts</h3>#}
+{#        {% get_most_commented_articles 3 as most_commented_articles %}#}
+{#        <ul>#}
+{#            {% for article in most_commented_articles %}#}
+{#                <li>#}
+{#                    <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>#}
+{#                </li>#}
+{#            {% endfor %}#}
+{#        </ul>#}
 {#    <p><a href="{% url 'account:feedback' %}">Побажання та пропозиції?</a></p>#}
 {#        <p><a href="{% url 'articles:article_feed' %}">Subscribe to my RSS feed</a></p>#}
     </div>

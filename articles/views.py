@@ -18,7 +18,8 @@ from uuslug import slugify
 # from actions.utils import create_action
 from .forms import EmailPostForm, CommentForm, ArticleForm, SearchForm
 from .models import Article, Comment
-from .selectors import get_article, get_comments_by_instance, get_parent_comment, get_comments_by_id, get_total_comments
+from .selectors import get_article, get_comments_by_instance, get_parent_comment, get_comments_by_id, \
+    get_total_comments, get_all_articles
 from .services import create_comment_form, create_reply_form
 from .tagging import CustomTag
 
@@ -71,6 +72,21 @@ class ArticlesList(ListView):
         return context
 
 
+def articles_list(request):
+    object_list = get_all_articles()
+    paginator = Paginator(object_list, 3)
+    page = request.GET.get('page')
+    try:
+        articles = paginator.page(page)
+    except PageNotAnInteger:
+        articles = paginator.page(1)
+    except EmptyPage:
+        articles = paginator.page(paginator.num_pages)
+    return render(request, 'articles/post/list.html', {'section': 'articles',
+                                                       'page': page,
+                                                       'articles': articles})
+
+
 class ArticleModerationList(ArticlesList):
 
     def get_queryset(self):
@@ -82,6 +98,7 @@ class ArticleModerationList(ArticlesList):
             return queryset.filter(tags__slug__in=[self.kwargs['tag_slug']])
         else:
             return queryset
+
 
 # @cache_page(60 * 15)
 def article_detail(request, slug):
