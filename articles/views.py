@@ -125,10 +125,9 @@ def save_comment(request, template, form, **kwargs):
         else:
             data['form_is_valid'] = False
     else:
-        context = {'form': form}
+        context = {'form': form, 'user': request.user}
         if kwargs:
             context['comment_id'] = kwargs['comment_id']
-            context['user'] = request.user
             data['action'] = kwargs['action']
         data['html_form'] = render_to_string(template, context, request=request)
     return JsonResponse(data)
