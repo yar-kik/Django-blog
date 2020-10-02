@@ -71,8 +71,9 @@
             <p>На жаль, нічого схожого ще немає</p>
         {% endfor %}
 
-    <h3>Залишити коментар</h3>
+
     <div class="new-comment">
+        <h3>Залишити коментар</h3>
         {% if user.is_authenticated %}
             <form action="{% url 'articles:create_comment' article.id %}" method="post" class="new-comment-form">
                 {{ comment_form }}
@@ -117,7 +118,9 @@
 
     var loadForm = function () {
         var button = $(this);
-        var text = button.parent().next();
+        var comment_body = button.parents('.comment');
+        var temporary = comment_body.find('.temporary');
+        var text = comment_body.find('.comment-text');
         var form = button.parent();
         $.ajax({
             data: {
@@ -132,10 +135,15 @@
                 $('.reply-form').not(this).hide();
             },
             success: function (data) {
-                if (data.action) {
+                if (data.action == 'reply') {
                     $(form).append(data.html_form);
+{#                    $('.new-comment').hide();#}
                 } else {
-                    $(text).html(data.html_form);
+{#                    if (data.action == 'edit') {#}
+{#                        $('.new-comment').hide();#}
+{#                    }#}
+                    $(text).hide();
+                    $(text).after(data.html_form);
                 }
             }
         });
@@ -165,10 +173,21 @@
                     }
                     $(".all-comments").html(data.html_comments_all);
                     $(form.find('textarea')).val('');
+{#                    $('.new-comment').show();#}
                 }
             }
         });
         return false;
+    }
+
+    var cancelForm = function () {
+        let button = $(this);
+        let comment_body = button.parents('.comment');
+        let text = comment_body.find('.comment-text');
+        let form = comment_body.find('form');
+        $(text).show();
+{#        $('.new-comment').show();#}
+        $(form).remove();
     }
 
     $('.all-comments').on("click", ".edit", loadForm);
@@ -181,6 +200,9 @@
 
     $('.all-comments').on("click", ".reply", loadForm);
     $('.all-comments').on('submit', '.reply-form', saveForm);
+
+    $('.all-comments').on("click", ".cancel", cancelForm);
+
 
 
 

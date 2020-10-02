@@ -27,14 +27,17 @@
 
         <div class="comment-body">
             {% if comment.path|length > 1 %}
-                <p>Відповідь <a href="#{{ comment.path|index:-2 }}">{{ comment.reply_to }}</a></p>
+                <div class="reply-to">
+                    <p>Відповідь <a href="#{{ comment.path|index:-2 }}">{{ comment.reply_to }}</a></p>
+                </div>
             {% endif %}
-            {{ comment.body|linebreaks }}</div>
+                <div class="comment-text">
+                    {{ comment.body|linebreaks }}
+                </div>
+            </div>
 
         <div class="comment-footer">
             <button data-action="reply" data-url="{% url 'articles:reply_comment' comment_id=comment.id %}" class="reply">Відповісти</button>
         </div>
     </div>
-{#{% empty %}#}
-{#    <p style="grid-column: 1/24">Поки що немає жодного коментарю. Будь першим!)</p>#}
 {% endfor %}
