@@ -18,7 +18,7 @@ from uuslug import slugify
 # from actions.utils import create_action
 from .forms import EmailPostForm, CommentForm, ArticleForm, SearchForm
 from .models import Article, Comment
-from .selectors import get_article, get_comments_by_instance, get_parent_comment, get_comments_by_id, \
+from .selectors import get_article, get_parent_comment, get_comments_by_id, \
     get_total_comments, get_moderation_articles, get_published_articles, get_draft_articles
 from .services import create_comment_form, create_reply_form, is_author
 from .tagging import CustomTag
@@ -71,7 +71,6 @@ def draft_list(request):
 # @cache_page(60 * 15)
 def article_detail(request, slug):
     article = get_article(slug=slug)
-    # comments = get_comments(article)
     total_comments = get_total_comments(article.id)
     comment_form = CommentForm()
     total_views = r.incr(f'article:{article.id}:views')
@@ -86,7 +85,6 @@ def article_detail(request, slug):
     # similar_articles = similar_articles.annotate(same_tags=Count('tags')).order_by('-same_tags', '-date_created')[:4]
     return render(request, 'articles/post/detail.html', {'article': article,
                                                          # 'similar_articles': similar_articles,
-                                                         # 'comments': comments,
                                                          'total_comments': total_comments,
                                                          'section': 'articles',
                                                          'comment_form': comment_form,
@@ -171,8 +169,8 @@ def delete_comment(request, comment_id):
     """Видалення коментарю, отриманого через його id."""
     comment = get_object_or_404(Comment, id=comment_id)
     if is_author(request, comment):
-        article = comment.article
-        comments = get_comments_by_instance(article)
+        article_id = comment.article_id
+        comments = get_comments_by_id(article_id)
         data = dict()
         if request.method == 'POST':
             comment.delete()
