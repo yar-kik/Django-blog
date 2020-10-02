@@ -137,11 +137,7 @@
             success: function (data) {
                 if (data.action == 'reply') {
                     $(form).append(data.html_form);
-{#                    $('.new-comment').hide();#}
                 } else {
-{#                    if (data.action == 'edit') {#}
-{#                        $('.new-comment').hide();#}
-{#                    }#}
                     $(text).hide();
                     $(text).after(data.html_form);
                 }
@@ -173,7 +169,6 @@
                     }
                     $(".all-comments").html(data.html_comments_all);
                     $(form.find('textarea')).val('');
-{#                    $('.new-comment').show();#}
                 }
             }
         });
@@ -186,7 +181,6 @@
         let text = comment_body.find('.comment-text');
         let form = comment_body.find('form');
         $(text).show();
-{#        $('.new-comment').show();#}
         $(form).remove();
     }
 
