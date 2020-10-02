@@ -1,9 +1,12 @@
+from typing import Type
+
 from django.db.models import Count
+from django.http import HttpRequest
 
 from articles.models import Article, Comment
 
 
-def get_comments_by_id(article_id: int) -> Comment:
+def get_comments_by_id(article_id: Type[int]) -> Comment:
     comments = Comment.objects.filter(article_id=article_id).order_by('path').\
         select_related('name', 'name__profile', 'reply_to').only('article', 'body', 'name', 'created', 'updated',
                                                                  'name__profile__photo', 'name__username', 'path',
@@ -35,7 +38,7 @@ def get_moderation_articles() -> Article:
     return articles
 
 
-def get_draft_articles(request) -> Article:
+def get_draft_articles(request: HttpRequest) -> Article:
     articles = get_all_articles().filter(status__in=['draft'], author=request.user)
     return articles
 

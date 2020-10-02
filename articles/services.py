@@ -1,10 +1,10 @@
-from django.contrib.auth.models import User
+from django.http import HttpRequest
 
 from articles.forms import CommentForm
 from articles.models import Comment
 
 
-def create_reply_form(request, comment_form: CommentForm, parent_comment: Comment) -> CommentForm:
+def create_reply_form(request: HttpRequest, comment_form: CommentForm, parent_comment: Comment) -> CommentForm:
     if comment_form.is_valid():
         new_comment = comment_form.save(commit=False)
         new_comment.article_id = parent_comment.article_id
@@ -14,7 +14,7 @@ def create_reply_form(request, comment_form: CommentForm, parent_comment: Commen
         return new_comment
 
 
-def create_comment_form(request, comment_form: CommentForm, article_id: int) -> Comment:
+def create_comment_form(request: HttpRequest, comment_form: CommentForm, article_id: int) -> Comment:
     if comment_form.is_valid():
         new_comment = comment_form.save(commit=False)
         new_comment.article_id = article_id
@@ -22,7 +22,7 @@ def create_comment_form(request, comment_form: CommentForm, article_id: int) -> 
         return new_comment
 
 
-def is_author(request, comment: Comment) -> bool:
+def is_author(request: HttpRequest, comment: Comment) -> bool:
     user = request.user
     if user.is_staff or comment.name_id == user.id:
         return True
