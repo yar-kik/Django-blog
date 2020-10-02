@@ -15,14 +15,16 @@
                     {{ comment.name.username }}
                 </span>
             </a>
-        {% if comment.created|date:"i H d m Y" == comment.updated|date:"i H d m Y" %}
-            Опубліковано: {{ comment.created|date:"l, j E Y" }} о {{ comment.created|date:"H:i" }}
-        {% else %}
-            Редаговано: {{ comment.created|date:"l, j E Y" }} о {{ comment.created|date:"H:i" }}
-        {% endif %}
 
-            <button data-url="{% url 'articles:edit_comment' comment_id=comment.id%}" class="edit">Редагувати</button>
-            <button data-url="{% url 'articles:delete_comment' comment_id=comment.id%}" class="delete">Видалити</button>
+            {% if comment.created|date:"i H d m Y" == comment.updated|date:"i H d m Y" %}
+                Опубліковано: {{ comment.created|date:"l, j E Y" }} о {{ comment.created|date:"H:i" }}
+            {% else %}
+                Редаговано: {{ comment.created|date:"l, j E Y" }} о {{ comment.created|date:"H:i" }}
+            {% endif %}
+            {% if user.is_staff or comment.name == user %}
+                <button data-url="{% url 'articles:edit_comment' comment_id=comment.id%}" class="edit">Редагувати</button>
+                <button data-url="{% url 'articles:delete_comment' comment_id=comment.id%}" class="delete">Видалити</button>
+            {% endif %}
         </div>
 
         <div class="comment-body">
@@ -31,6 +33,7 @@
                     <p>Відповідь <a href="#{{ comment.path|index:-2 }}">{{ comment.reply_to }}</a></p>
                 </div>
             {% endif %}
+
                 <div class="comment-text">
                     {{ comment.body|linebreaks }}
                 </div>

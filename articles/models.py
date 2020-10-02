@@ -34,9 +34,8 @@ class Article(models.Model):
 
     class Meta:
         ordering = ('-date_created',)
-        indexes = [
-            models.Index(fields=['slug']),
-        ]
+        permissions = [('can_moderate_article', 'Може одобрювати статті'),
+                       ('can_draft_article', 'Може створювати чернетку статті')]
 
     def __str__(self):
         return self.title

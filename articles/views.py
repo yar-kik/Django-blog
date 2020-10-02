@@ -1,10 +1,10 @@
 import redis
 from django.conf import settings
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank, TrigramSimilarity
 from django.core.mail import send_mail
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse, HttpResponseForbidden
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.template.loader import render_to_string
@@ -20,7 +20,7 @@ from .forms import EmailPostForm, CommentForm, ArticleForm, SearchForm
 from .models import Article, Comment
 from .selectors import get_article, get_comments_by_instance, get_parent_comment, get_comments_by_id, \
     get_total_comments, get_moderation_articles, get_published_articles, get_draft_articles
-from .services import create_comment_form, create_reply_form
+from .services import create_comment_form, create_reply_form, is_author
 from .tagging import CustomTag
 
 r = redis.StrictRedis(host=settings.REDIS_HOST,
@@ -52,6 +52,7 @@ def publish_list(request):
                                                        'articles': articles})
 
 
+@permission_required('article.can_moderate_article', raise_exception=True)
 def moderation_list(request):
     object_list = get_moderation_articles()
     articles = articles_list(request, object_list)
@@ -59,6 +60,7 @@ def moderation_list(request):
                                                        'articles': articles})
 
 
+@permission_required('article.can_draft_article', raise_exception=True)
 def draft_list(request):
     object_list = get_draft_articles(request)
     articles = articles_list(request, object_list)
@@ -112,19 +114,21 @@ def save_comment(request, template, form, **kwargs):
     шаблон із усіма коментарями даної статті"""
     data = dict()
     if request.method == 'POST':
-        article = form.instance.article
+        article_id = form.instance.article_id
+        comments = get_comments_by_id(article_id)
         if form.is_valid():
+            context = {'comments': comments, 'user': request.user}
             form.save()
             data['form_is_valid'] = True
-            comments = get_comments_by_instance(article)
             data['html_comments_all'] = render_to_string('articles/comment/partial_comments_all.html',
-                                                         {'comments': comments})
+                                                         context)
         else:
             data['form_is_valid'] = False
     else:
         context = {'form': form}
         if kwargs:
             context['comment_id'] = kwargs['comment_id']
+            context['user'] = request.user
             data['action'] = kwargs['action']
         data['html_form'] = render_to_string(template, context, request=request)
     return JsonResponse(data)
@@ -137,8 +141,7 @@ def reply_comment(request, comment_id):
         create_reply_form(request, comment_form, parent_comment)
     else:
         comment_form = CommentForm()
-    return save_comment(request, 'articles/comment/partial_comment_create.html', comment_form,
-                        action='reply',
+    return save_comment(request, 'articles/comment/partial_comment_create.html', comment_form, action='reply',
                         comment_id=comment_id)
 
 
@@ -155,29 +158,34 @@ def create_comment(request, article_id):
 def edit_comment(request, comment_id):
     """Редагування коментарю, значення якого отримується через id"""
     instance_comment = get_object_or_404(Comment, id=comment_id)
-    if request.method == 'POST':
-        comment_form = CommentForm(instance=instance_comment, data=request.POST)
+    if is_author(request, instance_comment):
+        if request.method == 'POST':
+            comment_form = CommentForm(instance=instance_comment, data=request.POST)
+        else:
+            comment_form = CommentForm(instance=instance_comment)
+        return save_comment(request, 'articles/comment/partial_comment_edit.html', comment_form)
     else:
-        comment_form = CommentForm(instance=instance_comment)
-    return save_comment(request, 'articles/comment/partial_comment_edit.html', comment_form)
+        return HttpResponseForbidden
 
 
 def delete_comment(request, comment_id):
     """Видалення коментарю, отриманого через його id."""
     comment = get_object_or_404(Comment, id=comment_id)
-    article = comment.article
-    comments = get_comments_by_instance(article)
-    data = dict()
-    if request.method == 'POST':
-        comment.delete()
-        data['form_is_valid'] = True
-        data['html_comments_all'] = render_to_string('articles/comment/partial_comments_all.html', {
-            'comments': comments
-        })
+    if is_author(request, comment):
+        article = comment.article
+        comments = get_comments_by_instance(article)
+        data = dict()
+        if request.method == 'POST':
+            comment.delete()
+            data['form_is_valid'] = True
+            data['html_comments_all'] = render_to_string('articles/comment/partial_comments_all.html', {
+                'comments': comments, 'user': request.user})
+        else:
+            data['html_form'] = render_to_string('articles/comment/partial_comment_delete.html',
+                                                 {'comment': comment, 'user': request.user}, request=request)
+        return JsonResponse(data)
     else:
-        context = {'comment': comment}
-        data['html_form'] = render_to_string('articles/comment/partial_comment_delete.html', context, request=request)
-    return JsonResponse(data)
+        return HttpResponseForbidden
 
 
 def post_share(request, article_id):
@@ -300,7 +308,8 @@ def article_search(request):
 #                    'query': query,
 #                    'results': results})
 
-
+@login_required
+@require_POST
 def bookmark_article(request):
     article_id = request.POST.get('id')
     action = request.POST.get('action')

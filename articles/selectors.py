@@ -5,17 +5,17 @@ from articles.models import Article, Comment
 
 def get_comments_by_instance(article: Article) -> Comment:
     comments = article.comments.order_by('path').\
-        select_related('name', 'name__profile').only('article', 'body', 'name', 'created', 'updated',
-                                                     'name__profile__photo', 'name__username', 'path',
-                                                     'reply_to')
+        select_related('name', 'name__profile', 'reply_to').only('article', 'body', 'name', 'created', 'updated',
+                                                                 'name__profile__photo', 'name__username', 'path',
+                                                                 'reply_to')
     return comments
 
 
 def get_comments_by_id(article_id: int) -> Comment:
     comments = Comment.objects.filter(article_id=article_id).order_by('path').\
-        select_related('name', 'name__profile').only('article', 'body', 'name', 'created', 'updated',
-                                                     'name__profile__photo', 'name__username', 'path',
-                                                     'reply_to')
+        select_related('name', 'name__profile', 'reply_to').only('article', 'body', 'name', 'created', 'updated',
+                                                                 'name__profile__photo', 'name__username', 'path',
+                                                                 'reply_to')
     return comments
 
 
@@ -49,7 +49,7 @@ def get_draft_articles(request) -> Article:
 
 
 def get_parent_comment(comment_id: int) -> Comment:
-    parent_comment = Comment.objects.only('id', 'article', 'name').get(id=comment_id)
+    parent_comment = Comment.objects.only('id', 'article', 'name', 'path').get(id=comment_id)
     return parent_comment
 
 
