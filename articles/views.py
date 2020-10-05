@@ -18,8 +18,8 @@ from uuslug import slugify
 # from actions.utils import create_action
 from .forms import EmailPostForm, CommentForm, ArticleForm, SearchForm
 from .models import Article, Comment
-from .selectors import get_article, get_parent_comment, get_comments_by_id, \
-    get_total_comments, get_moderation_articles, get_published_articles, get_draft_articles
+from .selectors import get_article_by_slug, get_parent_comment, get_comments_by_id, \
+    get_total_comments, get_moderation_articles, get_published_articles, get_draft_articles, get_article_by_id
 from .services import create_comment_form, create_reply_form, is_author
 from .tagging import CustomTag
 
@@ -70,8 +70,7 @@ def draft_list(request):
 
 # @cache_page(60 * 15)
 def article_detail(request, slug):
-    article = get_article(slug=slug)
-    total_comments = get_total_comments(article.id)
+    article = get_article_by_slug(slug=slug, annotate=True)
     comment_form = CommentForm()
     total_views = r.incr(f'article:{article.id}:views')
 
@@ -85,7 +84,6 @@ def article_detail(request, slug):
     # similar_articles = similar_articles.annotate(same_tags=Count('tags')).order_by('-same_tags', '-date_created')[:4]
     return render(request, 'articles/post/detail.html', {'article': article,
                                                          # 'similar_articles': similar_articles,
-                                                         'total_comments': total_comments,
                                                          'section': 'articles',
                                                          'comment_form': comment_form,
                                                          'total_views': total_views})
@@ -308,10 +306,11 @@ def article_search(request):
 @login_required
 @require_POST
 def bookmark_article(request):
+    """Add or remove article from bookmarked articles"""
     article_id = request.POST.get('id')
     action = request.POST.get('action')
     if article_id and action:
-        article = Article.objects.only('id', 'users_bookmark').get(id=article_id)
+        article = get_object_or_404(Article, id=article_id)
         if action == 'bookmark':
             article.users_bookmark.add(request.user)
         else:

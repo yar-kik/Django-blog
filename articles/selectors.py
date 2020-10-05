@@ -14,18 +14,23 @@ def get_comments_by_id(article_id: Type[int]) -> Comment:
     return comments
 
 
-def get_article(slug: str) -> Article:
-    article = Article.objects.filter(slug=slug). \
-        select_related('author').only('title', 'text', 'slug', 'author__username',
-                                      'author__is_staff', 'date_created').get()
+def get_all_articles(annotate: bool = True) -> Article:
+    articles = Article.objects.all().select_related('author').prefetch_related().\
+        only('title', 'text', 'slug', 'author__username', 'author__is_staff', 'date_created')
+    if annotate:
+        articles = articles.annotate(total_comments=Count('comments', distinct=True),
+                                     total_likes=Count('users_like', distinct=True))
+    return articles
+
+
+def get_article_by_slug(slug: str, annotate: bool = False) -> Article:
+    article = get_all_articles(annotate).get(slug=slug)
     return article
 
 
-def get_all_articles() -> Article:
-    articles = Article.objects.all().select_related('author').\
-        only('title', 'text', 'slug', 'author__username', 'author__is_staff', 'date_created').\
-        annotate(total_comments=Count('comments', distinct=True), total_likes=Count('users_like', distinct=True))
-    return articles
+def get_article_by_id(article_id: int, annotate: bool = False) -> Article:
+    article = get_all_articles(annotate).get(id=article_id)
+    return article
 
 
 def get_published_articles() -> Article:
