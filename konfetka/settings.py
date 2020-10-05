@@ -21,6 +21,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = '3qn*(k_ciy-)4rob7w77_nfgh8))ok$*96fdcbs@!vbwm8dy+u'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -103,6 +104,15 @@ WSGI_APPLICATION = 'konfetka.wsgi.application'
 #     }
 # }
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'blog',
+        'USER': 'blog',
+        'PASSWORD': 'agent0071604YAR00',
+        'CONN_MAX_AGE': None,
+    }
+}
 
 
 # Password validation
@@ -194,7 +204,19 @@ AUTHENTICATION_BACKENDS = [
     'social_core.backends.google.GoogleOAuth2'
 ]
 
+SOCIAL_AUTH_FACEBOOK_KEY = '586066032079653'  # Facebook App ID
+SOCIAL_AUTH_FACEBOOK_SECRET = '211d1158a30e52e3e1e272079c985bf6'  # Facebook App Secret
+SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
 
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '993446255793-uihiuvmrgm71apevv8vpks31deiobfkt.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'jM1LZMQyaZhpYua-oVKd5hUJ'  # Google Consumer Secret
+
+
+EMAIL_HOST = 'einstein16.04@gmail.com'
+EMAIL_HOST_USER = 'einstein16.04@gmail.com'
+EMAIL_HOST_PASSWORD = 'luspdziywpxtmkuo'
+EMAIL_PORT = 25
+EMAIL_USE_TLS = True
 
 PHONENUMBER_DB_FORMAT = 'NATIONAL'
 PHONENUMBER_DEFAULT_REGION = 'UA'
