@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 from phonenumber_field.widgets import PhoneNumberPrefixWidget
 
+from konfetka import settings
 from .models import Profile
 from phonenumber_field.formfields import PhoneNumberField
 
@@ -32,6 +33,18 @@ class UserEditForm(forms.ModelForm):
 
 class ProfileEditForm(forms.ModelForm):
     """Дозволяє модифікувати додаткові відомості (дата народження, аватар)"""
+
+    def clean_photo(self):
+        max_photo_size = settings.MAX_UPLOAD_IMAGE_SIZE
+        valid_extensions = settings.VALID_IMAGE_EXTENSION
+        photo = self.cleaned_data['photo']
+        photo_format = photo.name.split('.')[-1]
+        if photo_format in valid_extensions:
+            if photo.size > max_photo_size:
+                raise forms.ValidationError("Розмір вашого зображення перевищує 2 Мб!")
+        else:
+            raise forms.ValidationError('Будь ласка, виберіть зображення у форматі jpg, jpeg або png')
+        return photo
 
     class Meta:
         model = Profile

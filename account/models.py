@@ -4,7 +4,9 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.conf import settings
 from django.dispatch import receiver
+from imagekit.models import ProcessedImageField
 from phonenumber_field.modelfields import PhoneNumberField
+from pilkit.processors import ResizeToFill
 
 
 class Profile(models.Model):
@@ -17,8 +19,8 @@ class Profile(models.Model):
                                 on_delete=models.CASCADE)
     date_of_birth = models.DateField(blank=True, null=True, verbose_name='дата народження')
     sex = models.CharField(max_length=1, choices=SEX, blank=True, verbose_name='стать')
-    photo = models.ImageField(upload_to='user/%Y/%m/%d/', blank=True, default='default/profile-picture.png',
-                              verbose_name='фото профілю')
+    photo = ProcessedImageField(upload_to='user/avatar/%Y/%m/%d/', blank=True, default='default/profile-picture.png',
+                                verbose_name='фото профілю', processors=[ResizeToFill(200, 200)], format='JPEG')
     phone = PhoneNumberField(blank=True, null=True, unique=True, verbose_name='номер телефону')
 
     def __str__(self):

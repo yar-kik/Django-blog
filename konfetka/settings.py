@@ -59,7 +59,8 @@ INSTALLED_APPS = [
     'django.contrib.postgres',
     'ckeditor',
     'ckeditor_uploader',
-    'bootstrap4'
+    'bootstrap4',
+    'imagekit'
 ]
 
 MIDDLEWARE = [
@@ -194,6 +195,9 @@ LOGOUT_URL = 'account:logout'
 
 MEDIA_URL = '/media/'  # базовий URL, від якого будуть формуватися адреси файлів
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')  # шлях у файловій системі
+
+MAX_UPLOAD_IMAGE_SIZE = 2097152  # equal 2Mb
+VALID_IMAGE_EXTENSION = ['jpg', 'jpeg', 'png']
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
