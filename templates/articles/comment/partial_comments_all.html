@@ -3,7 +3,7 @@
 {#{% load bootstrap4 %}#}
 
 {% for comment in comments %}
-    <div class="comment" style="grid-column: {{ comment.get_offset }}/ span 15;" id="{{ comment.id }}">
+    <div class="comment" style="grid-column: {{ comment.get_offset }}/ span 15;">
         <div class="comment-head">
             <a href="{{ comment.name.get_absolute_url }}">
                 <div class="user-info">
@@ -41,6 +41,11 @@
 
         <div class="comment-footer">
             <button data-action="reply" data-url="{% url 'articles:reply_comment' comment_id=comment.id %}" class="reply">Відповісти</button>
+            {% with users_like=comment.users_like.all %}
+                <button data-id="{{ comment.id }}"
+                        data-action="{% if request.user in users_like %}un{% endif %}like"
+                        data-url="{% url 'articles:like_comment' %}" class="like" >Уподобати</button>
+            {% endwith %}
         </div>
     </div>
 {% endfor %}

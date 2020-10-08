@@ -62,6 +62,7 @@ class Comment(models.Model):
     path = ArrayField(models.IntegerField(blank=True, null=True), default=list)
     reply_to = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reply',
                                  null=True, blank=True)
+    users_like = models.ManyToManyField(User, blank=True, related_name='comments_liked')
 
     class Meta:
         ordering = ('-created',)
