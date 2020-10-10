@@ -264,27 +264,27 @@ def article_like(request):
     return JsonResponse({'status': 'ok'})
 
 
-def liked_content(request, content: Article or Comment):
-    """Функція уподобання статті"""
-    content_id = request.POST.get('id')
-    action = request.POST.get('action')
-    if content_id and action:
-        try:
-            content_object = get_object_or_404(content, id=content_id)
-            if action == 'like':
-                content_object.users_like.add(request.user)
-                # create_action(request.user, 'likes', article)
-            else:
-                content_object.users_like.remove(request.user)
-            return JsonResponse({'status': 'ok'})
-        except:
-            pass
-    return JsonResponse({'status': 'ok'})
-
-
-def comment_like(request):
-    """"""
-    liked_content(request, Comment)
+# def liked_content(request, content: Article or Comment):
+#     """Функція уподобання статті"""
+#     content_id = request.POST.get('id')
+#     action = request.POST.get('action')
+#     if content_id and action:
+#         try:
+#             content_object = get_object_or_404(content, id=content_id)
+#             if action == 'like':
+#                 content_object.users_like.add(request.user)
+#                 # create_action(request.user, 'likes', article)
+#             else:
+#                 content_object.users_like.remove(request.user)
+#             return JsonResponse({'status': 'ok'})
+#         except:
+#             pass
+#     return JsonResponse({'status': 'ok'})
+#
+#
+# def comment_like(request):
+#     """"""
+#     liked_content(request, Comment)
 
 
 def article_search(request):
