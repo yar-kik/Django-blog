@@ -20,7 +20,8 @@ from .forms import EmailPostForm, CommentForm, ArticleForm, SearchForm
 from .models import Article, Comment
 from .selectors import get_article_by_slug, get_parent_comment, get_comments_by_id, \
     get_total_comments, get_moderation_articles, get_published_articles, get_draft_articles, get_article_by_id
-from .services import create_comment_form, create_reply_form, is_author
+from .services import create_comment_form, create_reply_form, is_author, paginate_articles, save_comment, \
+    paginate_comments
 from .tagging import CustomTag
 
 r = redis.StrictRedis(host=settings.REDIS_HOST,
@@ -29,107 +30,59 @@ r = redis.StrictRedis(host=settings.REDIS_HOST,
 
 
 def articles_redirect(request):
+    """Redirect to main page"""
     return redirect('articles:all_articles', permanent=True)
 
 
-def articles_list(request, object_list):
-    """Get QuerySet of Article model and return paginated articles"""
-    paginator = Paginator(object_list, 3)
-    page = request.GET.get('page')
-    try:
-        articles = paginator.page(page)
-    except PageNotAnInteger:
-        articles = paginator.page(1)
-    except EmptyPage:
-        articles = paginator.page(paginator.num_pages)
-    return articles
-
-
 def publish_list(request):
+    """Show all published articles"""
     object_list = get_published_articles()
-    articles = articles_list(request, object_list)
+    articles = paginate_articles(request, object_list)
     return render(request, 'articles/post/list.html', {'section': 'articles',
                                                        'articles': articles})
 
 
 @permission_required('article.can_moderate_article', raise_exception=True)
 def moderation_list(request):
+    """Show articles on moderation"""
     object_list = get_moderation_articles()
-    articles = articles_list(request, object_list)
+    articles = paginate_articles(request, object_list)
     return render(request, 'articles/post/list.html', {'section': 'articles',
                                                        'articles': articles})
 
 
 @permission_required('article.can_draft_article', raise_exception=True)
 def draft_list(request):
+    """Show draft articles"""
     object_list = get_draft_articles(request)
-    articles = articles_list(request, object_list)
+    articles = paginate_articles(request, object_list)
     return render(request, 'articles/post/list.html', {'section': 'articles',
                                                        'articles': articles})
 
 
 # @cache_page(60 * 15)
 def article_detail(request, slug):
+    """Show details of the article"""
     article = get_article_by_slug(slug=slug, annotate=True)
     comment_form = CommentForm()
     total_views = r.incr(f'article:{article.id}:views')
-
-    """Формуванння списку схожих статей"""
-
-    """Отримання списку id тегів даної статті"""
-    # article_tags_ids = article.tags.values_list('id', flat=True)
-    """Всі статті, що містять хоча б один заданий тег (за виключенням поточної статті)"""
-    # similar_articles = Article.objects.filter(tags__in=article_tags_ids).exclude(id=article.id)
-    """Сортування статей в порядку зменшення кількості схожих тегів та дати."""
-    # similar_articles = similar_articles.annotate(same_tags=Count('tags')).order_by('-same_tags', '-date_created')[:4]
     return render(request, 'articles/post/detail.html', {'article': article,
-                                                         # 'similar_articles': similar_articles,
                                                          'section': 'articles',
                                                          'comment_form': comment_form,
                                                          'total_views': total_views})
 
 
-# @login_required
 def comments_list(request, article_id):
-    """"""
+    """Show all paginated comments of the article"""
     comments = get_comments_by_id(article_id)
-    paginator = Paginator(comments, 16)
-    page = request.GET.get('page')
-    try:
-        comments = paginator.page(page)
-    except PageNotAnInteger:
-        comments = paginator.page(1)
-    except EmptyPage:
+    paginated_comments = paginate_comments(request, comments)
+    if paginated_comments is None:
         return HttpResponse('')
-    return render(request, 'articles/comment/partial_comments_all.html', {'comments': comments})
-
-
-def save_comment(request, template, form, **kwargs):
-    """Функція збереження коментарю (при створенні, зміні чи видаленні) через AJAX.
-    Data містить значення про валідність коментарю, його форма (при видаленні чи редагуванні),
-    шаблон із усіма коментарями даної статті"""
-    data = dict()
-    if request.method == 'POST':
-        article_id = form.instance.article_id
-        comments = get_comments_by_id(article_id)
-        if form.is_valid():
-            context = {'comments': comments, 'user': request.user}
-            form.save()
-            data['form_is_valid'] = True
-            data['html_comments_all'] = render_to_string('articles/comment/partial_comments_all.html',
-                                                         context)
-        else:
-            data['form_is_valid'] = False
-    else:
-        context = {'form': form, 'user': request.user}
-        if kwargs:
-            context['comment_id'] = kwargs['comment_id']
-            data['action'] = kwargs['action']
-        data['html_form'] = render_to_string(template, context, request=request)
-    return JsonResponse(data)
+    return render(request, 'articles/comment/partial_comments_all.html', {'comments': paginated_comments})
 
 
 def reply_comment(request, comment_id):
+    """Create reply of the parent comment"""
     parent_comment = get_parent_comment(comment_id)
     if request.method == 'POST':
         comment_form = CommentForm(data=request.POST)
@@ -208,7 +161,9 @@ def post_share(request, article_id):
 
 
 class ArticleBaseValidation(ModelFormMixin):
+    """Base class of article's validation"""
     def form_valid(self, form):
+        """Check article's status in a form and assign it"""
         form.instance.author = self.request.user
         form.instance.slug = slugify(form.instance.title)
         if 'draft' in self.request.POST:
@@ -229,7 +184,7 @@ class CreateArticle(PermissionRequiredMixin, LoginRequiredMixin, CreateView, Art
 
 
 class UpdateArticle(PermissionRequiredMixin, LoginRequiredMixin, UpdateView, ArticleBaseValidation):
-    """Класс редагування статті (необхідний дозвіл на це)"""
+    """Клас редагування статті (необхідний дозвіл на це)"""
     model = Article
     form_class = ArticleForm
     template_name = 'articles/post/update_article.html'
