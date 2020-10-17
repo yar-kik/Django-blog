@@ -5,6 +5,11 @@ from django.urls import reverse
 from archives.models import InfoBase, Film
 
 
+class PublishedManager(models.Manager):
+    def get_queryset(self):
+        return super(PublishedManager, self).get_queryset().filter(status='publish')
+
+
 class Article(models.Model):
     CATEGORIES = [
         ('film', "Фільми"),
@@ -19,21 +24,22 @@ class Article(models.Model):
     """
     Клас для збереження статей.
     """
-    category = models.CharField(max_length=16, choices=CATEGORIES, default='', verbose_name='категорія')
+    category = models.CharField(max_length=16, choices=CATEGORIES, default='film', verbose_name='категорія')
     related_item = models.ForeignKey(InfoBase, on_delete=models.CASCADE, null=True, blank=True)
     title = models.CharField(max_length=100, verbose_name='назва статті')
     author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="автор")
-    text = models.TextField(max_length=15000, verbose_name='текст')
+    text = models.TextField(max_length=20000, verbose_name='текст')
     date_created = models.DateTimeField(auto_now_add=True, verbose_name='дата створення')
     date_updated = models.DateTimeField(auto_now=True, verbose_name='дата редагування')
     slug = models.SlugField(max_length=100)
-    objects = models.Manager
+    objects = models.Manager()
+    published = PublishedManager()
     users_like = models.ManyToManyField(User, related_name='articles_liked', blank=True)
     users_bookmark = models.ManyToManyField(User, related_name='articles_bookmarked', blank=True)
     status = models.CharField(max_length=16, choices=STATUS_CHOICES, default='draft', verbose_name='статус')
 
     class Meta:
-        ordering = ('-date_created',)
+        ordering = ('-date_updated',)
         permissions = [('can_moderate_article', 'Може одобрювати статті'),
                        ('can_draft_article', 'Може створювати чернетку статті')]
 
@@ -45,14 +51,7 @@ class Article(models.Model):
 
 
 class Comment(models.Model):
-    """Клас для збереження коментарів конкретної статті.
-    Атрибути:
-        article - стаття до якої прикриплений коментар;
-        name - модель користувача-автора коментаря;
-        body - текст коментаря;
-        created - дата створення;
-        updated - дата редагування;
-        active - чи активний коментар;"""
+    """Клас коментарів конкретної статті"""
     article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='comments')
     name = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
     body = models.TextField(max_length=2000, verbose_name='')

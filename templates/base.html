@@ -18,13 +18,16 @@
     	<nav class="menu">
 	        <ul class="main-menu">
 	            <li {% if section == "articles" %}class="nav-item selected"{% else %} class="nav-item"{% endif %}>
-	                <a href="{% url 'articles:all_articles' %}">Статьи</a>
+	                <a href="{% url 'articles:all_articles' %}">Головна</a>
 	            </li>
-	            <li {% if section == "images" %}class="nav-item selected"{% else %} class="nav-item"{% endif %}>
-	                <a href="{% url 'images:list' %}">Images</a>
+	            <li {% if section == "film" %}class="nav-item selected"{% else %} class="nav-item"{% endif %}>
+	                <a href="{% url 'articles:film_articles' %}">Фільми</a>
 	            </li>
-	            <li {% if section == "people" %}class="nav-item selected"{% else %} class="nav-item"{% endif %}>
-	                <a href="{% url 'account:user_list' %}">Люди</a>
+	            <li {% if section == "anime" %}class="nav-item selected"{% else %} class="nav-item"{% endif %}>
+	                <a href="{% url 'articles:anime_articles' %}">Аніме</a>
+                </li>
+                <li {% if section == "game" %}class="nav-item selected"{% else %} class="nav-item"{% endif %}>
+	                <a href="{% url 'articles:game_articles' %}">Ігри</a>
 	            </li>
 	        </ul>
         </nav>
@@ -72,7 +75,7 @@
     </div>
 
     <div id="sidebar">
-        <h2><a href="{% url 'articles:all_articles' %}">My blog</a></h2>
+{#        <h2><a href="{% url 'articles:all_articles' %}">My blog</a></h2>#}
 
 {#        <h3>Latest posts</h3>#}
 {#        {% show_latest_articles 3 %}#}

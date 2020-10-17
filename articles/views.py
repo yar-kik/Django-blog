@@ -17,7 +17,8 @@ from uuslug import slugify
 from .forms import EmailPostForm, CommentForm, ArticleForm
 from .models import Article, Comment
 from .selectors import get_article_by_slug, get_parent_comment, get_comments_by_id, \
-    get_moderation_articles, get_published_articles, get_draft_articles
+    get_moderation_articles, get_published_articles, get_draft_articles, get_film_articles, get_anime_articles, \
+    get_game_articles
 from .services import create_comment_form, create_reply_form, is_author, paginate_articles, save_comment, \
     paginate_comments, search_results
 from .tagging import CustomTag
@@ -58,6 +59,27 @@ def draft_list(request):
                                                        'articles': articles})
 
 
+def film_articles_list(request):
+    object_list = get_film_articles()
+    articles = paginate_articles(request, object_list)
+    return render(request, 'articles/post/list.html', {'section': 'film',
+                                                       'articles': articles})
+
+
+def anime_articles_list(request):
+    object_list = get_anime_articles()
+    articles = paginate_articles(request, object_list)
+    return render(request, 'articles/post/list.html', {'section': 'anime',
+                                                       'articles': articles})
+
+
+def game_articles_list(request):
+    object_list = get_game_articles()
+    articles = paginate_articles(request, object_list)
+    return render(request, 'articles/post/list.html', {'section': 'game',
+                                                       'articles': articles})
+
+
 # @cache_page(60 * 15)
 def article_detail(request, slug):
     """Show details of the article"""
@@ -65,7 +87,7 @@ def article_detail(request, slug):
     comment_form = CommentForm()
     total_views = r.incr(f'article:{article.id}:views')
     return render(request, 'articles/post/detail.html', {'article': article,
-                                                         'section': 'articles',
+                                                         'section': article.category,
                                                          'comment_form': comment_form,
                                                          'total_views': total_views})
 

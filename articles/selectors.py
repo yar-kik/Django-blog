@@ -65,3 +65,21 @@ def get_total_comments(article_id: int) -> int:
     """Return count of the article's total comments"""
     total_comments = Comment.objects.filter(article_id=article_id).count()
     return total_comments
+
+
+def get_film_articles() -> Article:
+    published_articles = get_all_articles().filter(status__in=['publish'])
+    articles = published_articles.filter(category='film')
+    return articles
+
+
+def get_anime_articles() -> Article:
+    published_articles = get_all_articles().filter(status__in=['publish'])
+    articles = published_articles.filter(category='anime')
+    return articles
+
+
+def get_game_articles() -> Article:
+    published_articles = get_all_articles().filter(status__in=['publish'])
+    articles = published_articles.filter(category='game')
+    return articles
