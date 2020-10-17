@@ -1,11 +1,12 @@
 from typing import Union
 
+from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank, TrigramSimilarity
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import QuerySet
 from django.http import HttpRequest, JsonResponse, HttpResponse
 from django.template.loader import render_to_string
 
-from articles.forms import CommentForm
+from articles.forms import CommentForm, SearchForm
 from articles.models import Comment, Article
 from articles.selectors import get_comments_by_id
 
@@ -88,3 +89,29 @@ def save_comment(request, template, form, **kwargs):
             data['action'] = kwargs['action']
         data['html_form'] = render_to_string(template, context, request=request)
     return JsonResponse(data)
+
+
+def search_results(request):
+    """Пошук статті і використанням вектору пошуку (за полями заголовку і тексту з
+    ваговими коефіцієнтами 1 та 0.4 відповідно. Пошуковий набір проходить стемінг.
+    При пошуку враховується близькість шуканих слів одне до одного"""
+    form = SearchForm(request.GET)
+    if form.is_valid():
+        query = form.cleaned_data['query']
+        search_vector = SearchVector('title', weight='A', config='russian') + SearchVector('text', weight='B',
+                                                                                           config='russian')
+        search_query = SearchQuery(query, config='russian')
+        results = Article.objects.annotate(search=search_vector, rank=SearchRank(search_vector, search_query)).\
+            filter(rank__gte=0.3).order_by('-rank')
+        return results, query
+
+
+def search_results2(request):
+    """Search using trigram similarity"""
+    form = SearchForm(request.GET)
+    if form.is_valid():
+        query = form.cleaned_data['query']
+        results = Article.objects.annotate(
+            similarity=TrigramSimilarity('title', query),
+        ).filter(similarity__gt=0.2).order_by('-similarity')
+        return results, query

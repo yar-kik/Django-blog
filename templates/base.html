@@ -32,10 +32,10 @@
 	        <ul class="user-menu">
                 <li class="nav-item">
                     <form action="{% url 'articles:article_search' %}" method="get">
-                        <p><input type="text" name="query" maxlength="50" placeholder="Шукати на сайті..."
+                        <span><label for="id_query"></label>
+                            <input type="text" name="query" maxlength="50" placeholder="Шукати на сайті..."
                                    required="" id="id_query">
-                        </p>
-                        <input type="submit" value="Search">
+                        <input type="submit" value="Search"></span>
                     </form>
                 </li>
 	        	<li {% if section == "dashboard" %}class="nav-item selected"{% else %} class="nav-item"{% endif %}>

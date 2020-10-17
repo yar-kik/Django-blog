@@ -2,11 +2,9 @@ import redis
 from django.conf import settings
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank, TrigramSimilarity
 from django.core.mail import send_mail
 from django.http import JsonResponse, HttpResponse, HttpResponseForbidden
 from django.shortcuts import render, get_object_or_404, redirect
-from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.views.decorators.cache import cache_page
@@ -16,12 +14,12 @@ from django.views.generic.edit import ModelFormMixin
 from uuslug import slugify
 
 # from actions.utils import create_action
-from .forms import EmailPostForm, CommentForm, ArticleForm, SearchForm
+from .forms import EmailPostForm, CommentForm, ArticleForm
 from .models import Article, Comment
 from .selectors import get_article_by_slug, get_parent_comment, get_comments_by_id, \
-    get_total_comments, get_moderation_articles, get_published_articles, get_draft_articles, get_article_by_id
+    get_moderation_articles, get_published_articles, get_draft_articles
 from .services import create_comment_form, create_reply_form, is_author, paginate_articles, save_comment, \
-    paginate_comments
+    paginate_comments, search_results
 from .tagging import CustomTag
 
 r = redis.StrictRedis(host=settings.REDIS_HOST,
@@ -246,40 +244,13 @@ def article_search(request):
     """Пошук статті і використанням вектору пошуку (за полями заголовку і тексту з
     ваговими коефіцієнтами 1 та 0.4 відповідно. Пошуковий набір проходить стемінг.
     При пошуку враховується близькість шуканих слів одне до одного"""
-    form = SearchForm()
     query = ''
     results = []
     if 'query' in request.GET:
-        form = SearchForm(request.GET)
-        if form.is_valid():
-            query = form.cleaned_data['query']
-            search_vector = SearchVector('title', weight='A', config='russian') + SearchVector('text', weight='B',
-                                                                                               config='russian')
-            search_query = SearchQuery(query, config='russian')
-            results = Article.objects.annotate(
-                search=search_vector, rank=SearchRank(search_vector, search_query)
-            ).filter(rank__gte=0.3).order_by('-rank')
-    return render(request, 'articles/post/search.html', {'form': form,
-                                                         'query': query,
+        results, query = search_results(request)
+    return render(request, 'articles/post/search.html', {'query': query,
                                                          'results': results})
 
-
-# def article_search(request):
-#     form = SearchForm()
-#     query = None
-#     results = []
-#     if 'query' in request.GET:
-#         form = SearchForm(request.GET)
-#         if form.is_valid():
-#             query = form.cleaned_data['query']
-#             results = Article.objects.annotate(
-#                 similarity=TrigramSimilarity('title', query),
-#             ).filter(similarity__gt=0.2).order_by('-similarity')
-#     return render(request,
-#                   'articles/post/search.html',
-#                   {'form': form,
-#                    'query': query,
-#                    'results': results})
 
 @login_required
 @require_POST
