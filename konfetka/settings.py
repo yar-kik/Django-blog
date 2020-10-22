@@ -11,17 +11,22 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
-
+import environ
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 from django.urls import reverse_lazy
 
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, False)
+)
+environ.Env.read_env()
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '3qn*(k_ciy-)4rob7w77_nfgh8))ok$*96fdcbs@!vbwm8dy+u'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -40,17 +45,21 @@ INSTALLED_APPS = [
     'images',
     'actions',
     'archives',
+
     'dal',
     'dal_select2',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'taggit',
     'django.contrib.sites',
     'django.contrib.sitemaps',
+
     'social_django',
     'sorl.thumbnail',
     'phonenumber_field',
@@ -60,7 +69,8 @@ INSTALLED_APPS = [
     'ckeditor',
     'ckeditor_uploader',
     'bootstrap4',
-    'imagekit'
+    'imagekit',
+    'environ'
 ]
 
 MIDDLEWARE = [
@@ -97,19 +107,13 @@ WSGI_APPLICATION = 'konfetka.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'blog',
-        'USER': 'blog',
-        'PASSWORD': 'agent0071604YAR00',
+        'NAME': env("DATABASE_NAME"),
+        'USER': env("DATABASE_USER"),
+        'PASSWORD': env("DATABASE_PASSWORD"),
         'CONN_MAX_AGE': None,
     }
 }
@@ -204,18 +208,18 @@ AUTHENTICATION_BACKENDS = [
     'social_core.backends.google.GoogleOAuth2'
 ]
 
-SOCIAL_AUTH_FACEBOOK_KEY = '586066032079653'  # Facebook App ID
-SOCIAL_AUTH_FACEBOOK_SECRET = '211d1158a30e52e3e1e272079c985bf6'  # Facebook App Secret
+SOCIAL_AUTH_FACEBOOK_KEY = env('FACEBOOK_KEY')  # Facebook App ID
+SOCIAL_AUTH_FACEBOOK_SECRET = env('FACEBOOK_SECRET')  # Facebook App Secret
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '993446255793-uihiuvmrgm71apevv8vpks31deiobfkt.apps.googleusercontent.com'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'jM1LZMQyaZhpYua-oVKd5hUJ'  # Google Consumer Secret
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env('GOOGLE_OAUTH2_KEY')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env('GOOGLE_OAUTH2_SECRET')  # Google Consumer Secret
 
 
-EMAIL_HOST = 'einstein16.04@gmail.com'
-EMAIL_HOST_USER = 'einstein16.04@gmail.com'
-EMAIL_HOST_PASSWORD = 'luspdziywpxtmkuo'
-EMAIL_PORT = 25
+EMAIL_HOST = env('EMAIL_HOST')
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+EMAIL_PORT = env("EMAIL_PORT")
 EMAIL_USE_TLS = True
 
 PHONENUMBER_DB_FORMAT = 'NATIONAL'
@@ -226,8 +230,8 @@ ABSOLUTE_URL_OVERRIDES = {
 }
 
 # THUMBNAIL_DEBUG = True
-REDIS_HOST = 'localhost'
-REDIS_PORT = 6379
+REDIS_HOST = env('REDIS_HOST')
+REDIS_PORT = env("REDIS_PORT")
 REDIS_DB = 0
 
 INTERNAL_IPS = [
@@ -257,7 +261,7 @@ CACHES = {
         "BACKEND": "redis_cache.RedisCache",
         "LOCATION": 'localhost:6379',
         "OPTIONS": {
-            "DB": 0,
+            "DB": 1,
         }
     }
 }
