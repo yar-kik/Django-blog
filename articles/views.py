@@ -1,3 +1,4 @@
+import logging
 import redis
 from django.conf import settings
 from django.contrib.auth.decorators import login_required, permission_required
@@ -23,6 +24,8 @@ from .services import create_comment_form, create_reply_form, is_author, paginat
     paginate_comments, search_results
 from .tagging import CustomTag
 
+logger = logging.getLogger(__name__)
+
 r = redis.StrictRedis(host=settings.REDIS_HOST,
                       port=settings.REDIS_PORT,
                       db=settings.REDIS_DB)
@@ -41,7 +44,7 @@ def publish_list(request):
                                                        'articles': articles})
 
 
-@permission_required('article.can_moderate_article', raise_exception=True)
+@permission_required('articles.can_moderate_article', raise_exception=True)
 def moderation_list(request):
     """Show articles on moderation"""
     object_list = get_moderation_articles()
@@ -50,7 +53,7 @@ def moderation_list(request):
                                                        'articles': articles})
 
 
-@permission_required('article.can_draft_article', raise_exception=True)
+@permission_required('articles.can_draft_article', raise_exception=True)
 def draft_list(request):
     """Show draft articles"""
     object_list = get_draft_articles(request)

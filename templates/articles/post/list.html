@@ -8,10 +8,13 @@
 
     {% if perms.articles.add_article %}
         <a href="{% url 'articles:create_article' %}"><button>Створити нову статтю</button></a>
-        <a href="{% url 'articles:moderation_list' %}"><button>Статті на модерації</button></a>
         <a href="{% url 'articles:draft_list' %}"><button>Чернетки статей</button></a>
     {% endif %}
 
+    {% if perms.articles.can_moderate_article %}
+        <a href="{% url 'articles:moderation_list' %}"><button>Статті на модерації</button></a>
+    {% endif %}
+    
     {% if tag %}
         <h2>Статті за тегом "{{ tag.name }}":</h2>
     {% endif %}

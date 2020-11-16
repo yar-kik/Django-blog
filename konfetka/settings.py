@@ -70,7 +70,7 @@ INSTALLED_APPS = [
     'ckeditor_uploader',
     'bootstrap4',
     'imagekit',
-    'environ'
+    'environ',
 ]
 
 MIDDLEWARE = [

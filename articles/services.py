@@ -98,9 +98,8 @@ def search_results(request):
     form = SearchForm(request.GET)
     if form.is_valid():
         query = form.cleaned_data['query']
-        search_vector = SearchVector('title', weight='A', config='russian') + SearchVector('text', weight='B',
-                                                                                           config='russian')
-        search_query = SearchQuery(query, config='russian')
+        search_vector = SearchVector('title', weight='A') + SearchVector('text', weight='B')
+        search_query = SearchQuery(query)
         results = Article.objects.annotate(search=search_vector, rank=SearchRank(search_vector, search_query)).\
             filter(rank__gte=0.3).order_by('-rank')
         return results, query
