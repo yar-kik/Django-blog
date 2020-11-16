@@ -1,14 +1,12 @@
 <!DOCTYPE html>
 {% load article_tags %}
 {% load static %}
-{% load bootstrap4 %}
-{#{% bootstrap_css %}#}
-{% bootstrap_javascript jquery='full' %}
 
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}{% endblock %}</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link rel="stylesheet" href="{% static 'css/base1.css' %}">
 {#<script type="text/javascript" src="/static/admin/js/vendor/jquery/jquery.js"></script>#}
 
@@ -89,7 +87,7 @@
 {#                </li>#}
 {#            {% endfor %}#}
 {#        </ul>#}
-{#    <p><a href="{% url 'account:feedback' %}">Побажання та пропозиції?</a></p>#}
+    <p><a href="{% url 'account:feedback' %}">Побажання та пропозиції?</a></p>
 {#        <p><a href="{% url 'articles:article_feed' %}">Subscribe to my RSS feed</a></p>#}
     </div>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>

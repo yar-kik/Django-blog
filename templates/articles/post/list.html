@@ -36,7 +36,7 @@
                 <p class="date">{{ article.author_username }}  {{ article.date_created }}</p>
             </div>
             <div class="article-body">
-                {{ article.text|safe|truncatewords:30 }}
+                {{ article.text|striptags|safe|truncatewords:30 }}
             </div>
             <div class="article-footer">
                 <p class="article-info">

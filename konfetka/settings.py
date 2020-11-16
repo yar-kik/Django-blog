@@ -55,11 +55,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
-    'taggit',
     'django.contrib.sites',
     'django.contrib.sitemaps',
 
+    'taggit',
     'social_django',
     'sorl.thumbnail',
     'phonenumber_field',
@@ -68,7 +67,6 @@ INSTALLED_APPS = [
     'django.contrib.postgres',
     'ckeditor',
     'ckeditor_uploader',
-    'bootstrap4',
     'imagekit',
     'environ',
 ]
@@ -184,9 +182,6 @@ CKEDITOR_CONFIGS = {
     },
 }
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-
 
 LOGIN_REDIRECT_URL = 'account:dashboard'  # куди перенаправляти користувача при успішній авторизації
 LOGIN_URL = 'account:login'  # куди перенаправляти для входу в систему
@@ -215,7 +210,9 @@ SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env('GOOGLE_OAUTH2_KEY')
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env('GOOGLE_OAUTH2_SECRET')  # Google Consumer Secret
 
-
+# ADMINS = [("Yaroslav", "einstein16.04@gmail.com"), ]
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = env('EMAIL_HOST')
 EMAIL_HOST_USER = env('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
@@ -262,6 +259,52 @@ CACHES = {
         "LOCATION": 'localhost:6379',
         "OPTIONS": {
             "DB": 1,
+        }
+    }
+}
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {name} {funcName} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'formatter': 'verbose',
+            'class': 'django.utils.log.AdminEmailHandler',
+            'include_html': True,
+        },
+        "file": {
+            'level': "WARNING",
+            'formatter': "verbose",
+            'class': "logging.FileHandler",
+            'filename': "warnings.log",
+        },
+    },
+    'loggers': {
+        '': {
+            'level': 'INFO',
+            'handlers': ['console', 'file', 'mail_admins'],
+            'propagate': True,
+        },
+        'django.request': {
+            'handlers': ['console', 'file', 'mail_admins'],
+            'level': 'WARNING',
+            "propagate": False,
         }
     }
 }
