@@ -1,5 +1,6 @@
 from typing import Union
 
+from django.contrib.auth.decorators import login_required
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank, TrigramSimilarity
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import QuerySet
@@ -34,10 +35,10 @@ def create_comment_form(request: HttpRequest, comment_form: CommentForm, article
 def is_author(request: HttpRequest, comment: Comment) -> bool:
     """Check if the user is the author"""
     user = request.user
-    if user.is_staff or comment.name_id == user.id:
-        return True
-    else:
-        return False
+    if user.is_authenticated:
+        if user.is_staff or comment.name_id == user.id:
+            return True
+    return False
 
 
 def paginate_articles(request: HttpRequest, object_list: Article, paginate_by: int = 3) -> QuerySet:

@@ -3,6 +3,7 @@ import redis
 from django.conf import settings
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mail
 from django.http import JsonResponse, HttpResponse, HttpResponseForbidden
 from django.shortcuts import render, get_object_or_404, redirect
@@ -15,6 +16,7 @@ from django.views.generic.edit import ModelFormMixin
 from uuslug import slugify
 
 # from actions.utils import create_action
+from common.decorators import ajax_required, author_or_staff_required
 from .forms import EmailPostForm, CommentForm, ArticleForm
 from .models import Article, Comment
 from .selectors import get_article_by_slug, get_parent_comment, get_comments_by_id, \
@@ -104,6 +106,7 @@ def comments_list(request, article_id):
     return render(request, 'articles/comment/partial_comments_all.html', {'comments': paginated_comments})
 
 
+@ajax_required
 def reply_comment(request, comment_id):
     """Create reply of the parent comment"""
     parent_comment = get_parent_comment(comment_id)
@@ -116,6 +119,7 @@ def reply_comment(request, comment_id):
                         comment_id=comment_id)
 
 
+@ajax_required
 def create_comment(request, article_id):
     """Створення коментарю із закріпленням до статті та користувача-автора"""
     if request.method == 'POST':
@@ -126,41 +130,45 @@ def create_comment(request, article_id):
     return save_comment(request, 'articles/comment/partial_comments_all.html', comment_form)
 
 
+@ajax_required
 def edit_comment(request, comment_id):
     """Редагування коментарю, значення якого отримується через id"""
     instance_comment = get_object_or_404(Comment, id=comment_id)
-    if is_author(request, instance_comment):
-        if request.method == 'POST':
-            comment_form = CommentForm(instance=instance_comment, data=request.POST)
-        else:
-            comment_form = CommentForm(instance=instance_comment)
-        return save_comment(request, 'articles/comment/partial_comment_edit.html', comment_form)
-    else:
+    if not is_author(request, instance_comment):
         return HttpResponseForbidden
+    if request.method == 'POST':
+        comment_form = CommentForm(instance=instance_comment, data=request.POST)
+    else:
+        comment_form = CommentForm(instance=instance_comment)
+    return save_comment(request, 'articles/comment/partial_comment_edit.html', comment_form)
 
 
+# @author_or_staff_required
+@ajax_required
 def delete_comment(request, comment_id):
-    """Видалення коментарю, отриманого через його id."""
+    """
+    Видалення коментарю, отриманого через його id.
+    """
     comment = get_object_or_404(Comment, id=comment_id)
-    if is_author(request, comment):
-        article_id = comment.article_id
-        comments = get_comments_by_id(article_id)
-        data = dict()
-        if request.method == 'POST':
-            comment.delete()
-            data['form_is_valid'] = True
-            data['html_comments_all'] = render_to_string('articles/comment/partial_comments_all.html', {
-                'comments': comments, 'user': request.user})
-        else:
-            data['html_form'] = render_to_string('articles/comment/partial_comment_delete.html',
-                                                 {'comment': comment, 'user': request.user}, request=request)
-        return JsonResponse(data)
-    else:
+    if not is_author(request, comment):
         return HttpResponseForbidden
+    article_id = comment.article_id
+    comments = get_comments_by_id(article_id)
+    data = dict()
+    if request.method == 'POST':
+        comment.delete()
+        data['form_is_valid'] = True
+        data['html_comments_all'] = render_to_string('articles/comment/partial_comments_all.html', {
+            'comments': comments, 'user': request.user})
+    else:
+        data['html_form'] = render_to_string('articles/comment/partial_comment_delete.html',
+                                             {'comment': comment, 'user': request.user}, request=request)
+    return JsonResponse(data)
 
 
 def post_share(request, article_id):
-    """Отримання статті по ідентифікатору"""
+    """
+    """
     article = get_object_or_404(Article, id=article_id)
     sent = False
     if request.method == 'POST':

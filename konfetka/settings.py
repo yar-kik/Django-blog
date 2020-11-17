@@ -268,7 +268,8 @@ LOGGING = {
     'disable_existing_loggers': False,
     'formatters': {
         'verbose': {
-            'format': '{levelname} {asctime} {name} {funcName} {process:d} {thread:d} {message}',
+            'format': '{levelname} [{asctime}] "{message}", {name} {filename} line {lineno}, in {funcName}',
+            'datefmt': "%Y-%m-%d %H:%M:%S",
             'style': '{',
         },
         'simple': {
@@ -302,9 +303,14 @@ LOGGING = {
             'propagate': True,
         },
         'django.request': {
-            'handlers': ['console', 'file', 'mail_admins'],
+            'handlers': ['file', 'mail_admins'],
             'level': 'WARNING',
             "propagate": False,
-        }
+        },
+        'django.security': {
+            'handlers': ['file', 'mail_admins'],
+            'level': 'WARNING',
+            "propagate": False,
+        },
     }
 }
