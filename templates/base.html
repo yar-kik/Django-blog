@@ -5,55 +5,55 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+{#    <meta name="viewport" content="width=device-width, initial-scale=1.0">#}
     <title>{% block title %}{% endblock %}</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="{% static 'css/base1.css' %}">
+    <link rel="stylesheet" href="{% static 'css/base2.css' %}">
 {#<script type="text/javascript" src="/static/admin/js/vendor/jquery/jquery.js"></script>#}
 
 </head>
 <body>
     <header class="header">
-    	<nav class="menu">
-	        <ul class="main-menu">
-	            <li {% if section == "articles" %}class="nav-item selected"{% else %} class="nav-item"{% endif %}>
-	                <a href="{% url 'articles:all_articles' %}">Головна</a>
-	            </li>
-	            <li {% if section == "film" %}class="nav-item selected"{% else %} class="nav-item"{% endif %}>
-	                <a href="{% url 'articles:film_articles' %}">Фільми</a>
-	            </li>
-	            <li {% if section == "anime" %}class="nav-item selected"{% else %} class="nav-item"{% endif %}>
-	                <a href="{% url 'articles:anime_articles' %}">Аніме</a>
-                </li>
-                <li {% if section == "game" %}class="nav-item selected"{% else %} class="nav-item"{% endif %}>
-	                <a href="{% url 'articles:game_articles' %}">Ігри</a>
-	            </li>
-	        </ul>
-        </nav>
-        <nav class="menu">
-	        <ul class="user-menu">
-                <li class="nav-item">
-                    <form action="{% url 'articles:article_search' %}" method="get">
-                        <span><label for="id_query"></label>
-                            <input type="text" name="query" maxlength="50" placeholder="Шукати на сайті..."
-                                   required="" id="id_query">
-                        <input type="submit" value="Search"></span>
-                    </form>
-                </li>
-	        	<li {% if section == "dashboard" %}class="nav-item selected"{% else %} class="nav-item"{% endif %}>
-	                    <a href="{% url 'account:dashboard' %}">Мой аккаунт</a>
-                </li>
-                {% if user.is_authenticated %}
-	                <!-- Привет {{ request.user.first_name }}, -->
-                <li class="nav-item"> 
-                    <a href="{% url 'account:logout' %}">Выйти</a>
-                </li>
-	            {% else %}
-                <li class="nav-item">
-	                <a href="{% url 'account:login' %}">Войти</a>
-                </li>
-	            {% endif %}
+    	<nav class="site-nav">
+            <a class="site-title" href="{% url 'articles:all_articles' %}">Котоламповий бложик</a>
+            <div class="main-nav">
+                <ul>
+                    <li {% if section == "articles" %}class="nav-item selected"{% else %} class="nav-item"{% endif %}>
+                        <a href="{% url 'articles:all_articles' %}">Головна</a>
+                    </li>♡
+                    <li {% if section == "film" %}class="nav-item selected"{% else %} class="nav-item"{% endif %}>
+                        <a href="{% url 'articles:film_articles' %}">Фільми</a>
+                    </li>♡
+                    <li {% if section == "anime" %}class="nav-item selected"{% else %} class="nav-item"{% endif %}>
+                        <a href="{% url 'articles:anime_articles' %}">Аніме</a>
+                    </li>♡
+                    <li {% if section == "game" %}class="nav-item selected"{% else %} class="nav-item"{% endif %}>
+                        <a href="{% url 'articles:game_articles' %}">Ігри</a>
+                    </li>
+                    <li class="nav-item">
+                        <form action="{% url 'articles:article_search' %}" method="get" id="search">
+                            <span><label for="search-field"></label>
+                                <input type="text" name="query" maxlength="50" placeholder="Шукати на сайті..."
+                                       required="" id="search-field">
+                            <input type="submit" value="Пошук" class="button"></span>
+                        </form>
+                    </li>
+                    <li {% if section == "dashboard" %}class="nav-item selected"{% else %} class="nav-item"{% endif %}>
+                            <a href="{% url 'account:dashboard' %}" class="button">Мій кабінет</a>
+                    </li>
+                    {% if user.is_authenticated %}
+                        <!-- Привет {{ request.user.first_name }}, -->
+                    <li class="nav-item">
+                        <a href="{% url 'account:logout' %}" class="button">Вихід</a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a href="{% url 'account:login' %}" class="button">Вхід</a>
+                    </li>
+                    {% endif %}
 
-	        </ul>
+                </ul>
+            </div>
         </nav>
     </header>
 
@@ -68,28 +68,36 @@
         </ul>
     {% endif %}
 
-    <div id="content">
-        {% block content %}{% endblock %}
-    </div>
+    <main>
+        <div id="content">
+            {% block content %}{% endblock %}
+        </div>
+        <aside id="sidebar">
+            <div class="last-articles">
+                <h3>Останні статті</h3>
+                {% show_latest_articles 3 %}
+            </div>
 
-    <div id="sidebar">
-{#        <h2><a href="{% url 'articles:all_articles' %}">My blog</a></h2>#}
+            <div class="commented-articles">
+                <h3>Найбільш коментовані статті</h3>
+                {% get_most_commented_articles 3 as most_commented_articles %}
+                <ul>
+                    {% for article in most_commented_articles %}
+                        <li>
+                            <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+    {#    <p><a href="{% url 'account:feedback' %}">Побажання та пропозиції?</a></p>#}
+    {#        <p><a href="{% url 'articles:article_feed' %}">Subscribe to my RSS feed</a></p>#}
+        </aside>
+    </main>
 
-{#        <h3>Latest posts</h3>#}
-{#        {% show_latest_articles 3 %}#}
+    <footer>
+        <p>Some information</p>
+    </footer>
 
-{#        <h3>Most commented posts</h3>#}
-{#        {% get_most_commented_articles 3 as most_commented_articles %}#}
-{#        <ul>#}
-{#            {% for article in most_commented_articles %}#}
-{#                <li>#}
-{#                    <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>#}
-{#                </li>#}
-{#            {% endfor %}#}
-{#        </ul>#}
-    <p><a href="{% url 'account:feedback' %}">Побажання та пропозиції?</a></p>
-{#        <p><a href="{% url 'articles:article_feed' %}">Subscribe to my RSS feed</a></p>#}
-    </div>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.5/jquery.inputmask.min.js"></script>
     <link rel="stylesheet" type="text/css" href="{% static 'vendor/select2/dist/css/select2.css' %}">

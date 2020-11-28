@@ -4,27 +4,31 @@
 {% block title %}{{ article.title }}{% endblock %}
 
 {% block content %}
+    <article>
     <div class="article-header">
         {% if article.author == user or user.is_staff %}
             <a href="{% url 'articles:update_article' article.slug %}"><button>Редагувати статтю</button></a>
             <a href="{% url 'articles:delete_article' article.slug %}"><button>Видалити статтю</button></a>
         {% endif %}
 
-        <h1>{{ article.title }}</h1>
+        <div class="article-info">
+            Створено <a href="{{ article.author.get_absolute_url }}">{{ article.author }}</a>
+            |{{ article.date_created }}|
+        </div>
 
         <div class="tags">
-        {% for tag in article.tags.all %}
-            <a href="{% url 'articles:all_articles_by_tag' tag.slug %}">
-                {{ tag.name }}
-            </a>
-            {% if not forloop.last %}, {% endif %}
-        {% endfor %}
+            {% for tag in article.tags.all %}
+                <a href="{% url 'articles:all_articles_by_tag' tag.slug %}">
+                    #{{ tag.name }}
+                </a>
+                {% if not forloop.last %}, {% endif %}
+            {% endfor %}
         </div>
 
-        <div class="article-info">
-            <a href="{{ article.author.get_absolute_url }}">{{ article.author }}</a>
-            {{ article.date_created }}
-        </div>
+        <h1>{{ article.title }}</h1>
+
+
+
     </div>
 
     <div class="article-body">
@@ -69,8 +73,7 @@
         {% empty %}
             <p>На жаль, нічого схожого ще немає</p>
         {% endfor %}
-
-
+    </article>
     <div class="new-comment">
         <h3>Залишити коментар</h3>
         {% if user.is_authenticated %}
