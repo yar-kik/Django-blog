@@ -80,7 +80,7 @@
             <form action="{% url 'articles:create_comment' article.id %}" method="post" class="new-comment-form">
                 {{ comment_form }}
                 {% csrf_token %}
-                <p><input type="submit" value="Додати коментар"></p>
+                <button type="submit" class="add-comment">Додати коментар</button>
             </form>
         {% else %}
             <p>Спершу ти повинен <a href="{% url 'account:login' %}">увійти</a></p>
@@ -123,6 +123,7 @@
         var comment_body = button.parents('.comment');
         var temporary = comment_body.find('.temporary');
         var text = comment_body.find('.comment-text');
+        var reply = comment_body.find(".reply");
         var form = button.parent();
         $.ajax({
             data: {
@@ -137,6 +138,7 @@
                 $('.reply-form').not(this).hide();
             },
             success: function (data) {
+                $(reply).hide();
                 if (data.action == 'reply') {
                     $(form).append(data.html_form);
                 } else {
@@ -184,6 +186,7 @@
         let form = comment_body.find('form');
         $(text).show();
         $(form).remove();
+        $(".reply").show();
     }
 
     $('.all-comments').on("click", ".edit", loadForm);
