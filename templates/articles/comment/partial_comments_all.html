@@ -2,34 +2,37 @@
 {% load article_tags %}
 
 {% for comment in comments %}
-    <div class="comment" style="grid-column: {{ comment.get_offset }}/ span 15;">
+    <div class="comment" id="{{ comment.id }}" style="grid-column: {{ comment.get_offset }}/ span 19;">
         <div class="comment-head">
-            <a href="{{ comment.name.get_absolute_url }}">
-                <div class="user-info">
-                    {% thumbnail comment.name.profile.photo "50x50" crop="center" as im %}
-                        <img src="{{ im.url }}">
-                    {% endthumbnail %}
-                </div>
-                <span>
-                    {{ comment.name.username }}
+            <span class="user-avatar">
+                {% thumbnail comment.name.profile.photo "50x50" crop="center" as im %}
+                    <a href="{{ comment.name.get_absolute_url }}"><img src="{{ im.url }}"></a>
+                {% endthumbnail %}
+            </span>
+            <div class="comment-info">
+                <span class="user-username">
+                    <a href="{{ comment.name.get_absolute_url }}">{{ comment.name.username }}</a>
                 </span>
-            </a>
-
-            {% if comment.created|date:"i H d m Y" == comment.updated|date:"i H d m Y" %}
-                Опубліковано: {{ comment.created|date:"l, j E Y" }} о {{ comment.created|date:"H:i" }}
-            {% else %}
-                Редаговано: {{ comment.created|date:"l, j E Y" }} о {{ comment.created|date:"H:i" }}
-            {% endif %}
-            {% if user.is_staff or comment.name == user %}
-                <button data-url="{% url 'articles:edit_comment' comment_id=comment.id%}" class="edit">Редагувати</button>
-                <button data-url="{% url 'articles:delete_comment' comment_id=comment.id%}" class="delete">Видалити</button>
-            {% endif %}
+                <span class="comment-date">
+                    {% if comment.created|date:"i H d m Y" == comment.updated|date:"i H d m Y" %}
+                        Опубліковано: {{ comment.created|date:"l, j E Y" }} о {{ comment.created|date:"H:i" }}
+                    {% else %}
+                        Редаговано: {{ comment.created|date:"l, j E Y" }} о {{ comment.created|date:"H:i" }}
+                    {% endif %}
+                </span>
+            </div>
+            <div class="comment-button">
+                {% if user.is_staff or comment.name == user %}
+                    <button data-url="{% url 'articles:edit_comment' comment_id=comment.id%}" class="edit">Редагувати</button>
+                    <button data-url="{% url 'articles:delete_comment' comment_id=comment.id%}" class="delete">Видалити</button>
+                {% endif %}
+            </div>
         </div>
 
         <div class="comment-body">
             {% if comment.path|length > 1 %}
                 <div class="reply-to">
-                    <p>Відповідь <a href="#{{ comment.path|index:-2 }}">{{ comment.reply_to }}</a></p>
+                    <em>Відповідь <a href="#{{ comment.path|index:-2 }}" onclick='showParent({{ comment.path|index:-2 }})'>{{ comment.reply_to }}</a></em>
                 </div>
             {% endif %}
 
@@ -47,4 +50,16 @@
 {#            {% endwith %}#}
         </div>
     </div>
+
+    <script>
+        function showParent(comment_id) {
+        let parent = document.getElementById(comment_id);
+        parent.animate([
+                {backgroundColor: "#ffca80"},
+                {backgroundColor: "white"}
+            ],
+                {duration: 1000,
+                easing: "ease-in"})
+    }
+    </script>
 {% endfor %}
