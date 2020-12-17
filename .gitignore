@@ -1,6 +1,7 @@
-.idea/
-.env
-TODO
-my_env/
-*.log
-media/
+.idea/ 
+.env 
+*.log 
+media/ 
+my_env/ 
+TODO 
+__pycache__ 

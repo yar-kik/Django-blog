@@ -18,6 +18,7 @@ from django.views.decorators.http import require_POST
 
 
 def user_login(request):
+    """"""
     if request.method == 'POST':
         form = LoginForm(request.POST)
         """Форма заповнена правильно"""
@@ -61,6 +62,7 @@ def dashboard(request):
 
 
 def register(request):
+    """"""
     if request.user.is_authenticated:
         return redirect(settings.LOGIN_REDIRECT_URL)
     else:
@@ -90,6 +92,7 @@ def register(request):
 
 @login_required
 def edit(request):
+    """"""
     if request.method == 'POST':
         user_form = UserEditForm(instance=request.user, data=request.POST)
         profile_form = ProfileEditForm(instance=request.user.profile,
