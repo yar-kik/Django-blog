@@ -4,3 +4,6 @@ TODO
 my_env/
 *.log
 media/
+env/
+__pycache__
+.log

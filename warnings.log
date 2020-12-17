@@ -283,3 +283,791 @@ Traceback (most recent call last):
   File "D:\konfetka\common\decorators.py", line 18, in _wrapped_view
     raise PermissionDenied()
 django.core.exceptions.PermissionDenied
+ERROR [2020-12-04 00:19:33] "Invalid HTTP_HOST header: '157.230.102.249:8000'. You may need to add '157.230.102.249' to ALLOWED_HOSTS.", django.security.DisallowedHost exception.py line 75, in response_for_exception
+WARNING [2020-12-04 00:19:33] "Bad Request: /", django.request log.py line 222, in log_response
+ERROR [2020-12-04 00:19:34] "Invalid HTTP_HOST header: '157.230.102.249:8000'. You may need to add '157.230.102.249' to ALLOWED_HOSTS.", django.security.DisallowedHost exception.py line 75, in response_for_exception
+WARNING [2020-12-04 00:19:34] "Bad Request: /favicon.ico", django.request log.py line 222, in log_response
+ERROR [2020-12-04 00:22:41] "Internal Server Error: /articles/", django.request log.py line 222, in log_response
+Traceback (most recent call last):
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/core/paginator.py", line 43, in validate_number
+    number = int(number)
+TypeError: int() argument must be a string, a bytes-like object or a number, not 'NoneType'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/blog-admin/konfetka/articles/services.py", line 49, in paginate_articles
+    articles = paginator.page(page)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/core/paginator.py", line 70, in page
+    number = self.validate_number(number)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/core/paginator.py", line 45, in validate_number
+    raise PageNotAnInteger(_('That page number is not an integer'))
+django.core.paginator.PageNotAnInteger: Номер сторінки не є цілим числом
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/db/backends/utils.py", line 86, in _execute
+    return self.cursor.execute(sql, params)
+psycopg2.errors.UndefinedColumn: column articles_comment.article_id does not exist
+LINE 1: ... "articles_comment" ON ("articles_article"."id" = "articles_...
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/blog-admin/konfetka/articles/views.py", line 44, in publish_list
+    articles = paginate_articles(request, object_list)
+  File "/home/blog-admin/konfetka/articles/services.py", line 51, in paginate_articles
+    articles = paginator.page(1)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/core/paginator.py", line 70, in page
+    number = self.validate_number(number)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/core/paginator.py", line 48, in validate_number
+    if number > self.num_pages:
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/utils/functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/core/paginator.py", line 97, in num_pages
+    if self.count == 0 and not self.allow_empty_first_page:
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/utils/functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/core/paginator.py", line 91, in count
+    return c()
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/db/models/query.py", line 397, in count
+    return self.query.get_count(using=self.db)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/db/models/sql/query.py", line 517, in get_count
+    number = obj.get_aggregation(using, ['__count'])['__count']
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/db/models/sql/query.py", line 502, in get_aggregation
+    result = compiler.execute_sql(SINGLE)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/db/models/sql/compiler.py", line 1151, in execute_sql
+    cursor.execute(sql, params)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/db/backends/utils.py", line 100, in execute
+    return super().execute(sql, params)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/db/backends/utils.py", line 68, in execute
+    return self._execute_with_wrappers(sql, params, many=False, executor=self._execute)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/db/backends/utils.py", line 77, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/db/backends/utils.py", line 86, in _execute
+    return self.cursor.execute(sql, params)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/db/utils.py", line 90, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/db/backends/utils.py", line 86, in _execute
+    return self.cursor.execute(sql, params)
+django.db.utils.ProgrammingError: column articles_comment.article_id does not exist
+LINE 1: ... "articles_comment" ON ("articles_article"."id" = "articles_...
+                                                             ^
+
+WARNING [2020-12-04 00:22:42] "Not Found: /favicon.ico", django.request log.py line 222, in log_response
+WARNING [2020-12-04 00:22:54] "Not Found: /static/admin/css/login.css", django.request log.py line 222, in log_response
+WARNING [2020-12-04 00:22:54] "Not Found: /static/admin/css/responsive.css", django.request log.py line 222, in log_response
+WARNING [2020-12-04 00:22:54] "Not Found: /static/admin/css/base.css", django.request log.py line 222, in log_response
+ERROR [2020-12-04 00:23:09] "Internal Server Error: /admin/login/", django.request log.py line 222, in log_response
+Traceback (most recent call last):
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/db/backends/utils.py", line 86, in _execute
+    return self.cursor.execute(sql, params)
+psycopg2.errors.UndefinedTable: relation "django_session" does not exist
+LINE 1: SELECT (1) AS "a" FROM "django_session" WHERE "django_sessio...
+                               ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/views/decorators/cache.py", line 44, in _wrapped_view_func
+    response = view_func(request, *args, **kwargs)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/contrib/admin/sites.py", line 407, in login
+    return LoginView.as_view(**defaults)(request)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/views/generic/base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/utils/decorators.py", line 43, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/views/decorators/debug.py", line 76, in sensitive_post_parameters_wrapper
+    return view(request, *args, **kwargs)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/utils/decorators.py", line 43, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/utils/decorators.py", line 130, in _wrapped_view
+    response = view_func(request, *args, **kwargs)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/utils/decorators.py", line 43, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/views/decorators/cache.py", line 44, in _wrapped_view_func
+    response = view_func(request, *args, **kwargs)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/contrib/auth/views.py", line 63, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/views/generic/base.py", line 97, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/views/generic/edit.py", line 142, in post
+    return self.form_valid(form)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/contrib/auth/views.py", line 92, in form_valid
+    auth_login(self.request, form.get_user())
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/contrib/auth/__init__.py", line 107, in login
+    request.session.cycle_key()
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/contrib/sessions/backends/base.py", line 310, in cycle_key
+    self.create()
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/contrib/sessions/backends/db.py", line 51, in create
+    self._session_key = self._get_new_session_key()
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/contrib/sessions/backends/base.py", line 162, in _get_new_session_key
+    if not self.exists(session_key):
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/contrib/sessions/backends/db.py", line 47, in exists
+    return self.model.objects.filter(session_key=session_key).exists()
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/db/models/query.py", line 777, in exists
+    return self.query.has_results(using=self.db)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/db/models/sql/query.py", line 537, in has_results
+    return compiler.has_results()
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/db/models/sql/compiler.py", line 1121, in has_results
+    return bool(self.execute_sql(SINGLE))
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/db/models/sql/compiler.py", line 1151, in execute_sql
+    cursor.execute(sql, params)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/db/backends/utils.py", line 100, in execute
+    return super().execute(sql, params)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/db/backends/utils.py", line 68, in execute
+    return self._execute_with_wrappers(sql, params, many=False, executor=self._execute)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/db/backends/utils.py", line 77, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/db/backends/utils.py", line 86, in _execute
+    return self.cursor.execute(sql, params)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/db/utils.py", line 90, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/db/backends/utils.py", line 86, in _execute
+    return self.cursor.execute(sql, params)
+django.db.utils.ProgrammingError: relation "django_session" does not exist
+LINE 1: SELECT (1) AS "a" FROM "django_session" WHERE "django_sessio...
+                               ^
+
+WARNING [2020-12-04 10:44:32] "Not Found: /static/admin/css/base.css", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:44:32] "Not Found: /static/admin/css/login.css", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:44:32] "Not Found: /static/admin/css/responsive.css", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:44:32] "Not Found: /static/admin/js/nav_sidebar.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:44:33] "Not Found: /static/admin/css/nav_sidebar.css", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:44:33] "Not Found: /favicon.ico", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:44:49] "Not Found: /static/admin/css/base.css", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:44:49] "Not Found: /static/admin/css/nav_sidebar.css", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:44:49] "Not Found: /static/admin/css/responsive.css", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:44:49] "Not Found: /static/admin/css/login.css", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:44:49] "Not Found: /static/admin/js/nav_sidebar.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:01] "Not Found: /static/css/base2.css", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:02] "Not Found: /static/autocomplete_light/jquery.init.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:02] "Not Found: /static/autocomplete_light/select2.css", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:02] "Not Found: /static/vendor/select2/dist/css/select2.css", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:02] "Not Found: /static/autocomplete_light/autocomplete.init.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:02] "Not Found: /static/vendor/select2/dist/js/select2.full.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:02] "Not Found: /static/autocomplete_light/select2.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:02] "Not Found: /static/autocomplete_light/select2.css", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:02] "Not Found: /static/autocomplete_light/jquery.post-setup.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:02] "Not Found: /static/autocomplete_light/forward.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:02] "Not Found: /static/autocomplete_light/jquery.init.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:02] "Not Found: /static/autocomplete_light/autocomplete.init.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:02] "Not Found: /static/vendor/select2/dist/js/select2.full.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:02] "Not Found: /static/autocomplete_light/select2.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:02] "Not Found: /static/autocomplete_light/forward.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:02] "Not Found: /static/autocomplete_light/jquery.post-setup.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:08] "Not Found: /static/css/base2.css", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:08] "Not Found: /static/vendor/select2/dist/css/select2.css", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:08] "Not Found: /static/autocomplete_light/select2.css", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:08] "Not Found: /static/autocomplete_light/autocomplete.init.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:08] "Not Found: /static/autocomplete_light/jquery.init.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:08] "Not Found: /static/vendor/select2/dist/js/select2.full.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:08] "Not Found: /static/autocomplete_light/select2.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:09] "Not Found: /static/autocomplete_light/jquery.post-setup.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:09] "Not Found: /static/autocomplete_light/forward.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:09] "Not Found: /static/autocomplete_light/autocomplete.init.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:09] "Not Found: /static/vendor/select2/dist/js/select2.full.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:09] "Not Found: /static/autocomplete_light/select2.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:09] "Not Found: /static/autocomplete_light/forward.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:09] "Not Found: /static/autocomplete_light/jquery.post-setup.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:10] "Not Found: /static/css/base2.css", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:10] "Not Found: /static/vendor/select2/dist/css/select2.css", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:10] "Not Found: /static/autocomplete_light/select2.css", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:10] "Not Found: /static/autocomplete_light/jquery.init.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:10] "Not Found: /static/vendor/select2/dist/js/select2.full.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:10] "Not Found: /static/autocomplete_light/autocomplete.init.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:10] "Not Found: /static/autocomplete_light/select2.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:10] "Not Found: /static/autocomplete_light/forward.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:10] "Not Found: /static/autocomplete_light/jquery.post-setup.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:10] "Not Found: /static/vendor/select2/dist/js/select2.full.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:10] "Not Found: /static/autocomplete_light/select2.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:10] "Not Found: /static/autocomplete_light/forward.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:10] "Not Found: /static/autocomplete_light/jquery.post-setup.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:12] "Not Found: /static/css/base2.css", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:12] "Not Found: /static/autocomplete_light/select2.css", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:12] "Not Found: /static/vendor/select2/dist/css/select2.css", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:12] "Not Found: /static/autocomplete_light/jquery.init.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:12] "Not Found: /static/autocomplete_light/autocomplete.init.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:12] "Not Found: /static/vendor/select2/dist/js/select2.full.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:12] "Not Found: /static/autocomplete_light/select2.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:12] "Not Found: /static/autocomplete_light/select2.css", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:12] "Not Found: /static/autocomplete_light/jquery.post-setup.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:12] "Not Found: /static/autocomplete_light/forward.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:13] "Not Found: /static/autocomplete_light/jquery.init.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:13] "Not Found: /static/autocomplete_light/autocomplete.init.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:13] "Not Found: /static/vendor/select2/dist/js/select2.full.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:13] "Not Found: /static/autocomplete_light/select2.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:13] "Not Found: /static/autocomplete_light/forward.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:13] "Not Found: /static/css/base2.css", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:13] "Not Found: /static/vendor/select2/dist/css/select2.css", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:13] "Not Found: /static/js/show_password.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:13] "Not Found: /static/autocomplete_light/autocomplete.init.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:13] "Not Found: /static/autocomplete_light/select2.css", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:13] "Not Found: /static/autocomplete_light/jquery.init.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:14] "Not Found: /static/vendor/select2/dist/js/select2.full.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:14] "Not Found: /static/autocomplete_light/select2.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:14] "Not Found: /static/autocomplete_light/forward.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:14] "Not Found: /static/vendor/select2/dist/css/select2.css", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:14] "Not Found: /static/autocomplete_light/jquery.post-setup.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:14] "Not Found: /static/autocomplete_light/select2.css", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:14] "Not Found: /static/autocomplete_light/jquery.init.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:14] "Not Found: /static/autocomplete_light/autocomplete.init.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:14] "Not Found: /static/vendor/select2/dist/js/select2.full.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:14] "Not Found: /static/autocomplete_light/select2.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:14] "Not Found: /static/autocomplete_light/forward.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 10:45:14] "Not Found: /static/autocomplete_light/jquery.post-setup.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 20:52:12] "Not Found: /favicon.ico", django.request log.py line 224, in log_response
+ERROR [2020-12-04 20:52:18] "Internal Server Error: /.env", django.request log.py line 224, in log_response
+Traceback (most recent call last):
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/core/handlers/exception.py", line 47, in inner
+    response = get_response(request)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/ddt_request_history/panels/request_history.py", line 94, in patched_middleware_call
+    bits[-2] += toolbar.render_toolbar()
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/debug_toolbar/toolbar.py", line 69, in render_toolbar
+    return render_to_string("debug_toolbar/base.html", context)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/template/loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: debug_toolbar/base.html
+WARNING [2020-12-04 20:52:18] "Forbidden (CSRF cookie not set.): /", django.security.csrf log.py line 224, in log_response
+ERROR [2020-12-04 20:52:18] "Internal Server Error: /", django.request log.py line 224, in log_response
+Traceback (most recent call last):
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/core/handlers/exception.py", line 47, in inner
+    response = get_response(request)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/ddt_request_history/panels/request_history.py", line 94, in patched_middleware_call
+    bits[-2] += toolbar.render_toolbar()
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/debug_toolbar/toolbar.py", line 69, in render_toolbar
+    return render_to_string("debug_toolbar/base.html", context)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/template/loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: debug_toolbar/base.html
+WARNING [2020-12-04 21:46:04] "Not Found: /static/admin/css/dashboard.css", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:46:04] "Not Found: /static/admin/img/icon-addlink.svg", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:46:05] "Not Found: /static/admin/img/icon-changelink.svg", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:46:52] "Not Found: /static/admin/css/dashboard.css", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:46:52] "Not Found: /static/admin/img/icon-changelink.svg", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:46:52] "Not Found: /static/admin/img/icon-addlink.svg", django.request log.py line 224, in log_response
+ERROR [2020-12-04 21:47:23] "Internal Server Error: /account/", django.request log.py line 224, in log_response
+Traceback (most recent call last):
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/core/handlers/exception.py", line 47, in inner
+    response = get_response(request)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/core/handlers/base.py", line 179, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/contrib/auth/decorators.py", line 21, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/blog-admin/konfetka/account/views.py", line 51, in dashboard
+    profile = request.user.profile
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/utils/functional.py", line 241, in inner
+    return func(self._wrapped, *args)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/db/models/fields/related_descriptors.py", line 421, in __get__
+    raise self.RelatedObjectDoesNotExist(
+django.contrib.auth.models.User.profile.RelatedObjectDoesNotExist: User has no profile.
+WARNING [2020-12-04 21:47:32] "Not Found: /static/admin/css/dashboard.css", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:32] "Not Found: /static/admin/img/icon-changelink.svg", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:32] "Not Found: /static/admin/img/icon-addlink.svg", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:34] "Not Found: /static/admin/css/changelists.css", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:34] "Not Found: /static/admin/js/jquery.init.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:34] "Not Found: /static/admin/js/core.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:34] "Not Found: /static/admin/js/admin/RelatedObjectLookups.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:34] "Not Found: /static/admin/js/vendor/jquery/jquery.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:34] "Not Found: /static/admin/js/actions.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:34] "Not Found: /static/admin/js/urlify.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:34] "Not Found: /static/admin/js/prepopulate.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:34] "Not Found: /static/admin/js/vendor/xregexp/xregexp.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:34] "Not Found: /static/admin/js/vendor/jquery/jquery.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:34] "Not Found: /static/admin/js/jquery.init.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:34] "Not Found: /static/admin/js/core.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:34] "Not Found: /static/admin/js/admin/RelatedObjectLookups.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:35] "Not Found: /static/admin/js/actions.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:35] "Not Found: /static/admin/js/urlify.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:35] "Not Found: /static/admin/js/prepopulate.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:35] "Not Found: /static/admin/js/vendor/xregexp/xregexp.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:35] "Not Found: /static/admin/img/icon-addlink.svg", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:35] "Not Found: /static/admin/img/tooltag-add.svg", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:37] "Not Found: /static/admin/css/forms.css", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:38] "Not Found: /static/admin/js/vendor/jquery/jquery.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:38] "Not Found: /static/admin/js/calendar.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:38] "Not Found: /static/admin/js/jquery.init.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:38] "Not Found: /static/admin/js/admin/DateTimeShortcuts.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:38] "Not Found: /static/admin/js/core.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:38] "Not Found: /static/admin/js/admin/RelatedObjectLookups.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:38] "Not Found: /static/admin/js/actions.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:38] "Not Found: /static/admin/js/urlify.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:38] "Not Found: /static/admin/js/prepopulate.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:38] "Not Found: /static/admin/js/vendor/xregexp/xregexp.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:38] "Not Found: /static/admin/js/vendor/jquery/jquery.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:38] "Not Found: /static/admin/js/prepopulate_init.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:38] "Not Found: /static/admin/js/calendar.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:38] "Not Found: /static/admin/img/icon-changelink.svg", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:38] "Not Found: /static/admin/js/jquery.init.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:38] "Not Found: /static/admin/img/icon-addlink.svg", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:38] "Not Found: /static/admin/js/change_form.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:38] "Not Found: /static/admin/js/admin/DateTimeShortcuts.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:38] "Not Found: /static/admin/js/core.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:38] "Not Found: /static/admin/js/admin/RelatedObjectLookups.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:39] "Not Found: /static/admin/js/actions.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:39] "Not Found: /static/admin/js/urlify.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:39] "Not Found: /static/admin/js/prepopulate.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:39] "Not Found: /static/admin/js/vendor/xregexp/xregexp.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:39] "Not Found: /static/admin/js/prepopulate_init.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:39] "Not Found: /static/admin/img/icon-addlink.svg", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:39] "Not Found: /static/admin/js/change_form.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:42] "Not Found: /static/admin/css/forms.css", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:42] "Not Found: /static/admin/js/vendor/jquery/jquery.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:42] "Not Found: /static/admin/js/calendar.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:42] "Not Found: /static/admin/js/admin/DateTimeShortcuts.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:42] "Not Found: /static/admin/js/jquery.init.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:42] "Not Found: /static/admin/js/core.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:42] "Not Found: /static/admin/js/admin/RelatedObjectLookups.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:42] "Not Found: /static/admin/js/actions.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:42] "Not Found: /static/admin/js/urlify.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:42] "Not Found: /static/admin/js/vendor/xregexp/xregexp.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:42] "Not Found: /static/admin/js/prepopulate.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:42] "Not Found: /static/admin/js/admin/DateTimeShortcuts.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:42] "Not Found: /static/admin/js/core.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:42] "Not Found: /static/admin/js/prepopulate_init.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:43] "Not Found: /static/admin/img/icon-changelink.svg", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:43] "Not Found: /static/admin/js/admin/RelatedObjectLookups.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:43] "Not Found: /static/admin/js/actions.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:43] "Not Found: /static/admin/js/change_form.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:43] "Not Found: /static/admin/img/icon-addlink.svg", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:43] "Not Found: /static/admin/js/urlify.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:43] "Not Found: /static/admin/js/prepopulate.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:43] "Not Found: /static/admin/js/vendor/xregexp/xregexp.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:43] "Not Found: /static/admin/js/prepopulate_init.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:43] "Not Found: /static/admin/js/change_form.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:43] "Not Found: /static/admin/img/icon-addlink.svg", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:46] "Not Found: /static/admin/css/changelists.css", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:46] "Not Found: /static/admin/js/admin/RelatedObjectLookups.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:46] "Not Found: /static/admin/js/core.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:46] "Not Found: /static/admin/js/jquery.init.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:46] "Not Found: /static/admin/js/vendor/jquery/jquery.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:46] "Not Found: /static/admin/js/actions.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:46] "Not Found: /static/admin/js/urlify.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:46] "Not Found: /static/admin/js/prepopulate.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:46] "Not Found: /static/admin/js/vendor/xregexp/xregexp.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:46] "Not Found: /static/admin/js/jquery.init.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:47] "Not Found: /static/admin/js/core.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:47] "Not Found: /static/admin/js/admin/RelatedObjectLookups.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:47] "Not Found: /static/admin/js/actions.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:47] "Not Found: /static/admin/js/urlify.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:47] "Not Found: /static/admin/js/prepopulate.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:47] "Not Found: /static/admin/js/vendor/xregexp/xregexp.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:47] "Not Found: /static/admin/img/tooltag-add.svg", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:47] "Not Found: /static/admin/img/icon-addlink.svg", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:49] "Not Found: /static/admin/css/dashboard.css", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:49] "Not Found: /static/admin/img/icon-changelink.svg", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:49] "Not Found: /static/admin/img/icon-addlink.svg", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:51] "Not Found: /static/admin/css/forms.css", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:51] "Not Found: /static/admin/js/calendar.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:51] "Not Found: /static/admin/js/vendor/jquery/jquery.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:51] "Not Found: /static/admin/js/jquery.init.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:51] "Not Found: /static/admin/js/admin/DateTimeShortcuts.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:51] "Not Found: /static/admin/js/core.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:51] "Not Found: /static/admin/js/admin/RelatedObjectLookups.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:51] "Not Found: /static/admin/js/actions.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:51] "Not Found: /static/admin/js/urlify.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:51] "Not Found: /static/admin/js/prepopulate.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:51] "Not Found: /static/admin/js/vendor/xregexp/xregexp.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:51] "Not Found: /static/admin/js/vendor/xregexp/xregexp.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:51] "Not Found: /static/admin/js/prepopulate_init.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:51] "Not Found: /static/admin/img/icon-changelink.svg", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:52] "Not Found: /static/admin/js/change_form.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:52] "Not Found: /static/admin/img/icon-addlink.svg", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:59] "Not Found: /static/admin/css/dashboard.css", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:59] "Not Found: /static/admin/img/icon-addlink.svg", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:47:59] "Not Found: /static/admin/img/icon-changelink.svg", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:04] "Not Found: /static/admin/css/dashboard.css", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:04] "Not Found: /static/admin/img/icon-changelink.svg", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:04] "Not Found: /static/admin/img/icon-addlink.svg", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:07] "Not Found: /static/admin/css/forms.css", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:08] "Not Found: /static/admin/js/vendor/jquery/jquery.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:08] "Not Found: /static/admin/js/calendar.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:08] "Not Found: /static/admin/js/admin/DateTimeShortcuts.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:08] "Not Found: /static/admin/js/jquery.init.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:08] "Not Found: /static/admin/js/core.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:08] "Not Found: /static/admin/js/admin/RelatedObjectLookups.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:08] "Not Found: /static/admin/js/actions.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:08] "Not Found: /static/admin/js/urlify.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:08] "Not Found: /static/admin/js/prepopulate.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:08] "Not Found: /static/admin/js/vendor/xregexp/xregexp.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:08] "Not Found: /static/admin/js/admin/DateTimeShortcuts.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:08] "Not Found: /static/admin/js/prepopulate_init.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:08] "Not Found: /static/admin/js/core.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:08] "Not Found: /static/admin/img/icon-changelink.svg", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:08] "Not Found: /static/admin/js/admin/RelatedObjectLookups.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:08] "Not Found: /static/admin/img/icon-addlink.svg", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:08] "Not Found: /static/admin/js/actions.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:08] "Not Found: /static/admin/js/change_form.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:08] "Not Found: /static/admin/js/urlify.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:08] "Not Found: /static/admin/js/prepopulate.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:08] "Not Found: /static/admin/js/vendor/xregexp/xregexp.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:09] "Not Found: /static/admin/js/prepopulate_init.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:09] "Not Found: /static/admin/js/change_form.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:09] "Not Found: /static/admin/img/icon-addlink.svg", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:16] "Not Found: /static/admin/css/forms.css", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:16] "Not Found: /static/admin/js/vendor/jquery/jquery.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:16] "Not Found: /static/admin/js/calendar.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:16] "Not Found: /static/admin/js/jquery.init.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:16] "Not Found: /static/admin/js/admin/DateTimeShortcuts.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:16] "Not Found: /static/admin/js/core.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:16] "Not Found: /static/admin/js/actions.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:16] "Not Found: /static/admin/js/admin/RelatedObjectLookups.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:16] "Not Found: /static/admin/js/urlify.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:16] "Not Found: /static/admin/js/prepopulate.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:16] "Not Found: /static/admin/js/vendor/xregexp/xregexp.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:16] "Not Found: /static/admin/js/vendor/jquery/jquery.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:16] "Not Found: /static/admin/js/prepopulate_init.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:16] "Not Found: /static/admin/js/calendar.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:16] "Not Found: /static/admin/img/icon-changelink.svg", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:16] "Not Found: /static/admin/js/jquery.init.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:16] "Not Found: /static/admin/img/icon-addlink.svg", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:16] "Not Found: /static/admin/js/admin/DateTimeShortcuts.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:16] "Not Found: /static/admin/js/change_form.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:17] "Not Found: /static/admin/js/core.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:17] "Not Found: /static/admin/js/admin/RelatedObjectLookups.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:17] "Not Found: /static/admin/js/actions.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:17] "Not Found: /static/admin/js/urlify.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:17] "Not Found: /static/admin/js/prepopulate.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:17] "Not Found: /static/admin/js/vendor/xregexp/xregexp.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:17] "Not Found: /static/admin/js/prepopulate_init.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:17] "Not Found: /static/admin/js/change_form.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:17] "Not Found: /static/admin/img/icon-addlink.svg", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:21] "Not Found: /static/admin/css/changelists.css", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:21] "Not Found: /static/admin/js/jquery.init.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:21] "Not Found: /static/admin/js/vendor/jquery/jquery.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:21] "Not Found: /static/admin/js/core.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:21] "Not Found: /static/admin/js/admin/RelatedObjectLookups.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:21] "Not Found: /static/admin/js/actions.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:21] "Not Found: /static/admin/js/urlify.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:21] "Not Found: /static/admin/js/vendor/xregexp/xregexp.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:21] "Not Found: /static/admin/js/prepopulate.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:21] "Not Found: /static/admin/js/jquery.init.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:21] "Not Found: /static/admin/js/core.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:21] "Not Found: /static/admin/img/search.svg", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:21] "Not Found: /static/admin/js/admin/RelatedObjectLookups.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:21] "Not Found: /static/admin/js/actions.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:22] "Not Found: /static/admin/js/urlify.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:22] "Not Found: /static/admin/js/prepopulate.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:22] "Not Found: /static/admin/js/vendor/xregexp/xregexp.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:22] "Not Found: /static/admin/img/icon-addlink.svg", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:22] "Not Found: /static/admin/img/tooltag-add.svg", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:27] "Not Found: /static/admin/css/forms.css", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:27] "Not Found: /static/admin/js/inlines.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:27] "Not Found: /static/admin/js/vendor/jquery/jquery.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:27] "Not Found: /static/admin/js/core.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:27] "Not Found: /static/admin/js/jquery.init.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:27] "Not Found: /static/admin/js/admin/RelatedObjectLookups.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:27] "Not Found: /static/admin/js/actions.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:27] "Not Found: /static/admin/js/urlify.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:27] "Not Found: /static/admin/js/prepopulate.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:27] "Not Found: /static/admin/js/vendor/xregexp/xregexp.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:27] "Not Found: /static/admin/js/core.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:27] "Not Found: /static/admin/js/prepopulate_init.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:27] "Not Found: /static/admin/js/inlines.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:27] "Not Found: /static/admin/js/change_form.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:27] "Not Found: /static/admin/js/admin/RelatedObjectLookups.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:28] "Not Found: /static/admin/js/actions.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:28] "Not Found: /static/admin/js/urlify.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:28] "Not Found: /static/admin/js/prepopulate.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:28] "Not Found: /static/admin/js/vendor/xregexp/xregexp.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:28] "Not Found: /static/admin/js/prepopulate_init.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:28] "Not Found: /static/admin/js/change_form.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:28] "Not Found: /static/admin/img/icon-addlink.svg", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:31] "Not Found: /static/admin/css/dashboard.css", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:31] "Not Found: /static/admin/img/icon-changelink.svg", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:31] "Not Found: /static/admin/img/icon-addlink.svg", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:40] "Not Found: /static/ckeditor/ckeditor-init.js", django.request log.py line 224, in log_response
+WARNING [2020-12-04 21:48:40] "Not Found: /static/ckeditor/ckeditor/ckeditor.js", django.request log.py line 224, in log_response
+ERROR [2020-12-04 22:02:12] "Internal Server Error: /admin/", django.request log.py line 222, in log_response
+Traceback (most recent call last):
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/contrib/sessions/backends/base.py", line 199, in _get_session
+    return self._session_cache
+AttributeError: 'SessionStore' object has no attribute '_session_cache'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/contrib/admin/sites.py", line 249, in wrapper
+    return self.admin_view(view, cacheable)(*args, **kwargs)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/utils/decorators.py", line 130, in _wrapped_view
+    response = view_func(request, *args, **kwargs)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/views/decorators/cache.py", line 44, in _wrapped_view_func
+    response = view_func(request, *args, **kwargs)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/contrib/admin/sites.py", line 220, in inner
+    if not self.has_permission(request):
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/contrib/admin/sites.py", line 194, in has_permission
+    return request.user.is_active and request.user.is_staff
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/utils/functional.py", line 224, in inner
+    self._setup()
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/utils/functional.py", line 360, in _setup
+    self._wrapped = self._setupfunc()
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/contrib/auth/middleware.py", line 24, in <lambda>
+    request.user = SimpleLazyObject(lambda: get_user(request))
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/contrib/auth/middleware.py", line 12, in get_user
+    request._cached_user = auth.get_user(request)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/contrib/auth/__init__.py", line 173, in get_user
+    user_id = _get_user_session_key(request)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/contrib/auth/__init__.py", line 58, in _get_user_session_key
+    return get_user_model()._meta.pk.to_python(request.session[SESSION_KEY])
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/contrib/sessions/backends/base.py", line 64, in __getitem__
+    return self._session[key]
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/contrib/sessions/backends/base.py", line 204, in _get_session
+    self._session_cache = self.load()
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/contrib/sessions/backends/db.py", line 44, in load
+    return self.decode(s.session_data) if s else {}
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/contrib/sessions/backends/base.py", line 110, in decode
+    encoded_data = base64.b64decode(session_data.encode('ascii'))
+  File "/usr/lib/python3.8/base64.py", line 87, in b64decode
+    return binascii.a2b_base64(s)
+binascii.Error: Incorrect padding
+ERROR [2020-12-04 22:03:12] "Internal Server Error: /articles/", django.request log.py line 222, in log_response
+Traceback (most recent call last):
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/contrib/sessions/backends/base.py", line 199, in _get_session
+    return self._session_cache
+AttributeError: 'SessionStore' object has no attribute '_session_cache'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/template/base.py", line 828, in _resolve_lookup
+    current = current[bit]
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/utils/functional.py", line 224, in inner
+    self._setup()
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/utils/functional.py", line 360, in _setup
+    self._wrapped = self._setupfunc()
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/contrib/auth/middleware.py", line 24, in <lambda>
+    request.user = SimpleLazyObject(lambda: get_user(request))
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/contrib/auth/middleware.py", line 12, in get_user
+    request._cached_user = auth.get_user(request)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/contrib/auth/__init__.py", line 173, in get_user
+    user_id = _get_user_session_key(request)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/contrib/auth/__init__.py", line 58, in _get_user_session_key
+    return get_user_model()._meta.pk.to_python(request.session[SESSION_KEY])
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/contrib/sessions/backends/base.py", line 64, in __getitem__
+    return self._session[key]
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/contrib/sessions/backends/base.py", line 204, in _get_session
+    self._session_cache = self.load()
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/contrib/sessions/backends/db.py", line 44, in load
+    return self.decode(s.session_data) if s else {}
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/contrib/sessions/backends/base.py", line 110, in decode
+    encoded_data = base64.b64decode(session_data.encode('ascii'))
+  File "/usr/lib/python3.8/base64.py", line 87, in b64decode
+    return binascii.a2b_base64(s)
+binascii.Error: Incorrect padding
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/contrib/sessions/backends/base.py", line 199, in _get_session
+    return self._session_cache
+AttributeError: 'SessionStore' object has no attribute '_session_cache'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/blog-admin/konfetka/articles/views.py", line 45, in publish_list
+    return render(request, 'articles/post/list.html', {'section': 'articles',
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/shortcuts.py", line 19, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/template/loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/template/backends/django.py", line 61, in render
+    return self.template.render(context)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/template/base.py", line 171, in render
+    return self._render(context)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/template/base.py", line 936, in render
+    bit = node.render_annotated(context)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/template/base.py", line 903, in render_annotated
+    return self.render(context)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/template/loader_tags.py", line 150, in render
+    return compiled_parent._render(context)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/template/base.py", line 936, in render
+    bit = node.render_annotated(context)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/template/base.py", line 903, in render_annotated
+    return self.render(context)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/template/defaulttags.py", line 302, in render
+    match = condition.eval(context)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/template/defaulttags.py", line 876, in eval
+    return self.value.resolve(context, ignore_failures=True)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/template/base.py", line 670, in resolve
+    obj = self.var.resolve(context)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/template/base.py", line 795, in resolve
+    value = self._resolve_lookup(context)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/template/base.py", line 834, in _resolve_lookup
+    if isinstance(current, BaseContext) and getattr(type(current), bit):
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/utils/functional.py", line 224, in inner
+    self._setup()
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/utils/functional.py", line 360, in _setup
+    self._wrapped = self._setupfunc()
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/contrib/auth/middleware.py", line 24, in <lambda>
+    request.user = SimpleLazyObject(lambda: get_user(request))
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/contrib/auth/middleware.py", line 12, in get_user
+    request._cached_user = auth.get_user(request)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/contrib/auth/__init__.py", line 173, in get_user
+    user_id = _get_user_session_key(request)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/contrib/auth/__init__.py", line 58, in _get_user_session_key
+    return get_user_model()._meta.pk.to_python(request.session[SESSION_KEY])
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/contrib/sessions/backends/base.py", line 64, in __getitem__
+    return self._session[key]
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/contrib/sessions/backends/base.py", line 204, in _get_session
+    self._session_cache = self.load()
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/contrib/sessions/backends/db.py", line 44, in load
+    return self.decode(s.session_data) if s else {}
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/contrib/sessions/backends/base.py", line 110, in decode
+    encoded_data = base64.b64decode(session_data.encode('ascii'))
+  File "/usr/lib/python3.8/base64.py", line 87, in b64decode
+    return binascii.a2b_base64(s)
+binascii.Error: Incorrect padding
+ERROR [2020-12-04 22:09:14] "[Errno 2] No such file or directory: '/home/blog-admin/konfetka/media/default/profile-picture.png'", sorl.thumbnail.base base.py line 106, in get_thumbnail
+Traceback (most recent call last):
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/sorl/thumbnail/base.py", line 104, in get_thumbnail
+    source_image = default.engine.get_image(source)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/sorl/thumbnail/engines/pil_engine.py", line 72, in get_image
+    buffer = BytesIO(source.read())
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/sorl/thumbnail/images.py", line 162, in read
+    f = self.storage.open(self.name)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/core/files/storage.py", line 36, in open
+    return self._open(name, mode)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/core/files/storage.py", line 231, in _open
+    return File(open(self.path(name), mode))
+FileNotFoundError: [Errno 2] No such file or directory: '/home/blog-admin/konfetka/media/default/profile-picture.png'
+WARNING [2020-12-04 22:09:14] "Remote file [default/profile-picture.png] at [200x200] does not exist", sorl.thumbnail.base base.py line 113, in get_thumbnail
+WARNING [2020-12-04 22:09:14] "Not Found: /media/cache/c5/23/c523209af399f27c401a53f49d6d75b6.jpg", django.request log.py line 222, in log_response
+ERROR [2020-12-04 22:09:20] "[Errno 2] No such file or directory: '/home/blog-admin/konfetka/media/default/profile-picture.png'", sorl.thumbnail.base base.py line 106, in get_thumbnail
+Traceback (most recent call last):
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/sorl/thumbnail/base.py", line 104, in get_thumbnail
+    source_image = default.engine.get_image(source)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/sorl/thumbnail/engines/pil_engine.py", line 72, in get_image
+    buffer = BytesIO(source.read())
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/sorl/thumbnail/images.py", line 162, in read
+    f = self.storage.open(self.name)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/core/files/storage.py", line 36, in open
+    return self._open(name, mode)
+  File "/home/blog-admin/konfetka/env/lib/python3.8/site-packages/django/core/files/storage.py", line 231, in _open
+    return File(open(self.path(name), mode))
+FileNotFoundError: [Errno 2] No such file or directory: '/home/blog-admin/konfetka/media/default/profile-picture.png'
+WARNING [2020-12-04 22:09:20] "Remote file [default/profile-picture.png] at [200x200] does not exist", sorl.thumbnail.base base.py line 113, in get_thumbnail
+WARNING [2020-12-04 22:09:21] "Not Found: /media/cache/c5/23/c523209af399f27c401a53f49d6d75b6.jpg", django.request log.py line 222, in log_response
+WARNING [2020-12-04 22:14:45] "Not Found: /favicon.ico", django.request log.py line 222, in log_response
+WARNING [2020-12-04 22:15:03] "Not Found: /static/ckeditor/ckeditor-init.js", django.request log.py line 222, in log_response
+WARNING [2020-12-04 22:15:03] "Not Found: /static/ckeditor/ckeditor/ckeditor.js", django.request log.py line 222, in log_response
+WARNING [2020-12-05 00:53:21] "Not Found: /static/vendor/select2/dist/css/select2.css", django.request log.py line 222, in log_response
+WARNING [2020-12-05 00:53:21] "Not Found: /static/css/base2.css", django.request log.py line 222, in log_response
+WARNING [2020-12-05 00:53:21] "Not Found: /static/autocomplete_light/jquery.init.js", django.request log.py line 222, in log_response
+WARNING [2020-12-05 00:53:21] "Not Found: /static/vendor/select2/dist/js/select2.full.js", django.request log.py line 222, in log_response
+WARNING [2020-12-05 00:53:21] "Not Found: /static/autocomplete_light/select2.css", django.request log.py line 222, in log_response
+WARNING [2020-12-05 00:53:21] "Not Found: /static/autocomplete_light/autocomplete.init.js", django.request log.py line 222, in log_response
+WARNING [2020-12-05 00:53:21] "Not Found: /static/autocomplete_light/select2.js", django.request log.py line 222, in log_response
+WARNING [2020-12-05 00:53:21] "Not Found: /static/autocomplete_light/forward.js", django.request log.py line 222, in log_response
+WARNING [2020-12-05 00:53:21] "Not Found: /static/autocomplete_light/jquery.post-setup.js", django.request log.py line 222, in log_response
+WARNING [2020-12-05 00:53:21] "Not Found: /static/autocomplete_light/select2.css", django.request log.py line 222, in log_response
+WARNING [2020-12-05 00:53:22] "Not Found: /static/autocomplete_light/jquery.init.js", django.request log.py line 222, in log_response
+WARNING [2020-12-05 00:53:22] "Not Found: /static/autocomplete_light/autocomplete.init.js", django.request log.py line 222, in log_response
+WARNING [2020-12-05 00:53:22] "Not Found: /static/vendor/select2/dist/js/select2.full.js", django.request log.py line 222, in log_response
+WARNING [2020-12-05 00:53:22] "Not Found: /static/autocomplete_light/select2.js", django.request log.py line 222, in log_response
+WARNING [2020-12-05 00:53:22] "Not Found: /static/autocomplete_light/forward.js", django.request log.py line 222, in log_response
+WARNING [2020-12-05 00:53:23] "Not Found: /static/autocomplete_light/jquery.post-setup.js", django.request log.py line 222, in log_response
+WARNING [2020-12-05 17:14:15] "Not Found: /static/admin/css/responsive.css", django.request log.py line 222, in log_response
+WARNING [2020-12-05 17:14:15] "Not Found: /static/admin/css/base.css", django.request log.py line 222, in log_response
+WARNING [2020-12-05 17:14:16] "Not Found: /static/admin/css/dashboard.css", django.request log.py line 222, in log_response
+WARNING [2020-12-05 17:14:16] "Not Found: /favicon.ico", django.request log.py line 222, in log_response
+WARNING [2020-12-05 17:14:23] "Not Found: /static/admin/css/base.css", django.request log.py line 222, in log_response
+WARNING [2020-12-05 17:14:23] "Not Found: /static/admin/css/forms.css", django.request log.py line 222, in log_response
+WARNING [2020-12-05 17:14:23] "Not Found: /static/admin/js/calendar.js", django.request log.py line 222, in log_response
+WARNING [2020-12-05 17:14:23] "Not Found: /static/admin/js/vendor/jquery/jquery.min.js", django.request log.py line 222, in log_response
+WARNING [2020-12-05 17:14:23] "Not Found: /static/admin/css/responsive.css", django.request log.py line 222, in log_response
+WARNING [2020-12-05 17:14:24] "Not Found: /static/admin/js/jquery.init.js", django.request log.py line 222, in log_response
+WARNING [2020-12-05 17:14:24] "Not Found: /static/admin/js/admin/DateTimeShortcuts.js", django.request log.py line 222, in log_response
+WARNING [2020-12-05 17:14:24] "Not Found: /static/admin/js/actions.min.js", django.request log.py line 222, in log_response
+WARNING [2020-12-05 17:14:24] "Not Found: /static/admin/js/core.js", django.request log.py line 222, in log_response
+WARNING [2020-12-05 17:14:24] "Not Found: /static/admin/js/admin/RelatedObjectLookups.js", django.request log.py line 222, in log_response
+WARNING [2020-12-05 17:14:24] "Not Found: /static/admin/js/urlify.js", django.request log.py line 222, in log_response
+WARNING [2020-12-05 17:14:24] "Not Found: /static/admin/js/prepopulate.min.js", django.request log.py line 222, in log_response
+WARNING [2020-12-05 17:14:24] "Not Found: /static/admin/js/vendor/xregexp/xregexp.min.js", django.request log.py line 222, in log_response
+WARNING [2020-12-05 17:14:24] "Not Found: /static/admin/js/calendar.js", django.request log.py line 222, in log_response
+WARNING [2020-12-05 17:14:24] "Not Found: /static/admin/js/change_form.js", django.request log.py line 222, in log_response
+WARNING [2020-12-05 17:14:24] "Not Found: /static/admin/js/jquery.init.js", django.request log.py line 222, in log_response
+WARNING [2020-12-05 17:14:24] "Not Found: /static/admin/js/prepopulate_init.js", django.request log.py line 222, in log_response
+WARNING [2020-12-05 17:14:24] "Not Found: /static/admin/js/admin/DateTimeShortcuts.js", django.request log.py line 222, in log_response
+WARNING [2020-12-05 17:14:24] "Not Found: /static/admin/img/icon-changelink.svg", django.request log.py line 222, in log_response
+WARNING [2020-12-05 17:14:24] "Not Found: /static/admin/img/icon-addlink.svg", django.request log.py line 222, in log_response
+WARNING [2020-12-05 17:14:24] "Not Found: /static/admin/js/core.js", django.request log.py line 222, in log_response
+WARNING [2020-12-05 17:14:24] "Not Found: /static/admin/js/admin/RelatedObjectLookups.js", django.request log.py line 222, in log_response
+WARNING [2020-12-05 17:14:25] "Not Found: /static/admin/js/actions.min.js", django.request log.py line 222, in log_response
+WARNING [2020-12-05 17:14:25] "Not Found: /static/admin/js/urlify.js", django.request log.py line 222, in log_response
+WARNING [2020-12-05 17:14:25] "Not Found: /static/admin/js/prepopulate.min.js", django.request log.py line 222, in log_response
+WARNING [2020-12-05 17:14:25] "Not Found: /static/admin/js/vendor/xregexp/xregexp.min.js", django.request log.py line 222, in log_response
+WARNING [2020-12-05 17:14:25] "Not Found: /static/admin/js/change_form.js", django.request log.py line 222, in log_response
+WARNING [2020-12-05 17:14:25] "Not Found: /static/admin/css/responsive.css", django.request log.py line 222, in log_response
+WARNING [2020-12-05 17:14:25] "Not Found: /static/admin/js/prepopulate_init.js", django.request log.py line 222, in log_response
+WARNING [2020-12-05 17:14:36] "Not Found: /static/admin/css/dashboard.css", django.request log.py line 222, in log_response
+WARNING [2020-12-05 17:14:36] "Not Found: /static/admin/css/responsive.css", django.request log.py line 222, in log_response
+WARNING [2020-12-05 17:14:36] "Not Found: /static/admin/css/base.css", django.request log.py line 222, in log_response
+WARNING [2020-12-05 21:59:06] "Not Found: /static/css/base2.css", django.request log.py line 222, in log_response
+WARNING [2020-12-05 21:59:06] "Not Found: /static/vendor/select2/dist/css/select2.css", django.request log.py line 222, in log_response
+WARNING [2020-12-05 21:59:06] "Not Found: /static/vendor/select2/dist/js/select2.full.js", django.request log.py line 222, in log_response
+WARNING [2020-12-05 21:59:06] "Not Found: /static/autocomplete_light/select2.css", django.request log.py line 222, in log_response
+WARNING [2020-12-05 21:59:06] "Not Found: /static/autocomplete_light/autocomplete.init.js", django.request log.py line 222, in log_response
+WARNING [2020-12-05 21:59:06] "Not Found: /static/autocomplete_light/jquery.init.js", django.request log.py line 222, in log_response
+WARNING [2020-12-05 21:59:06] "Not Found: /static/autocomplete_light/select2.js", django.request log.py line 222, in log_response
+WARNING [2020-12-05 21:59:06] "Not Found: /static/autocomplete_light/forward.js", django.request log.py line 222, in log_response
+WARNING [2020-12-05 21:59:06] "Not Found: /static/autocomplete_light/jquery.post-setup.js", django.request log.py line 222, in log_response
+WARNING [2020-12-05 21:59:06] "Not Found: /static/vendor/select2/dist/css/select2.css", django.request log.py line 222, in log_response
+WARNING [2020-12-05 21:59:06] "Not Found: /static/autocomplete_light/select2.css", django.request log.py line 222, in log_response
+WARNING [2020-12-05 21:59:07] "Not Found: /static/autocomplete_light/jquery.init.js", django.request log.py line 222, in log_response
+WARNING [2020-12-05 21:59:07] "Not Found: /static/autocomplete_light/autocomplete.init.js", django.request log.py line 222, in log_response
+WARNING [2020-12-05 21:59:07] "Not Found: /static/vendor/select2/dist/js/select2.full.js", django.request log.py line 222, in log_response
+WARNING [2020-12-05 21:59:07] "Not Found: /static/autocomplete_light/select2.js", django.request log.py line 222, in log_response
+WARNING [2020-12-05 21:59:07] "Not Found: /static/autocomplete_light/forward.js", django.request log.py line 222, in log_response
+WARNING [2020-12-05 21:59:07] "Not Found: /static/autocomplete_light/jquery.post-setup.js", django.request log.py line 222, in log_response
+WARNING [2020-12-05 21:59:08] "Not Found: /favicon.ico", django.request log.py line 222, in log_response
+ERROR [2020-12-05 22:25:07] "Invalid HTTP_HOST header: 'localhost'. You may need to add 'localhost' to ALLOWED_HOSTS.", django.security.DisallowedHost exception.py line 75, in response_for_exception
+WARNING [2020-12-05 22:25:07] "Bad Request: /", django.request log.py line 222, in log_response
+ERROR [2020-12-05 22:29:00] "Invalid HTTP_HOST header: 'localhost'. You may need to add 'localhost' to ALLOWED_HOSTS.", django.security.DisallowedHost exception.py line 75, in response_for_exception
+WARNING [2020-12-05 22:29:00] "Bad Request: /", django.request log.py line 222, in log_response
+ERROR [2020-12-17 00:09:32] "Invalid HTTP_HOST header: 'localhost'. You may need to add 'localhost' to ALLOWED_HOSTS.", django.security.DisallowedHost exception.py line 75, in response_for_exception
+WARNING [2020-12-17 00:09:33] "Bad Request: /", django.request log.py line 222, in log_response
+ERROR [2020-12-17 00:31:15] "Invalid HTTP_HOST header: 'localhost'. You may need to add 'localhost' to ALLOWED_HOSTS.", django.security.DisallowedHost exception.py line 75, in response_for_exception
+WARNING [2020-12-17 00:31:15] "Bad Request: /", django.request log.py line 222, in log_response
+ERROR [2020-12-17 16:16:42] "Invalid HTTP_HOST header: 'localhost'. You may need to add 'localhost' to ALLOWED_HOSTS.", django.security.DisallowedHost exception.py line 75, in response_for_exception
+WARNING [2020-12-17 16:16:43] "Bad Request: /", django.request log.py line 222, in log_response
+ERROR [2020-12-17 16:30:10] "Invalid HTTP_HOST header: '157.230.102.249'. You may need to add '157.230.102.249' to ALLOWED_HOSTS.", django.security.DisallowedHost exception.py line 75, in response_for_exception
+WARNING [2020-12-17 16:30:11] "Bad Request: /.env", django.request log.py line 222, in log_response
+ERROR [2020-12-17 16:30:11] "Invalid HTTP_HOST header: '157.230.102.249'. You may need to add '157.230.102.249' to ALLOWED_HOSTS.", django.security.DisallowedHost exception.py line 75, in response_for_exception
+WARNING [2020-12-17 16:30:11] "Bad Request: /", django.request log.py line 222, in log_response
