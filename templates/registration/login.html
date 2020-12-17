@@ -1,15 +1,15 @@
 {% extends "../base.html" %}
 {% load static %}
 
-{% block title %}Log-in{% endblock %}
+{% block title %}Вхід{% endblock %}
 
 {% block content %}
-    <h1>Log-in</h1>
+    <h1>Вхід</h1>
     {% if form.errors %}
-        <p>Your username or password didn't match. Please try again.</p>
+        <p>Невірне ім'я користувача або пароль. Спробуйте знову</p>
     {% else %}
-        <p>Please, use the following form to log-in. If you don't have an account
-            <a href="{% url 'account:register' %}">Register here</a>
+        <p>Будь ласка, використайте цю форму, щоб увійти. Якщо ви не маєте акаунта, то можете
+            <a href="{% url 'account:register' %}">зареєструватися</a>
         </p>
     {% endif %}
     <div class="login-form">
@@ -18,7 +18,7 @@
             {% csrf_token %}
             <input type="checkbox" onclick="showPassword()">Show Password
             <input type="hidden" name="next" value="{{ next }}">
-            <p><input type="submit" value="Log in"></p>
+            <button type="submit">Увійти</button>
         </form>
         <p>
             <a href="{% url 'account:password_reset' %}">Forgotten your password?</a>

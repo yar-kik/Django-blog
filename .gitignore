@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .idea/
 .env
 TODO
@@ -7,3 +8,12 @@ media/
 env/
 __pycache__
 .log
+=======
+.idea/ 
+.env 
+*.log 
+media/ 
+my_env/ 
+TODO 
+__pycache__ 
+>>>>>>> 4195cd7f8bf6069eb4cd09b00eebce94f55e9107

@@ -65,6 +65,7 @@ def draft_list(request):
 
 
 def film_articles_list(request):
+    """"""
     object_list = get_film_articles()
     articles = paginate_articles(request, object_list)
     return render(request, 'articles/post/list.html', {'section': 'film',
@@ -72,6 +73,7 @@ def film_articles_list(request):
 
 
 def anime_articles_list(request):
+    """"""
     object_list = get_anime_articles()
     articles = paginate_articles(request, object_list)
     return render(request, 'articles/post/list.html', {'section': 'anime',
@@ -79,6 +81,7 @@ def anime_articles_list(request):
 
 
 def game_articles_list(request):
+    """"""
     object_list = get_game_articles()
     articles = paginate_articles(request, object_list)
     return render(request, 'articles/post/list.html', {'section': 'game',
@@ -87,7 +90,9 @@ def game_articles_list(request):
 
 # @cache_page(60 * 15)
 def article_detail(request, slug):
-    """Show details of the article"""
+    """
+    Show details of the article
+    """
     article = get_article_by_slug(slug=slug, annotate=True)
     comment_form = CommentForm()
     total_views = r.incr(f'article:{article.id}:views')
@@ -98,7 +103,9 @@ def article_detail(request, slug):
 
 
 def comments_list(request, article_id):
-    """Show all paginated comments of the article"""
+    """
+    Show all paginated comments of the article
+    """
     comments = get_comments_by_id(article_id)
     paginated_comments = paginate_comments(request, comments)
     if paginated_comments is None:
@@ -108,7 +115,9 @@ def comments_list(request, article_id):
 
 @ajax_required
 def reply_comment(request, comment_id):
-    """Create reply of the parent comment"""
+    """
+    Create reply of the parent comment
+    """
     parent_comment = get_parent_comment(comment_id)
     if request.method == 'POST':
         comment_form = CommentForm(data=request.POST)
@@ -121,7 +130,9 @@ def reply_comment(request, comment_id):
 
 @ajax_required
 def create_comment(request, article_id):
-    """Створення коментарю із закріпленням до статті та користувача-автора"""
+    """
+    Створення коментарю із закріпленням до статті та користувача-автора
+    """
     if request.method == 'POST':
         comment_form = CommentForm(data=request.POST)
         create_comment_form(request, comment_form, article_id)
@@ -132,7 +143,9 @@ def create_comment(request, article_id):
 
 @ajax_required
 def edit_comment(request, comment_id):
-    """Редагування коментарю, значення якого отримується через id"""
+    """
+    Редагування коментарю, значення якого отримується через id
+    """
     instance_comment = get_object_or_404(Comment, id=comment_id)
     if not is_author(request, instance_comment):
         return HttpResponseForbidden

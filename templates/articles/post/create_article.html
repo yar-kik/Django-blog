@@ -8,11 +8,11 @@
         {% csrf_token %}
         {{ form.as_p }}
         {% if user.is_staff %}
-            <input type="submit" value="Додати в чернетки" name="draft">
-            <input type="submit" value="Опублікувати" name="publish">
+            <button type="submit">Додати в чернетки </button>
+            <button type="submit" name="publish"> Опублікувати </button>
         {% else %}
-            <input type="submit" value="Додати в чернетки" name="draft">
-            <input type="submit" value="Відправити на модерацію" name="moderation">
+            <button type="submit" name="draft"> Додати в чернетки </button>
+            <button type="submit" name="moderation">Відправити на модерацію </button>
         {% endif %}
     </form>
 {% endblock %}
