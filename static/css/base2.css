@@ -25,6 +25,15 @@ footer {
 	background-color: #F57F17;
 	margin-top: 50px;
 	flex-basis: 100px;
+	padding-top: 10px;
+	text-align: center;
+	color: white;
+}
+footer a {
+	color: #B71C1C;
+}
+footer a:hover {
+	color: black;
 }
 main {
 	flex: 1 0;
