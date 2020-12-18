@@ -155,7 +155,7 @@ def feedback(request):
                 send_mail(subject=cd['subject'],
                           message=cd['message'],
                           from_email=cd['sender'],
-                          recipient_list=[settings.EMAIL_HOST])
+                          recipient_list=[settings.EMAIL_HOST_USER])
             except BadHeaderError:
                 return HttpResponse('Invalid header found!')
             return redirect('articles:all_articles')
