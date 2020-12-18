@@ -23,51 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = env('SECRET_KEY')
 
-DEBUG = False
-
-ALLOWED_HOSTS = ['kotolampa.live']
-
 SITE_ID = 1
-
-INSTALLED_APPS = [
-    'account',
-    'articles',
-    'images',
-    'actions',
-    'archives',
-
-    'dal',
-    'dal_select2',
-
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'django.contrib.sites',
-    'django.contrib.sitemaps',
-
-    'taggit',
-    'social_django',
-    'sorl.thumbnail',
-    'phonenumber_field',
-    'django.contrib.postgres',
-    'ckeditor',
-    'ckeditor_uploader',
-    'imagekit',
-    'environ',
-]
-
-MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-]
 
 ROOT_URLCONF = 'konfetka.urls'
 
@@ -124,14 +80,10 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = False
 
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 MEDIA_URL = '/media/'  # базовий URL, від якого будуть формуватися адреси файлів
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')  # шлях у файловій системі
+MEDIA_ROOT = os.path.join(BASE_DIR, '../../media/')  # шлях у файловій системі
 
 MAX_UPLOAD_IMAGE_SIZE = 2097152  # equal 2Mb
 VALID_IMAGE_EXTENSION = ['jpg', 'jpeg', 'png']
@@ -187,7 +139,6 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env('GOOGLE_OAUTH2_SECRET')  # Google Consume
 ADMINS = [("Yaroslav", "einstein16.04@gmail.com"),
           ("Sveta", "misstkachuk15@gmail.com")]
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = env('EMAIL_HOST')
 EMAIL_HOST_USER = env('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')

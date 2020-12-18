@@ -201,6 +201,9 @@ input {
 	border: 3px solid #F57F17;
 }
 
+#id_title {
+	width: 90%;
+}
 
 @media screen and (max-width: 475px) {
 	.main-article h1 {
@@ -211,28 +214,12 @@ input {
 		font-size: 1.2em;
 	}
 }
-/*.user-info {*/
-/*	border-radius: 50%;*/
-/*	margin-right: 20px;*/
-/*	padding: 5px;*/
-/*	border: 1px solid #ddd;*/
-/*	margin-bottom: 15px;*/
-/*}*/
-
-/*@media screen and (min-width: 475px) {*/
-/*	.profile-pic {*/
-/*		margin-bottom: 0;*/
-/*	}*/
-/*}*/
 
 ul {
 	list-style-type: none;
 }
 
-/*.user-username, .comment-date{*/
-/*	display: inline;*/
-/*	vertical-align: 20px;*/
-/*}*/
+
 .add-comment {
 	display: block;
 }
@@ -278,4 +265,5 @@ textarea {
 	border-radius: 4px;
 	box-shadow: 0 1px 2px rgba(0,0,0,0.4);
 }
+
 
