@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.core.mail import send_mail, BadHeaderError
+from django.core.mail import send_mail, BadHeaderError, EmailMessage
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib import messages
@@ -151,11 +151,19 @@ def feedback(request):
         form = FeedbackEmailForm(request.POST)
         if form.is_valid():
             cd = form.cleaned_data
+            email = EmailMessage(
+                subject=cd['subject'],
+                body=cd['message'],
+                from_email=settings.EMAIL_HOST_USER,
+                to=[settings.EMAIL_HOST_USER],
+                reply_to=[cd['sender']]
+            )
             try:
-                send_mail(subject=cd['subject'],
-                          message=cd['message'],
-                          from_email=cd['sender'],
-                          recipient_list=[settings.EMAIL_HOST_USER])
+                email.send(fail_silently=False)
+                # send_mail(subject=cd['subject'],
+                #           message=cd['message'],
+                #           from_email=cd['sender'],
+                #           recipient_list=[settings.EMAIL_HOST_USER])
             except BadHeaderError:
                 return HttpResponse('Invalid header found!')
             return redirect('articles:all_articles')
