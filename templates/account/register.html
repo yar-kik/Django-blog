@@ -10,7 +10,7 @@
         {{ user_form.as_p }}
         {% csrf_token %}
         <input type="checkbox" onclick="showPassword()">Показати пароль
-        <p><input type="submit" value="Створити акаунт!"></p>
+        <p><input type="submit" value="Створити акаунт!" class="button"></p>
     </form>
     <script src="{% static 'js/show_password.js' %}"></script>
 {% endblock %}

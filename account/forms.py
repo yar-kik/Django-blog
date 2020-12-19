@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 from phonenumber_field.widgets import PhoneNumberPrefixWidget
 
-from konfetka import settings
+from django.conf import settings
 from .models import Profile
 from phonenumber_field.formfields import PhoneNumberField
 
@@ -33,6 +33,11 @@ class UserEditForm(forms.ModelForm):
         fields = ('first_name', 'last_name', 'email')
         widgets = {
             'email': forms.TextInput(attrs={'placeholder': 'example@gmail.com'})
+        }
+        error_messages = {
+            'email': {
+                "unique": "Користувач з такою поштою вже існує!"
+            }
         }
 
 
