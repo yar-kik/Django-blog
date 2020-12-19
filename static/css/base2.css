@@ -85,6 +85,13 @@ p, #sidebar {
 	text-transform: uppercase;
 	line-height: 1.7;
 }
+.pagination {
+	display: flex;
+	justify-content: center;
+}
+.pagination > span {
+	margin-left: 7%;
+}
 
 a {
 	color: #FF3D00;
