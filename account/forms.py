@@ -14,11 +14,15 @@ class LoginForm(forms.Form):
 
 class UserRegistrationForm(forms.ModelForm):
     password = forms.CharField(max_length=32, widget=forms.PasswordInput,
-                               label='Password')
+                               label='Пароль')
+    email = forms.CharField(required=True, label="Електронна пошта")
 
     class Meta:
         model = User
         fields = ('username', 'email')
+        help_texts = {
+            'username': ''
+        }
 
 
 class UserEditForm(forms.ModelForm):
