@@ -1,27 +1,36 @@
 {% extends "../base.html" %}
 {% load thumbnail %}
 
-{% block title %}Dashboard{% endblock %}
+{% block title %}Особистий кабінет{% endblock %}
 
 {% block content %}
-    <h1>Dashboard</h1>
-    <div class="user-info">
+    <h1>Профіль користувача</h1>
+    <div class="user-avatar profile">
         {% thumbnail profile.photo "200x200" crop="center" as im %}
             <img src="{{ im.url }}" alt="Profile photo">
         {% endthumbnail %}
-
-        <p>Username: {{ request.user.username }}</p>
-        <p>Full name: {{ request.user.get_full_name|default:"You didn't add your fullname" }}</p>
-        <p>Email: {{ request.user.email|default:"example@mail.com" }}</p>
-        <p>Date of birth: {{ profile.date_of_birth }}</p>
     </div>
+    <table class="user-profile">
+        <tr>
+            <td>Нікнейм:</td>
+            <td>{{ request.user.username }}</td>
+        </tr>
+        <tr>
+            <td>Повне ім'я:</td>
+            <td>{{ request.user.get_full_name|default:"Ви не додали ваше ім'я" }}</td>
+        </tr>
+        <tr>
+            <td>Електронна пошта:</td>
+            <td>{{ request.user.email|default:"example@mail.com" }}</td>
+        </tr>
+        <tr>
+            <td>Дата народження:</td>
+            <td>{{ profile.date_of_birth }}</td>
+        </tr>
+    </table>
 
-
-<!--    <p>Drag the following button to your bookmarks toolbar to bookmark images from other websites-->
-<!--        <a href="javascript:{% include 'bookmarklet_launcher.js' %}" class="button">Bookmark it</a></p>-->
-
-    <button><a href="{% url 'account:edit' %}">Edit profile</a></button>
-    <button><a href="{% url 'account:password_change' %}">Change password</a></button>
+    <a href="{% url 'account:edit' %}"><button>Редагувати профіль</button></a>
+    <a href="{% url 'account:password_change' %}"><button>Змінити пароль</button></a>
 
     <div>
     <p>Збережені статті:</p>

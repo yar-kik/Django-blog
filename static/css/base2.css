@@ -40,6 +40,23 @@ main {
 	display: flex;
 	flex-direction: row;
 }
+form:not(#search){
+	margin: 50px;
+	padding: 20px;
+	width: 60%;
+	min-width: 50%;
+	border: 4px solid #fff;
+	border-radius: 15px;
+	box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+}
+form > p {
+	display: flex;
+	flex-direction: column;
+}
+.errorlist {
+	color: #B71C1C;
+	font-weight: bold;
+}
 #content {
 	flex: 0 0 70%;
 	padding: 1em;
@@ -85,7 +102,16 @@ p, #sidebar {
 	text-transform: uppercase;
 	line-height: 1.7;
 }
-
+.pagination {
+	display: flex;
+	justify-content: center;
+}
+.pagination > span {
+	margin-left: 7%;
+}
+.user-profile td{
+	padding: 4px 10px;
+}
 a {
 	color: #FF3D00;
 	text-decoration: none;
@@ -129,14 +155,6 @@ a:hover {
 	color: #B71C1C;
 }
 
-@media screen and (min-width: 475px) {
-	.site-title {
-		margin: 0;
-		font-size: 2.5em;
-		padding-left: 20px;
-	}
-}
-
 .main-nav ul {
 	list-style: none;
 	padding: 0;
@@ -152,21 +170,11 @@ a:hover {
 	margin-left: 0;
 }
 
-@media screen and (min-width: 475px) {
-	.main-nav {
-		font-size: 1em;
-		padding: 0 20px;
-	}
-
-	.main-nav ul li {
-		margin: 5px 10px;
-	}
-}
 
 article {
 	margin: 0 5vw;
 }
-.nav-item .button, input, button{
+.nav-item .button, input, button, .button{
 	border: none;
     background-color: #FFB320;
     color: #B71C1C;
@@ -175,7 +183,7 @@ article {
 	margin: 4px;
     font-size: 1em;
 }
-.nav-item .button:hover, button:hover {
+.nav-item .button:hover, button:hover, .button:hover{
 	background-color: #B71C1C;
     color: #FFB320;
 }
@@ -203,16 +211,6 @@ input {
 
 #id_title {
 	width: 90%;
-}
-
-@media screen and (max-width: 475px) {
-	.main-article h1 {
-		font-size: 2em;
-	}
-
-	.main-article h2 {
-		font-size: 1.2em;
-	}
 }
 
 ul {
@@ -252,18 +250,19 @@ textarea {
 	padding: 8px;
 }
 
-.comment-info, .comment-button {
-	width: calc(100% - 70px);
-}
+/*.comment-info, .comment-button {*/
+/*	width: calc(100% - 70px);*/
+/*}*/
 
 .user-avatar {
-	height: 100%;
-	width: 80px;
+	margin-right: 10px;
 }
 .user-avatar img {
 	border: 4px solid #fff;
 	border-radius: 4px;
 	box-shadow: 0 1px 2px rgba(0,0,0,0.4);
 }
-
+.user-avatar.profile {
+	margin: 10px 30px;
+}
 

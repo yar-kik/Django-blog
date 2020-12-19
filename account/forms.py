@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 from phonenumber_field.widgets import PhoneNumberPrefixWidget
 
-from konfetka import settings
+from django.conf import settings
 from .models import Profile
 from phonenumber_field.formfields import PhoneNumberField
 
@@ -14,11 +14,16 @@ class LoginForm(forms.Form):
 
 class UserRegistrationForm(forms.ModelForm):
     password = forms.CharField(max_length=32, widget=forms.PasswordInput,
-                               label='Password')
+                               label='Пароль')
+    email = forms.CharField(required=True, label="Електронна пошта",
+                            error_messages={'unique': "Користувач з такою поштою вже існує!"})
 
     class Meta:
         model = User
         fields = ('username', 'email')
+        help_texts = {
+            'username': ''
+        }
 
 
 class UserEditForm(forms.ModelForm):
@@ -28,6 +33,11 @@ class UserEditForm(forms.ModelForm):
         fields = ('first_name', 'last_name', 'email')
         widgets = {
             'email': forms.TextInput(attrs={'placeholder': 'example@gmail.com'})
+        }
+        error_messages = {
+            'email': {
+                "unique": "Користувач з такою поштою вже існує!"
+            }
         }
 
 

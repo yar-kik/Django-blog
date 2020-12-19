@@ -1,16 +1,16 @@
 {% extends "../base.html" %}
 {% load static %}
 
-{% block title %}Create an account{% endblock %}
+{% block title %}Створеня акаунту{% endblock %}
 
 {% block content %}
-    <h1>Create an account</h1>
-    <p>Please, sign up using the following form:</p>
+    <h1>Створити акаунт</h1>
+    <p>Будь ласка, заповніть форму нижче:</p>
     <form action="." method="post">
         {{ user_form.as_p }}
         {% csrf_token %}
-        <input type="checkbox" onclick="showPassword()">Show Password
-        <p><input type="submit" value="Create my account"></p>
+        <input type="checkbox" onclick="showPassword()">Показати пароль
+        <p><input type="submit" value="Створити акаунт!" class="button"></p>
     </form>
     <script src="{% static 'js/show_password.js' %}"></script>
 {% endblock %}

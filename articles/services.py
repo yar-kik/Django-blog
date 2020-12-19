@@ -41,7 +41,7 @@ def is_author(request: HttpRequest, comment: Comment) -> bool:
     return False
 
 
-def paginate_articles(request: HttpRequest, object_list: Article, paginate_by: int = 3) -> QuerySet:
+def paginate_articles(request: HttpRequest, object_list: Article, paginate_by: int = 1) -> QuerySet:
     """Get QuerySet of Article model and return paginated articles"""
     paginator = Paginator(object_list, paginate_by)
     page = request.GET.get('page')
