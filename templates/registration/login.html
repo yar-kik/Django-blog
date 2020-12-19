@@ -16,23 +16,23 @@
         <form action="{% url 'account:login' %}" method="post">
             {{ form.as_p }}
             {% csrf_token %}
-            <input type="checkbox" onclick="showPassword()">Show Password
+            <input type="checkbox" onclick="showPassword()">Показати пароль
             <input type="hidden" name="next" value="{{ next }}">
             <button type="submit">Увійти</button>
         </form>
         <p>
-            <a href="{% url 'account:password_reset' %}">Forgotten your password?</a>
+            <a href="{% url 'account:password_reset' %}">Забули пароль?</a>
         </p>
     </div>
 
     <div class="social">
         <ul>
             <li class="facebook">
-                <a href="{% url 'social:begin' 'facebook' %}"> Sign-in with Facebook</a>
+                <a href="{% url 'social:begin' 'facebook' %}"> Увійти з Facebook</a>
             </li>
 
             <li class="google">
-                <a href="{% url 'social:begin' 'google-oauth2' %}"> Login with Google</a>
+                <a href="{% url 'social:begin' 'google-oauth2' %}"> Увійти з Google</a>
             </li>
         </ul>
     </div>
