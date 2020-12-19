@@ -40,7 +40,7 @@ main {
 	display: flex;
 	flex-direction: row;
 }
-form:not(#search){
+form:not([class]):not([id]) {
 	margin: 50px;
 	padding: 20px;
 	width: 60%;
