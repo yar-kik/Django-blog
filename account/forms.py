@@ -15,7 +15,8 @@ class LoginForm(forms.Form):
 class UserRegistrationForm(forms.ModelForm):
     password = forms.CharField(max_length=32, widget=forms.PasswordInput,
                                label='Пароль')
-    email = forms.CharField(required=True, label="Електронна пошта")
+    email = forms.CharField(required=True, label="Електронна пошта",
+                            error_messages={'unique': "Користувач з такою поштою вже існує!"})
 
     class Meta:
         model = User

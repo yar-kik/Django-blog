@@ -48,6 +48,7 @@ class Contact(models.Model):
 User.add_to_class('following', models.ManyToManyField('self', through=Contact,
                                                       related_name='followers',
                                                       symmetrical=False))
+User._meta.get_field('email')._unique = True
 
 
 # @receiver(models.signals.post_delete, sender=Profile)
