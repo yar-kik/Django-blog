@@ -5,7 +5,7 @@
 {% block content %}
     <h1>Редагувати профіль</h1>
     <p>Ви можете відредагувати профіль використовуючи наступну форму:</p>
-    <form action="." method="post" enctype="multipart/form-data" id="profile-form">
+    <form action="." method="post" enctype="multipart/form-data">
         {{ user_form.as_p }}
         {{ profile_form.as_p }}
         {% csrf_token %}

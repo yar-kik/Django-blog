@@ -23,7 +23,7 @@ header, footer, main {
 }
 footer {
 	background-color: #F57F17;
-	margin-top: 50px;
+	/*margin-top: 50px;*/
 	flex-basis: 100px;
 	padding-top: 10px;
 	text-align: center;
