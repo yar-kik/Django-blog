@@ -35,6 +35,18 @@
                 <p class="date">{{ article.author_username }}  {{ article.date_created }}</p>
             </div>
             <div class="article-body">
+                <picture>
+                    srcset="{{ article.small_picture.url }} 320w,
+                             {{ article.medium_picture.url }} 640w,
+                             {{ article.large_picture.url }} 1280w"
+                </picture>
+                <img srcset="{{ article.small_picture.url }} 320w,
+                             {{ article.medium_picture.url }} 640w,
+                             {{ article.large_picture.url }} 1280w"
+                     sizes="(max-width: 350px) 300px,
+                            (max-width: 700px) 600px,
+                            1200px" alt="{{ article.title }}"
+                src="{{ article.large_picture.url }}">
                 {{ article.text|striptags|safe|truncatewords:30 }}
             </div>
             <div class="article-footer">
