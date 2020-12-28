@@ -1,13 +1,16 @@
-from typing import Type
+from typing import Type, Optional
 
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Count
-from django.http import HttpRequest
+from django.http import HttpRequest, Http404
 
 from articles.models import Article, Comment
 
 
 def get_comments_by_id(article_id: Type[int]) -> Comment:
-    """Return all comments by the article id"""
+    """
+    Return all comments by the article id
+    """
     comments = Comment.objects.filter(article_id=article_id).order_by('path').\
         select_related('name', 'name__profile', 'reply_to').only('article', 'body', 'name', 'created', 'updated',
                                                                  'name__profile__photo', 'name__username', 'path',
@@ -16,7 +19,9 @@ def get_comments_by_id(article_id: Type[int]) -> Comment:
 
 
 def get_all_articles(annotate: bool = True) -> Article:
-    """Return all articles with predefined fields. If necessary return also count of the comments and likes"""
+    """
+    Return all articles with predefined fields. If necessary return also count of the comments and likes
+    """
     articles = Article.objects.all().select_related('author').prefetch_related().\
         only('title', 'text', 'slug', 'author__username', 'author__is_staff', 'date_created')
     if annotate:
@@ -25,15 +30,23 @@ def get_all_articles(annotate: bool = True) -> Article:
     return articles
 
 
-def get_article_by_slug(slug: str, annotate: bool = False) -> Article:
-    """Return article by the slug"""
-    article = get_all_articles(annotate).get(slug=slug)
+def get_article_by_slug(slug: str, annotate: bool = False) -> Optional[Article]:
+    """
+    Return article by the slug
+    """
+    try:
+        article = get_all_articles(annotate).get(slug=slug)
+    except ObjectDoesNotExist:
+        raise Http404()
     return article
 
 
-def get_article_by_id(article_id: int, annotate: bool = False) -> Article:
+def get_article_by_id(article_id: int, annotate: bool = False) -> Optional[Article]:
     """Return article by the article's id"""
-    article = get_all_articles(annotate).get(id=article_id)
+    try:
+        article = get_all_articles(annotate).get(id=article_id)
+    except ObjectDoesNotExist:
+        raise Http404()
     return article
 
 
