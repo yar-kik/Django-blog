@@ -9,6 +9,7 @@
     <meta name="google-site-verification" content="wqCi-t1emBl4KCHUBB6L0gUdS9pdWaa46T2v2w4ZgG4" />
     <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
     <link rel="icon" type="image/svg+xml" href="{% static 'images/favicon.svg' %}">
+    <link rel="stylesheet" href="{% static "icons/flaticon.css" %}">
     <title>{% block title %}{% endblock %}</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link rel="stylesheet" href="{% static 'css/base2.css' %}">
@@ -36,7 +37,8 @@
                             <span><label for="search-field"></label>
                                 <input type="text" name="query" maxlength="50" placeholder="Шукати на сайті..."
                                        required="" id="search-field">
-                            <input type="submit" value="Пошук" class="button"></span>
+                                <button type="submit" class="flaticon-search-1"></button>
+                            </span>
                         </form>
                     </li>
                     <li {% if section == "dashboard" %}class="nav-item selected"{% else %} class="nav-item"{% endif %}>
@@ -85,7 +87,7 @@
                 <ul>
                     {% for article in most_commented_articles %}
                         <li>
-                            <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
+                            <p><a href="{{ article.get_absolute_url }}">{{ article.title }}</a></p>
                         </li>
                     {% endfor %}
                 </ul>

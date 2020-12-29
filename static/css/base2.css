@@ -36,6 +36,35 @@ aside {
 	flex: 0 0 30%;
 	padding: 1em;
 }
+
+h1 {
+	font-weight: normal;
+	font-size: 2em;
+	color: #FF3D00;
+	margin-bottom: 10px;
+}
+h2, h3 {
+	font-weight: normal;
+	font-size: 1.5em;
+	margin: 30px 0 5px;
+}
+p {
+	line-height: 1.5em;
+}
+a {
+	color: #FF3D00;
+	text-decoration: none;
+}
+a:hover {
+	color: #ff8934;
+}
+footer a {
+	color: #B71C1C;
+}
+footer a:hover {
+	color: black;
+}
+
 img {
     max-width: 100%;
     height: auto;
@@ -49,6 +78,10 @@ form:not([class]):not([id]) {
 	border-radius: 15px;
 	box-shadow: 0 2px 5px rgba(0,0,0,0.4);
 }
+article {
+	margin: 0 5vw;
+}
+
 form > p {
 	display: flex;
 	flex-direction: column;
@@ -57,30 +90,8 @@ form > p {
 	color: #B71C1C;
 	font-weight: bold;
 }
-h1 {
-	font-weight: normal;
-	font-size: 2em;
-	text-transform: capitalize;
-	color: #FF3D00;
-	margin-bottom: 10px;
-}
-h2, h3 {
-	font-weight: normal;
-	font-size: 1.5em;
-	margin: 20px 0;
-}
-p, #sidebar {
-	line-height: 1.5em;
-}
 .last-articles, .commented-articles {
 	margin-bottom: 20px;
-}
-.lead {
-	font-style: italic;
-	font-size: 1.5em;
-	color: black;
-	line-height: 1.3em;
-	margin: 1.5em 0;
 }
 .article-info {
 	margin-bottom: 2em;
@@ -97,19 +108,6 @@ p, #sidebar {
 }
 .user-profile td{
 	padding: 4px 10px;
-}
-a {
-	color: #FF3D00;
-	text-decoration: none;
-}
-a:hover {
-	color: #ff8934;
-}
-footer a {
-	color: #B71C1C;
-}
-footer a:hover {
-	color: black;
 }
 .section-heading {
 	border-bottom: 1px solid;
@@ -151,9 +149,6 @@ footer a:hover {
 }
 .main-nav ul li:first-child {
 	margin-left: 0;
-}
-article {
-	margin: 0 5vw;
 }
 .nav-item .button, input, button, .button{
 	border: none;
