@@ -158,6 +158,7 @@ button:hover, .button:hover{
 	position: relative;
 	top: 5px;
 }
+
 #search {
 	position: relative;
 	top: -9px;
@@ -170,11 +171,14 @@ button:hover, .button:hover{
 	border-radius: 0 20px 20px 0;
 	height: 100%;
 }
-
 #search-field {
 	border: none;
 	height: 100%;
 	width: 300px;
+}
+
+.flaticon-login, .flaticon-exit-2 {
+	padding-right: 6px;
 }
 
 input {

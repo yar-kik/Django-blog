@@ -41,17 +41,19 @@
                             </span>
                         </form>
                     </li>
-                    <li class="">
+                    <li>
                             <a href="{% url 'account:dashboard' %}" class="button">Мій кабінет</a>
                     </li>
                     {% if user.is_authenticated %}
                         <!-- Привет {{ request.user.first_name }}, -->
-                    <li class="">
-                        <a href="{% url 'account:logout' %}" class="button">Вихід</a>
+                    <li>
+                        <a href="{% url 'account:logout' %}" class="button">
+                            <i class="flaticon-exit-2"></i>Вихід</a>
                     </li>
                     {% else %}
-                    <li class="nav-item">
-                        <a href="{% url 'account:login' %}" class="button">Вхід</a>
+                    <li>
+                        <a href="{% url 'account:login' %}" class="button">
+                            <i class="flaticon-login"></i>Вхід</a>
                     </li>
                     {% endif %}
 
