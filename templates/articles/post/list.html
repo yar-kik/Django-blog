@@ -35,6 +35,12 @@
                 <p class="date">{{ article.author_username }}  {{ article.date_created }}</p>
             </div>
             <div class="article-body">
+                <picture>
+                    <source srcset="{{ article.small_picture.url }}" media="(max-width: 767px)">
+                    <source srcset="{{ article.medium_picture.url }}" media="((min-width: 768px) and (max-width: 991px))">
+                    <source srcset="{{ article.large_picture.url }}" media="(min-width: 992px)">
+                    <img src="{{ article.medium_picture.url }}" alt="{{ article.title }}">
+                </picture>
                 {{ article.text|striptags|safe|truncatewords:30 }}
             </div>
             <div class="article-footer">

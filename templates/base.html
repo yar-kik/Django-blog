@@ -4,11 +4,12 @@
 
 <html lang="ru">
 <head>
-    <meta name="google-site-verification" content="wqCi-t1emBl4KCHUBB6L0gUdS9pdWaa46T2v2w4ZgG4" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-site-verification" content="wqCi-t1emBl4KCHUBB6L0gUdS9pdWaa46T2v2w4ZgG4" />
     <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
     <link rel="icon" type="image/svg+xml" href="{% static 'images/favicon.svg' %}">
+    <link rel="stylesheet" href="{% static "icons/flaticon.css" %}">
     <title>{% block title %}{% endblock %}</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link rel="stylesheet" href="{% static 'css/base2.css' %}">
@@ -16,12 +17,9 @@
 <body>
     <header class="header">
     	<nav class="site-nav">
-            <a class="site-title" href="{% url 'articles:all_articles' %}">Котоламповий бложик</a>
+            <a class="site-title"  href="{% url 'articles:all_articles' %}">Котоламповий бложик</a>
             <div class="main-nav">
                 <ul>
-                    <li {% if section == "articles" %}class="nav-item selected"{% else %} class="nav-item"{% endif %}>
-                        <a href="{% url 'articles:all_articles' %}">Головна</a>
-                    </li>♡
                     <li {% if section == "film" %}class="nav-item selected"{% else %} class="nav-item"{% endif %}>
                         <a href="{% url 'articles:film_articles' %}">Фільми</a>
                     </li>♡
@@ -36,21 +34,24 @@
                             <span><label for="search-field"></label>
                                 <input type="text" name="query" maxlength="50" placeholder="Шукати на сайті..."
                                        required="" id="search-field">
-                            <input type="submit" value="Пошук" class="button"></span>
+                                <button type="submit" id="search-button" class="flaticon-search-1"></button>
+                            </span>
                         </form>
                     </li>
-                    <li {% if section == "dashboard" %}class="nav-item selected"{% else %} class="nav-item"{% endif %}>
-                            <a href="{% url 'account:dashboard' %}" class="button">Мій кабінет</a>
-                    </li>
                     {% if user.is_authenticated %}
-                        <!-- Привет {{ request.user.first_name }}, -->
-                    <li class="nav-item">
-                        <a href="{% url 'account:logout' %}" class="button">Вихід</a>
-                    </li>
+                        <li>
+                            <a href="{% url 'account:dashboard' %}" class="button"><i class="flaticon-home-1"></i>
+                            Мій кабінет</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'account:logout' %}" class="button">
+                                <i class="flaticon-exit-2"></i>Вихід</a>
+                        </li>
                     {% else %}
-                    <li class="nav-item">
-                        <a href="{% url 'account:login' %}" class="button">Вхід</a>
-                    </li>
+                        <li>
+                            <a href="{% url 'account:login' %}" class="button">
+                                <i class="flaticon-login"></i>Вхід</a>
+                        </li>
                     {% endif %}
 
                 </ul>
@@ -58,16 +59,16 @@
         </nav>
     </header>
 
-    {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-                <li class="{{ message.tags }}">
-                    {{ message|safe }}
-                    <a href="#" class="close">x</a>
-                </li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+{#    {% if messages %}#}
+{#        <ul class="messages">#}
+{#            {% for message in messages %}#}
+{#                <li class="{{ message.tags }}">#}
+{#                    {{ message|safe }}#}
+{#                    <a href="#" class="close">x</a>#}
+{#                </li>#}
+{#            {% endfor %}#}
+{#        </ul>#}
+{#    {% endif %}#}
 
     <main>
         <div id="content">
@@ -85,7 +86,7 @@
                 <ul>
                     {% for article in most_commented_articles %}
                         <li>
-                            <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
+                            <p><a href="{{ article.get_absolute_url }}">{{ article.title }}</a></p>
                         </li>
                     {% endfor %}
                 </ul>

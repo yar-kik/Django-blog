@@ -2,6 +2,9 @@ from django.contrib.auth.models import User
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.urls import reverse
+from imagekit.models import ProcessedImageField
+from pilkit.processors import ResizeToFill
+
 from archives.models import InfoBase, Film
 
 
@@ -37,6 +40,18 @@ class Article(models.Model):
     users_like = models.ManyToManyField(User, related_name='articles_liked', blank=True)
     users_bookmark = models.ManyToManyField(User, related_name='articles_bookmarked', blank=True)
     status = models.CharField(max_length=16, choices=STATUS_CHOICES, default='draft', verbose_name='статус')
+    large_picture = ProcessedImageField(upload_to='articles/large/', blank=True,
+                                        default='default/large-article-picture.jpg',
+                                        verbose_name='картинка для ПК', processors=[ResizeToFill(1280, 720)],
+                                        format='JPEG')
+    medium_picture = ProcessedImageField(upload_to='articles/medium/', blank=True,
+                                         default='default/medium-article-picture.jpg',
+                                         verbose_name='картинка для планшетів', processors=[ResizeToFill(640, 360)],
+                                         format='JPEG')
+    small_picture = ProcessedImageField(upload_to='articles/small/', blank=True,
+                                        default='default/small-article-picture.jpg',
+                                        verbose_name='картинка для телефонів', processors=[ResizeToFill(320, 320)],
+                                        format='JPEG')
 
     class Meta:
         ordering = ('-date_updated',)
