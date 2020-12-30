@@ -109,48 +109,36 @@ form > p {
 .user-profile td{
 	padding: 4px 10px;
 }
-.section-heading {
-	border-bottom: 1px solid;
-	padding-bottom: 10px;
-	margin: 30px 0;
-}
+
 .site-nav {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 	flex-wrap: wrap;
 	background-color: #F57F17;
-	margin-top: 0;
 	margin-bottom: 30px;
 	color: #F4FF81;
 	padding: 10px;
 }
-.site-nav .site-title {
-	margin: 0;
-  font-family: "Pacifico", coursive;
+.site-title {
+  	font-family: "Pacifico", coursive;
 	font-size: 1.5em;
-  color: #F4FF81;
 }
-.site-nav a {
+.site-title, .nav-item > a {
 	color: #F4FF81;
-	text-decoration: none;
 }
-.site-nav a:hover {
+.site-title:hover, .nav-item > a:hover {
 	color: #B71C1C;
 }
 .main-nav ul {
 	list-style: none;
-	padding: 0;
 	display: flex;
 	flex-wrap: wrap;
 }
 .main-nav ul li {
 	margin: 0 7px;
 }
-.main-nav ul li:first-child {
-	margin-left: 0;
-}
-.nav-item .button, input, button, .button{
+input, button, .button{
 	border: none;
     background-color: #FFB320;
     color: #B71C1C;
@@ -159,7 +147,7 @@ form > p {
 	margin: 4px;
     font-size: 1em;
 }
-.nav-item .button:hover, button:hover, .button:hover{
+button:hover, .button:hover{
 	background-color: #B71C1C;
     color: #FFB320;
 }
@@ -168,16 +156,27 @@ form > p {
 }
 .main-nav {
 	position: relative;
-	top: 10px;
+	top: 5px;
 }
 #search {
 	position: relative;
-	top: -10px;
+	top: -9px;
+	height: 30px;
 }
+#search-button {
+	position: absolute;
+	top: 0;
+	right: 0;
+	border-radius: 0 20px 20px 0;
+	height: 100%;
+}
+
 #search-field {
-	background-color: #fffef9;
 	border: none;
+	height: 100%;
+	width: 300px;
 }
+
 input {
 	background-color: #fffef9;
 	border: 3px solid #F57F17;
