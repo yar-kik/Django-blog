@@ -1,4 +1,7 @@
-@import url("https://fonts.googleapis.com/css2?family=Pacifico&display=swap");
+@font-face {
+    font-family: "Pacifico";
+    src: url("../fonts/Pacifico-Regular.ttf") format("truetype");
+}
 * {
 	margin: 0;
 	padding: 0;
@@ -9,7 +12,7 @@ html, body {
 }
 body {
 	font-family: "Georgia", serif;
-	font-size: 18px;
+	font-size: 17px;
   	background: #fffef9;
 	display: flex;
 	flex-direction: column;
@@ -110,19 +113,9 @@ form > p {
 	padding: 4px 10px;
 }
 
-.site-nav {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	flex-wrap: wrap;
-	background-color: #F57F17;
-	margin-bottom: 30px;
-	color: #F4FF81;
-	padding: 10px;
-}
 .site-title {
   	font-family: "Pacifico", coursive;
-	font-size: 1.5em;
+	font-size: 1.4em;
 }
 .site-title, .nav-item > a {
 	color: #F4FF81;
@@ -130,13 +123,62 @@ form > p {
 .site-title:hover, .nav-item > a:hover {
 	color: #B71C1C;
 }
-.main-nav ul {
+
+.site-header-wrapper {
+	background-color: #F57F17;
+	display: flex;
+	flex-wrap: wrap;
+	align-content: center;
+	padding: 10px 0 5px 10px;
+	margin-bottom: 30px;
+}
+.main-nav ul, .button-nav ul{
 	list-style: none;
 	display: flex;
 	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-evenly;
+	padding: 5px;
 }
-.main-nav ul li {
-	margin: 0 7px;
+.main-nav{
+	flex: 1;
+}
+.nav-item.selected a{
+	color: #B71C1C;
+}
+.search {
+	flex: 1;
+	height: 28px;
+}
+.search-form {
+	position: relative;
+	height: 100%;
+}
+#search-button {
+	position: absolute;
+	top: 0;
+	right: 0;
+	margin: 4px 0;
+	padding: 3px 15px 5px;
+	border-radius: 0 20px 20px 0;
+	height: 100%;
+	cursor: pointer;
+}
+#search-field {
+	margin: 4px 0;
+	border: none;
+	height: 100%;
+	width: 100%;
+}
+.icon-menu {
+	display: none;
+	height: 29px;
+	cursor: pointer;
+}
+.icon-menu.button {
+	padding: 3px 10px 5px 15px;
+	margin-right: 20px;
+	margin-top: 5px;
 }
 input, button, .button{
 	border: none;
@@ -147,35 +189,10 @@ input, button, .button{
 	margin: 4px;
     font-size: 1em;
 }
+
 button:hover, .button:hover{
 	background-color: #B71C1C;
     color: #FFB320;
-}
-.nav-item.selected a{
-	color: #B71C1C;
-}
-.main-nav {
-	position: relative;
-	top: 5px;
-}
-
-#search {
-	position: relative;
-	top: -9px;
-	height: 30px;
-}
-#search-button {
-	position: absolute;
-	top: 0;
-	right: 0;
-	border-radius: 0 20px 20px 0;
-	height: 100%;
-	cursor: pointer;
-}
-#search-field {
-	border: none;
-	height: 100%;
-	width: 300px;
 }
 
 input[id="eye"] {
@@ -246,4 +263,96 @@ textarea {
 }
 .user-avatar.profile {
 	margin: 10px 30px;
+}
+
+@media (min-width: 992px){
+	body {
+		background-color: green;
+	}
+}
+/*For tablets*/
+@media (min-width: 768px) and (max-width: 991px){
+	body {
+		background-color: blue;
+	}
+	.site-header-wrapper {
+		justify-content: space-between;
+	}
+
+	.site-header-wrapper div:not(:last-child) {
+		display: none;
+		margin: 1% 5% 1%;
+	}
+	.site-title {
+		margin: 0 auto;
+		order: -2;
+	}
+	.icon-menu {
+		display: flex;
+		order: -1;
+	}
+	.responsive .main-nav {
+		flex-basis: 100%;
+	}
+	.responsive .main-nav ul {
+		width: 100%;
+	}
+	.responsive.site-header-wrapper div {
+		display: flex;
+	} 
+	.responsive .search-form {
+		flex: 0 350px;
+	}
+	.responsive.site-header-wrapper {
+		background: linear-gradient( #F57F17 35%, #63340a 35.8%, #F57F17 36.6% 65%,
+		#63340a 65.8%,  #F57F17 66.6%);
+	} 
+}
+
+/*For mobile*/
+@media (max-width: 767px){
+	body {
+		background-color: yellow;
+	}
+	.site-header-wrapper div:not(:last-child) {
+		display: none;
+		margin: 1% 5% 1%;
+	}
+	.site-title {
+		margin: 0 auto;
+		order: -2;
+	}
+	.icon-menu {
+		display: flex;
+		order: -1;
+	}
+	.responsive .main-nav {
+		flex-basis: 100%;
+	}
+	.responsive .main-nav ul {
+		width: 100%;
+		flex-direction: column;
+	}
+	.responsive .main-nav li {
+		padding: 10px;
+	}
+	.responsive.site-header-wrapper div:not(:last-child) {
+		display: flex;
+	} 
+	.button-nav, .search {
+		flex-basis: 100%;
+	}
+	.responsive .button-nav ul, .search-form {
+		width: 100%;
+		margin-left: auto;
+		margin-right: auto;
+	}
+	.responsive .search-form {
+		flex: 0 350px;
+	}
+	.responsive.site-header-wrapper {
+		background: linear-gradient( #F57F17 20%, #63340a 20.4%, #F57F17 20.8% 65%,
+		#63340a 65.4%,  #F57F17 65.8%);
+	} 
+}
 }

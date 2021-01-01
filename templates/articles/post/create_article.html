@@ -4,7 +4,7 @@
 {% block title %}Створити нову статтю{% endblock %}
 
 {% block content %}
-    <form method="post">
+    <form method="post" id="create-article">
         {% csrf_token %}
         {{ form.as_p }}
         {% if user.is_staff %}
