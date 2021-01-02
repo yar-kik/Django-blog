@@ -2,8 +2,6 @@ from .settings import *
 
 ALLOWED_HOSTS = ["localhost",
                  "127.0.0.1"]
-DEBUG = True
-
 INSTALLED_APPS = [
     'account',
     'articles',
@@ -13,9 +11,11 @@ INSTALLED_APPS = [
 
     'dal',
     'dal_select2',
+    "livereload",
 
     'django.contrib.admin',
     'django.contrib.auth',
+    'django.contrib.humanize',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -35,10 +35,13 @@ INSTALLED_APPS = [
     'imagekit',
     'environ',
 ]
+DEBUG = True
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'livereload.middleware.LiveReloadScript',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',

@@ -14,9 +14,22 @@
     {% endif %}
     <div class="login-form">
         <form action="{% url 'account:login' %}" method="post">
-            {{ form.as_p }}
+            <p>
+                {{ form.username.errors }}
+                {{ form.username.label_tag }}
+                {{ form.username }}
+            </p>
+            <p>
+                {{ form.password.errors }}
+                {{ form.password.label_tag }}
+                {{ form.password }}
+                <label class="switch-eye">
+                    <i class="flaticon-view" id="icon-eye"></i>
+                    <input type="checkbox" name="eye" id="eye" onclick="showPassword()">
+                </label>
+            </p>
+{#            {{ form.as_p }}#}
             {% csrf_token %}
-            <input type="checkbox" onclick="showPassword()">Показати пароль
             <input type="hidden" name="next" value="{{ next }}">
             <button type="submit">Увійти</button>
         </form>

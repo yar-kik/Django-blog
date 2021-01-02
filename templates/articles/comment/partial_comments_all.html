@@ -15,9 +15,9 @@
                 </span>
                 <span class="comment-date">
                     {% if comment.created|date:"i H d m Y" == comment.updated|date:"i H d m Y" %}
-                        Опубліковано: {{ comment.created|date:"l, j E Y" }} о {{ comment.created|date:"H:i" }}
+                        {{ comment.created|date:"j E Y" }}, о {{ comment.created|date:"H:i" }}
                     {% else %}
-                        Редаговано: {{ comment.created|date:"l, j E Y" }} о {{ comment.created|date:"H:i" }}
+                        {{ comment.created|date:"j E Y" }}, о {{ comment.created|date:"H:i" }} (<em>редаговано</em>)
                     {% endif %}
                 </span>
             </div>
