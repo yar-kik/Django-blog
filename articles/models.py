@@ -50,7 +50,7 @@ class Article(models.Model):
                                          format='JPEG')
     small_picture = ProcessedImageField(upload_to='articles/small/', blank=True,
                                         default='default/small-article-picture.jpg',
-                                        verbose_name='картинка для телефонів', processors=[ResizeToFill(320, 320)],
+                                        verbose_name='картинка для телефонів', processors=[ResizeToFill(320, 180)],
                                         format='JPEG')
 
     class Meta:
