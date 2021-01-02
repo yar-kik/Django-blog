@@ -1,5 +1,6 @@
 {% extends "../../base.html" %}
 {% load article_tags %}
+{% load humanize %}
 
 {% block title %}{{ article.title }}{% endblock %}
 
@@ -12,8 +13,8 @@
         {% endif %}
 
         <div class="article-info">
-            Опубліковано <a href="{{ article.author.get_absolute_url }}">{{ article.author }}</a>
-            |{{ article.date_created }}|
+            <a href="{{ article.author.get_absolute_url }}">{{ article.author }}</a>
+            |{{ article.date_created|naturalday:"j E Y" }}, о {{ article.date_created|date:"H:i" }}|
         </div>
 
         <div class="tags">

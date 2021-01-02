@@ -177,7 +177,6 @@ form > p {
 }
 .icon-menu.button {
 	padding: 3px 10px 5px 15px;
-	margin-right: 20px;
 	margin-top: 5px;
 }
 input, button, .button{
@@ -265,16 +264,10 @@ textarea {
 	margin: 10px 30px;
 }
 
-@media (min-width: 992px){
-	body {
-		background-color: green;
-	}
-}
+/*@media (min-width: 992px){*/
+/*}*/
 /*For tablets*/
 @media (min-width: 768px) and (max-width: 991px){
-	body {
-		background-color: blue;
-	}
 	.site-header-wrapper {
 		justify-content: space-between;
 	}
@@ -311,12 +304,9 @@ textarea {
 
 /*For mobile*/
 @media (max-width: 767px){
-	body {
-		background-color: yellow;
-	}
 	.site-header-wrapper div:not(:last-child) {
 		display: none;
-		margin: 1% 5% 1%;
+		margin: 2% 2% 1%;
 	}
 	.site-title {
 		margin: 0 auto;
@@ -354,5 +344,11 @@ textarea {
 		background: linear-gradient( #F57F17 20%, #63340a 20.4%, #F57F17 20.8% 65%,
 		#63340a 65.4%,  #F57F17 65.8%);
 	} 
-}
+	main {
+		flex-wrap: wrap;
+	}
+	#content, aside {
+		flex: 1 0 100%;
+		padding: 0 20px 10px 20px;
+	}
 }
