@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.urls import reverse
-from imagekit.models import ProcessedImageField
+from imagekit.models import ProcessedImageField, ImageSpecField
 from pilkit.processors import ResizeToFill
 
 from archives.models import InfoBase, Film
@@ -44,17 +44,11 @@ class Article(models.Model):
                                         default='default/large-article-picture.jpg',
                                         verbose_name='картинка для ПК', processors=[ResizeToFill(1280, 720)],
                                         format='JPEG')
-    medium_picture = ProcessedImageField(upload_to='articles/medium/', blank=True,
-                                         default='default/medium-article-picture.jpg',
-                                         verbose_name='картинка для планшетів', processors=[ResizeToFill(640, 360)],
-                                         format='JPEG')
-    small_picture = ProcessedImageField(upload_to='articles/small/', blank=True,
-                                        default='default/small-article-picture.jpg',
-                                        verbose_name='картинка для телефонів', processors=[ResizeToFill(320, 320)],
-                                        format='JPEG')
+    medium_picture = ImageSpecField(source='large_picture', processors=[ResizeToFill(640, 360)], format='JPEG')
+    small_picture = ImageSpecField(source='large_picture', processors=[ResizeToFill(320, 180)], format='JPEG')
 
     class Meta:
-        ordering = ('-date_updated',)
+        ordering = ('-date_created',)
         permissions = [('can_moderate_article', 'Може одобрювати статті'),
                        ('can_draft_article', 'Може створювати чернетку статті')]
 
