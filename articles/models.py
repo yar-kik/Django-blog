@@ -4,6 +4,7 @@ from django.db import models
 from django.urls import reverse
 from imagekit.models import ProcessedImageField, ImageSpecField
 from pilkit.processors import ResizeToFill
+from uuslug import slugify
 
 from archives.models import InfoBase, Film
 
@@ -58,6 +59,10 @@ class Article(models.Model):
     def get_absolute_url(self):
         return reverse('articles:article_detail', args=[self.slug])
 
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.title)
+        super(Article, self).save(*args, **kwargs)
+
 
 class Comment(models.Model):
     """Клас коментарів конкретної статті"""
@@ -78,11 +83,12 @@ class Comment(models.Model):
     def __str__(self):
         return f'Comment by {self.name} on {self.article}'
 
-    def save(self):
+    def save(self, *args, **kwargs):
         if self.id is None:
-            super().save()
+            super().save(*args, **kwargs)
             self.path.append(self.id)
-        super().save()
+        else:
+            super().save(*args, **kwargs)
 
     def get_offset(self):
         level = len(self.path)

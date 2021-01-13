@@ -209,7 +209,6 @@ class ArticleBaseValidation(ModelFormMixin):
     def form_valid(self, form):
         """Check article's status in a form and assign it"""
         form.instance.author = self.request.user
-        form.instance.slug = slugify(form.instance.title)
         if 'draft' in self.request.POST:
             form.instance.status = 'draft'
         elif 'moderation' in self.request.POST:
