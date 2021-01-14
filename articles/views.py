@@ -3,19 +3,15 @@ import redis
 from django.conf import settings
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mail
 from django.http import JsonResponse, HttpResponse, HttpResponseForbidden
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
-from django.views.decorators.cache import cache_page
 from django.views.decorators.http import require_POST
 from django.views.generic import CreateView, UpdateView, DeleteView
 from django.views.generic.edit import ModelFormMixin
-from uuslug import slugify
 
-# from actions.utils import create_action
 from common.decorators import ajax_required, author_or_staff_required
 from .forms import EmailPostForm, CommentForm, ArticleForm
 from .models import Article, Comment
@@ -24,7 +20,6 @@ from .selectors import get_article_by_slug, get_parent_comment, get_comments_by_
     get_game_articles
 from .services import create_comment_form, create_reply_form, is_author, paginate_articles, save_comment, \
     paginate_comments, search_results
-from .tagging import CustomTag
 
 logger = logging.getLogger(__name__)
 
@@ -34,38 +29,45 @@ r = redis.StrictRedis(host=settings.REDIS_HOST,
 
 
 def articles_redirect(request):
-    """Redirect to main page"""
+    """
+    Redirect to main page
+    """
     return redirect('articles:all_articles', permanent=True)
 
 
 def publish_list(request):
-    """Show all published articles"""
+    """
+    Show all published articles
+    """
     object_list = get_published_articles()
     articles = paginate_articles(request, object_list)
-    return render(request, 'articles/post/list.html', {'section': 'articles',
-                                                       'articles': articles})
+    return render(request, 'articles/post/list.html', {'articles': articles})
 
 
 @permission_required('articles.can_moderate_article', raise_exception=True)
 def moderation_list(request):
-    """Show articles on moderation"""
+    """
+    Show articles on moderation
+    """
     object_list = get_moderation_articles()
     articles = paginate_articles(request, object_list)
-    return render(request, 'articles/post/list.html', {'section': 'articles',
-                                                       'articles': articles})
+    return render(request, 'articles/post/list.html', {'articles': articles})
 
 
 @permission_required('articles.can_draft_article', raise_exception=True)
 def draft_list(request):
-    """Show draft articles"""
+    """
+    Show all draft articles
+    """
     object_list = get_draft_articles(request)
     articles = paginate_articles(request, object_list)
-    return render(request, 'articles/post/list.html', {'section': 'articles',
-                                                       'articles': articles})
+    return render(request, 'articles/post/list.html', {'articles': articles})
 
 
 def film_articles_list(request):
-    """"""
+    """
+    Show articles in category films
+    """
     object_list = get_film_articles()
     articles = paginate_articles(request, object_list)
     return render(request, 'articles/post/list.html', {'section': 'film',
@@ -73,7 +75,9 @@ def film_articles_list(request):
 
 
 def anime_articles_list(request):
-    """"""
+    """
+    Show articles in category anime
+    """
     object_list = get_anime_articles()
     articles = paginate_articles(request, object_list)
     return render(request, 'articles/post/list.html', {'section': 'anime',
@@ -81,14 +85,15 @@ def anime_articles_list(request):
 
 
 def game_articles_list(request):
-    """"""
+    """
+    Show articles in category games
+    """
     object_list = get_game_articles()
     articles = paginate_articles(request, object_list)
     return render(request, 'articles/post/list.html', {'section': 'game',
                                                        'articles': articles})
 
 
-# @cache_page(60 * 15)
 def article_detail(request, slug):
     """
     Show details of the article
@@ -110,7 +115,8 @@ def comments_list(request, article_id):
     paginated_comments = paginate_comments(request, comments)
     if paginated_comments is None:
         return HttpResponse('')
-    return render(request, 'articles/comment/partial_comments_all.html', {'comments': paginated_comments})
+    return render(request, 'articles/comment/partial_comments_all.html',
+                  {'comments': paginated_comments})
 
 
 @ajax_required
@@ -124,8 +130,8 @@ def reply_comment(request, comment_id):
         create_reply_form(request, comment_form, parent_comment)
     else:
         comment_form = CommentForm()
-    return save_comment(request, 'articles/comment/partial_comment_create.html', comment_form, action='reply',
-                        comment_id=comment_id)
+    return save_comment(request, 'articles/comment/partial_comment_create.html',
+                        comment_form, action='reply', comment_id=comment_id)
 
 
 @ajax_required

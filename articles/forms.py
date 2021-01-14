@@ -1,4 +1,3 @@
-from ckeditor.widgets import CKEditorWidget
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
 from dal import autocomplete
 from django import forms

@@ -4,7 +4,7 @@ from django.test import TestCase
 from articles.models import Article, Comment
 
 
-class TestArticle(TestCase):
+class TestArticleModel(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.user = User.objects.create_user(
@@ -24,7 +24,7 @@ class TestArticle(TestCase):
                          "/articles/first-article/")
 
 
-class TestComment(TestCase):
+class TestCommentModel(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.user = User.objects.create_user(
