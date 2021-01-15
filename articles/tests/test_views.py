@@ -9,7 +9,8 @@ class TestArticleView(TestCase):
     def setUpTestData(cls):
         cls.user = User.objects.create_user(
             username='user',
-            password='pass'
+            password='pass',
+            email='e@mail.com'
         )
         cls.article = Article.objects.create(
             title="First article",
@@ -25,6 +26,11 @@ class TestArticleView(TestCase):
             name=cls.user,
             body="Test",
             article=cls.article
+        )
+        cls.user2 = User.objects.create_user(
+            username='user2',
+            password='pass',
+            email='e2@mail.com'
         )
 
     def test_publish_list(self):
@@ -78,7 +84,106 @@ class TestArticleView(TestCase):
         self.assertTemplateUsed(response, 'articles/post/detail.html')
         self.assertEqual(response.context["section"], self.article.category)
 
+
+class TestCommentView(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = User.objects.create_user(
+            username='user',
+            password='pass',
+            email='e@mail.com'
+        )
+        cls.article = Article.objects.create(
+            title="First article",
+            author=cls.user,
+            text='Some text',
+            status='publish'
+        )
+        cls.comment = Comment.objects.create(
+            name=cls.user,
+            body="Test",
+            article=cls.article
+        )
+        cls.user2 = User.objects.create_user(
+            username='user2',
+            password='pass',
+            email='e2@mail.com'
+        )
+
     def test_comment_list(self):
         response = self.client.get(f"/articles/{self.article.id}/all_comments/")
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'articles/comment/partial_comments_all.html')
+
+    def test_create_comment_not_ajax(self):
+        response = self.client.post(f"/articles/{self.article.id}/create_comment/",
+                                    name=self.user,
+                                    body='New comment')
+        self.assertEqual(response.status_code, 403)
+
+    def test_create_comment_ajax(self):
+        response = self.client.get(f"/articles/{self.article.id}/create_comment/",
+                                   content_type='application/json',
+                                   HTTP_X_REQUESTED_WITH='XMLHttpRequest'
+                                   )
+        self.assertEqual(response.status_code, 200)
+        response = self.client.post(f"/articles/{self.article.id}/create_comment/",
+                                    data={"name": self.user.id,
+                                          "body": 'New comment'},
+                                    content_type='application/json',
+                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest'
+                                    )
+        self.assertEqual(response.status_code, 200)
+
+    def test_edit_comment_not_ajax(self):
+        response = self.client.post(f"/articles/{self.comment.id}/update_comment/",
+                                    body='Updated comment')
+        self.assertEqual(response.status_code, 403)
+
+    def test_edit_comment_not_author(self):
+        self.client.login(username='user2', password='pass')
+        response = self.client.post(f"/articles/{self.comment.id}/update_comment/",
+                                    data={"body": 'Updated comment'},
+                                    content_type='application/json',
+                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest'
+                                    )
+        self.assertEqual(response.status_code, 403)
+
+    def test_edit_comment(self):
+        self.client.login(username='user', password='pass')
+        response = self.client.get(f"/articles/{self.comment.id}/update_comment/",
+                                   content_type='application/json',
+                                   HTTP_X_REQUESTED_WITH='XMLHttpRequest'
+                                   )
+        self.assertEqual(response.status_code, 200)
+        response = self.client.post(f"/articles/{self.comment.id}/update_comment/",
+                                    data={"body": 'Updated comment'},
+                                    content_type='application/json',
+                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest'
+                                    )
+        self.assertEqual(response.status_code, 200)
+
+    def test_delete_comment_not_ajax(self):
+        response = self.client.post(f"/articles/{self.comment.id}/delete_comment/")
+        self.assertEqual(response.status_code, 403)
+
+    def test_delete_comment_not_author(self):
+        self.client.login(username='user2', password='pass')
+        response = self.client.post(f"/articles/{self.comment.id}/delete_comment/",
+                                    content_type='application/json',
+                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest'
+                                    )
+        self.assertEqual(response.status_code, 403)
+
+    def test_delete_comment(self):
+        self.client.login(username='user', password='pass')
+        response = self.client.get(f"/articles/{self.comment.id}/delete_comment/",
+                                   content_type='application/json',
+                                   HTTP_X_REQUESTED_WITH='XMLHttpRequest'
+                                   )
+        self.assertEqual(response.status_code, 200)
+        response = self.client.post(f"/articles/{self.comment.id}/delete_comment/",
+                                    content_type='application/json',
+                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest'
+                                    )
+        self.assertEqual(response.status_code, 200)

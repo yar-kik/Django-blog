@@ -137,7 +137,7 @@ def reply_comment(request, comment_id):
 @ajax_required
 def create_comment(request, article_id):
     """
-    Створення коментарю із закріпленням до статті та користувача-автора
+    Create an article comment
     """
     if request.method == 'POST':
         comment_form = CommentForm(data=request.POST)
@@ -150,11 +150,11 @@ def create_comment(request, article_id):
 @ajax_required
 def edit_comment(request, comment_id):
     """
-    Редагування коментарю, значення якого отримується через id
+    Edit an article comment
     """
     instance_comment = get_object_or_404(Comment, id=comment_id)
     if not is_author(request, instance_comment):
-        return HttpResponseForbidden
+        return HttpResponseForbidden()
     if request.method == 'POST':
         comment_form = CommentForm(instance=instance_comment, data=request.POST)
     else:
@@ -170,7 +170,7 @@ def delete_comment(request, comment_id):
     """
     comment = get_object_or_404(Comment, id=comment_id)
     if not is_author(request, comment):
-        return HttpResponseForbidden
+        return HttpResponseForbidden()
     article_id = comment.article_id
     comments = get_comments_by_id(article_id)
     data = dict()
@@ -266,29 +266,6 @@ def article_like(request):
         except:
             pass
     return JsonResponse({'status': 'ok'})
-
-
-# def liked_content(request, content: Article or Comment):
-#     """Функція уподобання статті"""
-#     content_id = request.POST.get('id')
-#     action = request.POST.get('action')
-#     if content_id and action:
-#         try:
-#             content_object = get_object_or_404(content, id=content_id)
-#             if action == 'like':
-#                 content_object.users_like.add(request.user)
-#                 # create_action(request.user, 'likes', article)
-#             else:
-#                 content_object.users_like.remove(request.user)
-#             return JsonResponse({'status': 'ok'})
-#         except:
-#             pass
-#     return JsonResponse({'status': 'ok'})
-#
-#
-# def comment_like(request):
-#     """"""
-#     liked_content(request, Comment)
 
 
 def article_search(request):
