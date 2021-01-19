@@ -162,11 +162,10 @@ def edit_comment(request, comment_id):
     return save_comment(request, 'articles/comment/partial_comment_edit.html', comment_form)
 
 
-# @author_or_staff_required
 @ajax_required
 def delete_comment(request, comment_id):
     """
-    Видалення коментарю, отриманого через його id.
+    delete an article comment
     """
     comment = get_object_or_404(Comment, id=comment_id)
     if not is_author(request, comment):
@@ -211,7 +210,9 @@ def post_share(request, article_id):
 
 
 class ArticleBaseValidation(ModelFormMixin):
-    """Base class of article's validation"""
+    """
+    Base class of article's validation
+    """
     def form_valid(self, form):
         """Check article's status in a form and assign it"""
         form.instance.author = self.request.user
@@ -225,7 +226,9 @@ class ArticleBaseValidation(ModelFormMixin):
 
 
 class CreateArticle(PermissionRequiredMixin, LoginRequiredMixin, CreateView, ArticleBaseValidation):
-    """Клас створення статті (необхідний відповідний дозвіл)"""
+    """
+    Клас створення статті (необхідний відповідний дозвіл)
+    """
     form_class = ArticleForm
     model = Article
     template_name = 'articles/post/create_article.html'
@@ -233,7 +236,9 @@ class CreateArticle(PermissionRequiredMixin, LoginRequiredMixin, CreateView, Art
 
 
 class UpdateArticle(PermissionRequiredMixin, LoginRequiredMixin, UpdateView, ArticleBaseValidation):
-    """Клас редагування статті (необхідний дозвіл на це)"""
+    """
+    Клас редагування статті (необхідний дозвіл на це)
+    """
     model = Article
     form_class = ArticleForm
     template_name = 'articles/post/update_article.html'
@@ -241,7 +246,9 @@ class UpdateArticle(PermissionRequiredMixin, LoginRequiredMixin, UpdateView, Art
 
 
 class DeleteArticle(PermissionRequiredMixin, LoginRequiredMixin, DeleteView):
-    """Видалення статті (необхідний дозвіл або статус персонала)"""
+    """
+    Видалення статті (необхідний дозвіл або статус персонала)
+    """
     model = Article
     template_name = 'articles/post/delete_article.html'
     success_url = reverse_lazy('articles:all_articles')
@@ -251,7 +258,9 @@ class DeleteArticle(PermissionRequiredMixin, LoginRequiredMixin, DeleteView):
 @login_required
 @require_POST
 def article_like(request):
-    """Функція уподобання статті"""
+    """
+    Функція уподобання статті
+    """
     article_id = request.POST.get('id')
     action = request.POST.get('action')
     if article_id and action:
@@ -259,7 +268,6 @@ def article_like(request):
             article = get_object_or_404(Article, id=article_id)
             if action == 'like':
                 article.users_like.add(request.user)
-                # create_action(request.user, 'likes', article)
             else:
                 article.users_like.remove(request.user)
             return JsonResponse({'status': 'ok'})
