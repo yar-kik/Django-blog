@@ -187,3 +187,15 @@ class TestCommentView(TestCase):
                                     HTTP_X_REQUESTED_WITH='XMLHttpRequest'
                                     )
         self.assertEqual(response.status_code, 200)
+
+    def test_article_like(self):
+        self.client.login(username='user', password='pass')
+        response = self.client.post("/articles/like_article/",
+                                    date={"id": 1, "action": 'like'})
+        self.assertEqual(response.status_code, 200)
+
+    def test_bookmark_article(self):
+        self.client.login(username='user', password='pass')
+        response = self.client.post("/articles/bookmark_article/",
+                                    date={"id": 1, "action": 'like'})
+        self.assertEqual(response.status_code, 200)
