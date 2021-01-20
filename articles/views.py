@@ -119,6 +119,7 @@ def comments_list(request, article_id):
                   {'comments': paginated_comments})
 
 
+@login_required
 @ajax_required
 def reply_comment(request, comment_id):
     """
@@ -134,6 +135,7 @@ def reply_comment(request, comment_id):
                         comment_form, action='reply', comment_id=comment_id)
 
 
+@login_required
 @ajax_required
 def create_comment(request, article_id):
     """
