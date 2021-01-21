@@ -1,16 +1,14 @@
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.core.mail import send_mail, BadHeaderError, EmailMessage
+from django.core.mail import BadHeaderError, EmailMessage
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
-from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.utils.http import urlunquote, is_safe_url
 
-from actions.models import Action
-from actions.utils import create_action
-from .forms import LoginForm, UserRegistrationForm, UserEditForm, ProfileEditForm, FeedbackEmailForm
+from .forms import LoginForm, UserRegistrationForm, UserEditForm, \
+    ProfileEditForm, FeedbackEmailForm
 from .models import Profile, Contact
 from common.decorators import ajax_required
 from django.http import JsonResponse
@@ -54,7 +52,8 @@ def dashboard(request):
         """Якщо поточний користувач підписався на когось
         відображаємо тільки дії циї користувачів"""
         actions = actions.filter(user_id__in=following_ids)
-    actions = actions.select_related('user', 'user__profile').prefetch_related('target')[:10]
+    actions = actions.select_related('user', 'user__profile').\
+        prefetch_related('target')[:10]
 
     return render(request, 'account/dashboard.html', {'section': 'dashboard',
                                                       'actions': actions,
@@ -77,13 +76,12 @@ def register(request):
                 new_user.save()
                 # Створення профілю користувача
                 Profile.objects.create(user=new_user)
-                new_user = authenticate(request, username=user_form.cleaned_data['username'],
-                                        password=user_form.cleaned_data['password'])
+                new_user = authenticate(
+                    request, username=user_form.cleaned_data['username'],
+                    password=user_form.cleaned_data['password']
+                )
                 login(request, new_user)
                 return redirect('articles:all_articles')
-                # create_action(new_user, 'has created an account')
-                # return render(request, 'account/register_done.html',
-                #               {'new_user': new_user})
         else:
             user_form = UserRegistrationForm()
         return render(request, 'account/register.html',
@@ -100,9 +98,6 @@ def edit(request):
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
-        #     messages.success(request, 'Profile updated successfully')
-        # else:
-        #     messages.error(request, 'Error updating your profile')
     else:
         user_form = UserEditForm(instance=request.user)
         profile_form = ProfileEditForm(instance=request.user.profile)
@@ -136,8 +131,8 @@ def user_follow(request):
         try:
             user = User.objects.get(id=user_id)
             if action == 'follow':
-                Contact.objects.get_or_create(user_from=request.user, user_to=user)
-                create_action(request.user, 'is following', user)
+                Contact.objects.get_or_create(user_from=request.user,
+                                              user_to=user)
             else:
                 Contact.objects.filter(user_from=request.user, user_to=user)
             return JsonResponse({'status': 'ok'})
@@ -160,10 +155,6 @@ def feedback(request):
             )
             try:
                 email.send(fail_silently=False)
-                # send_mail(subject=cd['subject'],
-                #           message=cd['message'],
-                #           from_email=cd['sender'],
-                #           recipient_list=[settings.EMAIL_HOST_USER])
             except BadHeaderError:
                 return HttpResponse('Invalid header found!')
             return redirect('articles:all_articles')

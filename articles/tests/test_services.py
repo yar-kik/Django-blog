@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from django.test import TestCase, Client, RequestFactory
+from django.test import TestCase
 
 from articles.forms import CommentForm
 from articles.models import Article, Comment
@@ -7,6 +7,7 @@ from articles import services
 
 
 class TestArticleServices(TestCase):
+
     @classmethod
     def setUpTestData(cls):
         cls.user = User.objects.create_user(
@@ -53,14 +54,18 @@ class TestArticleServices(TestCase):
         self.request = self.client.get('/article/').wsgi_request
 
     def test_create_reply_form(self):
-        new_comment = services.create_reply_form(self.request, self.comment_form, self.comment)
+        new_comment = services.create_reply_form(self.request,
+                                                 self.comment_form,
+                                                 self.comment)
         new_comment.save()
         self.assertEqual(new_comment.name, self.user)
         self.assertEqual(new_comment.reply_to, self.comment.name)
-        self.assertEqual(new_comment.path, [1, new_comment.id])
+        self.assertEqual(new_comment.path, [self.comment.id, new_comment.id])
 
     def test_create_comment_form(self):
-        new_comment = services.create_comment_form(self.request, self.comment_form, self.article.id)
+        new_comment = services.create_comment_form(self.request,
+                                                   self.comment_form,
+                                                   self.article.id)
         new_comment.save()
         self.assertEqual(new_comment.name, self.user)
         self.assertEqual(new_comment.article_id, self.article.id)
@@ -86,11 +91,13 @@ class TestArticleServices(TestCase):
         articles = services.paginate_articles(self.request, object_list)
         self.assertEqual(len(articles), 6)
         # Check if page is integer within a paginated QuerySet
-        self.request = self.client.get('/article/', data={'page': 2}).wsgi_request
+        self.request = self.client.get('/article/',
+                                       data={'page': 2}).wsgi_request
         articles = services.paginate_articles(self.request, object_list)
         self.assertEqual(len(articles), 3)
         # Check if page is integer outside a paginated QuerySet
-        self.request = self.client.get('/article/', data={'page': 3}).wsgi_request
+        self.request = self.client.get('/article/',
+                                       data={'page': 3}).wsgi_request
         articles = services.paginate_articles(self.request, object_list)
         self.assertEqual(len(articles), 3)
 
@@ -100,10 +107,12 @@ class TestArticleServices(TestCase):
         comments = services.paginate_comments(self.request, object_list)
         self.assertEqual(len(comments), 16)
         # Check if page is integer within a paginated QuerySet
-        self.request = self.client.get('/article/', data={'page': 2}).wsgi_request
+        self.request = self.client.get('/article/',
+                                       data={'page': 2}).wsgi_request
         comments = services.paginate_comments(self.request, object_list)
         self.assertEqual(len(comments), 3)
         # Check if page is integer outside a paginated QuerySet
-        self.request = self.client.get('/article/', data={'page': 3}).wsgi_request
+        self.request = self.client.get('/article/',
+                                       data={'page': 3}).wsgi_request
         comments = services.paginate_comments(self.request, object_list)
         self.assertIsNone(comments)

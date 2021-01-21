@@ -2,7 +2,8 @@ import logging
 import redis
 from django.conf import settings
 from django.contrib.auth.decorators import login_required, permission_required
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, \
+    PermissionRequiredMixin
 from django.core.mail import send_mail
 from django.http import JsonResponse, HttpResponse, HttpResponseForbidden
 from django.shortcuts import render, get_object_or_404, redirect
@@ -12,13 +13,16 @@ from django.views.decorators.http import require_POST
 from django.views.generic import CreateView, UpdateView, DeleteView
 from django.views.generic.edit import ModelFormMixin
 
-from common.decorators import ajax_required, author_or_staff_required
+from common.decorators import ajax_required
 from .forms import EmailPostForm, CommentForm, ArticleForm
 from .models import Article, Comment
-from .selectors import get_article_by_slug, get_parent_comment, get_comments_by_id, \
-    get_moderation_articles, get_published_articles, get_draft_articles, get_film_articles, get_anime_articles, \
+from .selectors import get_article_by_slug, get_parent_comment, \
+    get_comments_by_id, \
+    get_moderation_articles, get_published_articles, get_draft_articles, \
+    get_film_articles, get_anime_articles, \
     get_game_articles
-from .services import create_comment_form, create_reply_form, is_author, paginate_articles, save_comment, \
+from .services import create_comment_form, create_reply_form, is_author, \
+    paginate_articles, save_comment, \
     paginate_comments, search_results
 
 logger = logging.getLogger(__name__)
@@ -101,10 +105,11 @@ def article_detail(request, slug):
     article = get_article_by_slug(slug=slug, annotate=True)
     comment_form = CommentForm()
     total_views = r.incr(f'article:{article.id}:views')
-    return render(request, 'articles/post/detail.html', {'article': article,
-                                                         'section': article.category,
-                                                         'comment_form': comment_form,
-                                                         'total_views': total_views})
+    return render(request, 'articles/post/detail.html',
+                  {'article': article,
+                   'section': article.category,
+                   'comment_form': comment_form,
+                   'total_views': total_views})
 
 
 def comments_list(request, article_id):
@@ -119,8 +124,8 @@ def comments_list(request, article_id):
                   {'comments': paginated_comments})
 
 
-@login_required
 @ajax_required
+@login_required
 def reply_comment(request, comment_id):
     """
     Create reply of the parent comment
@@ -135,8 +140,8 @@ def reply_comment(request, comment_id):
                         comment_form, action='reply', comment_id=comment_id)
 
 
-@login_required
 @ajax_required
+@login_required
 def create_comment(request, article_id):
     """
     Create an article comment
@@ -146,7 +151,8 @@ def create_comment(request, article_id):
         create_comment_form(request, comment_form, article_id)
     else:
         comment_form = CommentForm()
-    return save_comment(request, 'articles/comment/partial_comments_all.html', comment_form)
+    return save_comment(request, 'articles/comment/partial_comments_all.html',
+                        comment_form)
 
 
 @ajax_required
@@ -161,7 +167,8 @@ def edit_comment(request, comment_id):
         comment_form = CommentForm(instance=instance_comment, data=request.POST)
     else:
         comment_form = CommentForm(instance=instance_comment)
-    return save_comment(request, 'articles/comment/partial_comment_edit.html', comment_form)
+    return save_comment(request, 'articles/comment/partial_comment_edit.html',
+                        comment_form)
 
 
 @ajax_required
@@ -178,11 +185,13 @@ def delete_comment(request, comment_id):
     if request.method == 'POST':
         comment.delete()
         data['form_is_valid'] = True
-        data['html_comments_all'] = render_to_string('articles/comment/partial_comments_all.html', {
-            'comments': comments, 'user': request.user})
+        data['html_comments_all'] = render_to_string(
+            'articles/comment/partial_comments_all.html', {
+                'comments': comments, 'user': request.user})
     else:
-        data['html_form'] = render_to_string('articles/comment/partial_comment_delete.html',
-                                             {'comment': comment, 'user': request.user}, request=request)
+        data['html_form'] = render_to_string(
+            'articles/comment/partial_comment_delete.html',
+            {'comment': comment, 'user': request.user}, request=request)
     return JsonResponse(data)
 
 
@@ -215,6 +224,7 @@ class ArticleBaseValidation(ModelFormMixin):
     """
     Base class of article's validation
     """
+
     def form_valid(self, form):
         """Check article's status in a form and assign it"""
         form.instance.author = self.request.user
@@ -227,7 +237,8 @@ class ArticleBaseValidation(ModelFormMixin):
         return super().form_valid(form)
 
 
-class CreateArticle(PermissionRequiredMixin, LoginRequiredMixin, CreateView, ArticleBaseValidation):
+class CreateArticle(PermissionRequiredMixin, LoginRequiredMixin, CreateView,
+                    ArticleBaseValidation):
     """
     Клас створення статті (необхідний відповідний дозвіл)
     """
@@ -237,7 +248,8 @@ class CreateArticle(PermissionRequiredMixin, LoginRequiredMixin, CreateView, Art
     permission_required = 'articles.add_article'
 
 
-class UpdateArticle(PermissionRequiredMixin, LoginRequiredMixin, UpdateView, ArticleBaseValidation):
+class UpdateArticle(PermissionRequiredMixin, LoginRequiredMixin, UpdateView,
+                    ArticleBaseValidation):
     """
     Клас редагування статті (необхідний дозвіл на це)
     """
@@ -257,8 +269,8 @@ class DeleteArticle(PermissionRequiredMixin, LoginRequiredMixin, DeleteView):
     permission_required = 'articles.delete_article'
 
 
-@login_required
 @require_POST
+@login_required
 def article_like(request):
     """
     Функція уподобання статті
