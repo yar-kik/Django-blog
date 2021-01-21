@@ -4,7 +4,6 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, \
     PermissionRequiredMixin
-from django.core.mail import send_mail
 from django.http import JsonResponse, HttpResponse, HttpResponseForbidden
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import render_to_string
@@ -14,7 +13,7 @@ from django.views.generic import CreateView, UpdateView, DeleteView
 from django.views.generic.edit import ModelFormMixin
 
 from common.decorators import ajax_required
-from .forms import EmailPostForm, CommentForm, ArticleForm
+from .forms import CommentForm, ArticleForm
 from .models import Article, Comment
 from .selectors import get_article_by_slug, get_parent_comment, \
     get_comments_by_id, \
@@ -193,31 +192,6 @@ def delete_comment(request, comment_id):
             'articles/comment/partial_comment_delete.html',
             {'comment': comment, 'user': request.user}, request=request)
     return JsonResponse(data)
-
-
-def post_share(request, article_id):
-    """
-    """
-    article = get_object_or_404(Article, id=article_id)
-    sent = False
-    if request.method == 'POST':
-        """Форма була відправлена на збереження"""
-        form = EmailPostForm(request.POST)
-        if form.is_valid():
-            """Всі поля форми пройшли валідацію"""
-            cd = form.cleaned_data
-            article_url = request.build_absolute_uri(article.get_absolute_url())
-            subject = f'{cd["name"]} ({cd["email"]}) recommends you reading {article.title}'
-            message = f'Read {article.title} at {article_url}\n\n{cd["name"]}\'s comments:' \
-                      f'{cd["comments"]}'
-            send_mail(subject, message, "einstein16.04@gmail.com", [cd['to']])
-            sent = True
-    else:
-        form = EmailPostForm()
-    return render(request, 'articles/post/share.html', {'article': article,
-                                                        'form': form,
-                                                        'sent': sent,
-                                                        'section': 'articles'})
 
 
 class ArticleBaseValidation(ModelFormMixin):

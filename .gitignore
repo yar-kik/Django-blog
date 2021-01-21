@@ -14,7 +14,7 @@ __pycache__
 *.log 
 media/ 
 my_env/ 
-TODO 
+TODO.md
 __pycache__ 
 >>>>>>> 4195cd7f8bf6069eb4cd09b00eebce94f55e9107
 /static/debug_toolbar/

@@ -28,7 +28,6 @@ urlpatterns = [
     path('<slug:slug>/delete_article/', views.DeleteArticle.as_view(),
          name='delete_article'),
     path('<slug:slug>/', views.article_detail, name='article_detail'),
-    path('<int:article_id>/share/', views.post_share, name='post_share'),
     path('feed/', LatestArticlesFeed(), name='article_feed'),
 ]
 
