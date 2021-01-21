@@ -23,7 +23,8 @@ def get_all_articles(annotate: bool = True) -> Article:
     Return all articles with predefined fields. If necessary return also count of the comments and likes
     """
     articles = Article.objects.all().select_related('author').prefetch_related().\
-        only('title', 'text', 'slug', 'author__username', 'author__is_staff', 'date_created')
+        only('title', 'text', 'slug', 'author__username', 'author__is_staff',
+             'date_created', 'large_picture')
     if annotate:
         articles = articles.annotate(total_comments=Count('comments', distinct=True),
                                      total_likes=Count('users_like', distinct=True))

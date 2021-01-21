@@ -73,7 +73,7 @@ img {
     height: auto;
 }
 form:not([class]):not([id]) {
-	margin: 50px;
+	margin: 20px 0;
 	padding: 20px;
 	min-width: 50%;
 	max-width: 400px;
@@ -92,6 +92,9 @@ form > p {
 .errorlist {
 	color: #B71C1C;
 	font-weight: bold;
+}
+tr td:first-child {
+	color: #B71C1C;
 }
 .last-articles, .commented-articles {
 	margin-bottom: 20px;
@@ -264,8 +267,9 @@ textarea {
 	margin: 10px 30px;
 }
 
-/*@media (min-width: 992px){*/
-/*}*/
+@media (min-width: 992px){
+	
+}
 /*For tablets*/
 @media (min-width: 768px) and (max-width: 991px){
 	.site-header-wrapper {
@@ -349,6 +353,14 @@ textarea {
 	}
 	#content, aside {
 		flex: 1 0 100%;
+		width: 100%;
 		padding: 0 20px 10px 20px;
+	}
+	table {
+		padding: 10px;
+	}
+	tbody tr {
+		display: flex;
+		flex-direction: column;
 	}
 }

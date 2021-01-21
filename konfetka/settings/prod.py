@@ -7,8 +7,6 @@ DEBUG = False
 INSTALLED_APPS = [
     'account',
     'articles',
-    'images',
-    'actions',
     'archives',
 
     'dal',

@@ -14,7 +14,6 @@ urlpatterns = [
     path('film_articles/', views.film_articles_list, name='film_articles'),
     path('anime_articles/', views.anime_articles_list, name='anime_articles'),
     path('game_articles/', views.game_articles_list, name='game_articles'),
-    # path('like_comment/', views.comment_like, name='like_comment'),
     path('create_article/', views.CreateArticle.as_view(), name='create_article'),
     path('search/', views.article_search, name='article_search'),
     path('bookmark_article/', views.bookmark_article, name='bookmark_article'),
@@ -29,8 +28,6 @@ urlpatterns = [
     path('<slug:slug>/delete_article/', views.DeleteArticle.as_view(),
          name='delete_article'),
     path('<slug:slug>/', views.article_detail, name='article_detail'),
-    path('<int:article_id>/share/', views.post_share, name='post_share'),
-    # path('tag/<slug:tag_slug>/', views.ArticlesList.as_view(), name='all_articles_by_tag'),
     path('feed/', LatestArticlesFeed(), name='article_feed'),
 ]
 

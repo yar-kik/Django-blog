@@ -1,10 +1,9 @@
 from typing import Union
 
-from django.contrib.auth.decorators import login_required
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank, TrigramSimilarity
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import QuerySet
-from django.http import HttpRequest, JsonResponse, HttpResponse
+from django.http import HttpRequest, JsonResponse
 from django.template.loader import render_to_string
 
 from articles.forms import CommentForm, SearchForm
@@ -12,8 +11,12 @@ from articles.models import Comment, Article
 from articles.selectors import get_comments_by_id
 
 
-def create_reply_form(request: HttpRequest, comment_form: CommentForm, parent_comment: Comment) -> CommentForm:
-    """Create reply form using a parent comment"""
+def create_reply_form(request: HttpRequest,
+                      comment_form: CommentForm,
+                      parent_comment: Comment) -> CommentForm:
+    """
+    Create reply form using a parent comment
+    """
     if comment_form.is_valid():
         new_comment = comment_form.save(commit=False)
         new_comment.article_id = parent_comment.article_id
@@ -23,8 +26,12 @@ def create_reply_form(request: HttpRequest, comment_form: CommentForm, parent_co
         return new_comment
 
 
-def create_comment_form(request: HttpRequest, comment_form: CommentForm, article_id: int) -> Comment:
-    """Create comment form using a article's id"""
+def create_comment_form(request: HttpRequest,
+                        comment_form: CommentForm,
+                        article_id: int) -> Comment:
+    """
+    Create comment form using a article's id
+    """
     if comment_form.is_valid():
         new_comment = comment_form.save(commit=False)
         new_comment.article_id = article_id
@@ -33,7 +40,9 @@ def create_comment_form(request: HttpRequest, comment_form: CommentForm, article
 
 
 def is_author(request: HttpRequest, comment: Comment) -> bool:
-    """Check if the user is the author"""
+    """
+    Check if the user is the author
+    """
     user = request.user
     if user.is_authenticated:
         if user.is_staff or comment.name_id == user.id:
@@ -41,8 +50,12 @@ def is_author(request: HttpRequest, comment: Comment) -> bool:
     return False
 
 
-def paginate_articles(request: HttpRequest, object_list: Article, paginate_by: int = 6) -> QuerySet:
-    """Get QuerySet of Article model and return paginated articles"""
+def paginate_articles(request: HttpRequest,
+                      object_list: Article,
+                      paginate_by: int = 6) -> QuerySet:
+    """
+    Get QuerySet of Article model and return paginated articles
+    """
     paginator = Paginator(object_list, paginate_by)
     page = request.GET.get('page')
     try:
@@ -54,8 +67,12 @@ def paginate_articles(request: HttpRequest, object_list: Article, paginate_by: i
     return articles
 
 
-def paginate_comments(request: HttpRequest, object_list: Comment, paginate_by: int = 16) -> Union[QuerySet, None]:
-    """Get QuerySet of Comment model and return paginated comments"""
+def paginate_comments(request: HttpRequest,
+                      object_list: Comment,
+                      paginate_by: int = 16) -> Union[QuerySet, None]:
+    """
+    Get QuerySet of Comment model and return paginated comments
+    """
     paginator = Paginator(object_list, paginate_by)
     page = request.GET.get('page')
     try:
@@ -68,9 +85,11 @@ def paginate_comments(request: HttpRequest, object_list: Comment, paginate_by: i
 
 
 def save_comment(request, template, form, **kwargs):
-    """Функція збереження коментарю (при створенні, зміні чи видаленні) через AJAX.
+    """
+    Функція збереження коментарю (при створенні, зміні чи видаленні) через AJAX.
     Data містить значення про валідність коментарю, його форма (при видаленні чи редагуванні),
-    шаблон із усіма коментарями даної статті"""
+    шаблон із усіма коментарями даної статті
+    """
     data = dict()
     if request.method == 'POST':
         article_id = form.instance.article_id
