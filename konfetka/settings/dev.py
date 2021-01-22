@@ -26,7 +26,6 @@ INSTALLED_APPS = [
     'sorl.thumbnail',
     'phonenumber_field',
     'debug_toolbar',
-    "template_profiler_panel",
     'django.contrib.postgres',
     'ckeditor',
     'ckeditor_uploader',

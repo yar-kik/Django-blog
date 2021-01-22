@@ -176,7 +176,8 @@ LOGGING = {
     'disable_existing_loggers': False,
     'formatters': {
         'verbose': {
-            'format': '{levelname} [{asctime}] "{message}", {name} {filename} line {lineno}, in {funcName}',
+            'format': '[{asctime}] {levelname} "{message}", {name} '
+                      '{filename} line {lineno}, in {funcName}',
             'datefmt': "%Y-%m-%d %H:%M:%S",
             'style': '{',
         },
