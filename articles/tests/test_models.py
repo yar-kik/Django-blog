@@ -34,7 +34,14 @@ class TestCommentModel(TestCase):
         cls.article = Article.objects.create(
             title="First article",
             author=cls.user,
-            text='Some text')
+            text='Some text',
+            status='publish')
+        cls.article2 = Article.objects.create(
+            title='Second article',
+            author=cls.user,
+            text='Another text',
+            status='draft'
+        )
         cls.comment = Comment.objects.create(
             article=cls.article,
             name=cls.user,
@@ -45,11 +52,13 @@ class TestCommentModel(TestCase):
         self.assertEqual(str(self.comment),
                          "Comment by user on First article")
 
+    def test_published(self):
+        self.assertNotIn(self.article2, Article.published.all())
+
     def test_comment_path(self):
-        self.assertIn(1, self.comment.path)
+        self.assertIn(self.comment.id, self.comment.path)
 
     def test_get_offset(self):
         self.assertEqual(self.comment.get_offset(), 1)
-
-    def test_get_col(self):
-        self.assertEqual(self.comment.get_col(), 23)
+        self.comment.path = [i for i in range(8)]
+        self.assertEqual(self.comment.get_offset(), 5)
