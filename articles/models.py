@@ -95,9 +95,3 @@ class Comment(models.Model):
         if level > 5:
             level = 5
         return level
-
-    def get_col(self):
-        level = len(self.path)
-        if level > 5:
-            level = 5
-        return 24 - level
