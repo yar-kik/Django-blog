@@ -8,53 +8,34 @@ class TestArticleView(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        cls.user = User.objects.create_user(
-            username='user',
-            password='pass',
-            email='e@mail.com'
-        )
-        cls.article = Article.objects.create(
-            title="First article",
-            author=cls.user,
-            text='Some text',
-            status='publish')
         cls.admin = User.objects.create_superuser(
             username='admin',
             email='mail@mail.com',
             password='pass'
         )
-        cls.comment = Comment.objects.create(
-            name=cls.user,
-            body="Test",
-            article=cls.article
-        )
-        cls.user2 = User.objects.create_user(
-            username='user2',
-            password='pass',
-            email='e2@mail.com'
-        )
+        cls.article = Article.objects.create(
+            title="First article",
+            author=cls.admin,
+            text='Some text',
+            status='publish')
+
+    def test_articles_redirect(self):
+        response = self.client.get('/')
+        self.assertEqual(response.status_code, 301)
 
     def test_publish_list(self):
         response = self.client.get('/articles/')
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'articles/post/list.html')
 
-    def test_moderation_list_user(self):
-        response = self.client.get('/articles/moderation_list/')
-        self.assertEqual(response.status_code, 403)
-
-    def test_moderation_list_admin(self):
+    def test_moderation_list(self):
         self.client.login(username='admin',
                           password='pass')
         response = self.client.get('/articles/moderation_list/')
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'articles/post/list.html')
 
-    def test_draft_list_user(self):
-        response = self.client.get('/articles/draft_list/')
-        self.assertEqual(response.status_code, 403)
-
-    def test_draft_list_admin(self):
+    def test_draft_list(self):
         self.client.login(username='admin',
                           password='pass')
         response = self.client.get('/articles/draft_list/')
@@ -117,14 +98,6 @@ class TestCommentView(TestCase):
         self.assertTemplateUsed(response,
                                 'articles/comment/partial_comments_all.html')
 
-    def test_create_comment_not_ajax(self):
-        response = self.client.post(
-            f"/articles/{self.article.id}/create_comment/",
-            name=self.user,
-            body='New comment'
-        )
-        self.assertEqual(response.status_code, 403)
-
     def test_create_comment(self):
         self.client.login(username='user', password='pass')
         response = self.client.get(
@@ -141,12 +114,6 @@ class TestCommentView(TestCase):
             HTTP_X_REQUESTED_WITH='XMLHttpRequest'
         )
         self.assertEqual(response.status_code, 200)
-
-    def test_edit_comment_not_ajax(self):
-        response = self.client.post(
-            f"/articles/{self.comment.id}/update_comment/",
-            body='Updated comment')
-        self.assertEqual(response.status_code, 403)
 
     def test_edit_comment_not_author(self):
         self.client.login(username='user2', password='pass')
@@ -173,11 +140,6 @@ class TestCommentView(TestCase):
             HTTP_X_REQUESTED_WITH='XMLHttpRequest'
         )
         self.assertEqual(response.status_code, 200)
-
-    def test_delete_comment_not_ajax(self):
-        response = self.client.post(
-            f"/articles/{self.comment.id}/delete_comment/")
-        self.assertEqual(response.status_code, 403)
 
     def test_delete_comment_not_author(self):
         self.client.login(username='user2', password='pass')
