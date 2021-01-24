@@ -13,7 +13,7 @@
 
         {% for article in results %}
             <h4><a href="{{ article.get_absolute_url }}">{{ article.title }}</a></h4>
-                {{ article.text|truncatewords:20|markdown }}
+                {{ article.text|striptags|safe|truncatewords:20 }}
         {% empty %}
             <p>На жаль, за даним запитом нічого не знайдено.</p>
         {% endfor %}
