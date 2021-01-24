@@ -46,7 +46,5 @@ urlpatterns = [
          name='delete_article'),
     path('<slug:slug>/', views.article_detail,
          name='article_detail'),
-    path('feed/', LatestArticlesFeed(),
-         name='article_feed'),
 ]
 
