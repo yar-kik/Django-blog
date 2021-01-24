@@ -98,8 +98,9 @@ def save_comment(request, template, form, **kwargs):
             context = {'comments': comments, 'user': request.user}
             form.save()
             data['form_is_valid'] = True
-            data['html_comments_all'] = render_to_string('articles/comment/partial_comments_all.html',
-                                                         context)
+            data['html_comments_all'] = render_to_string(
+                'articles/comment/partial_comments_all.html',
+                context)
         else:
             data['form_is_valid'] = False
     else:
@@ -107,7 +108,8 @@ def save_comment(request, template, form, **kwargs):
         if kwargs:
             context['comment_id'] = kwargs['comment_id']
             data['action'] = kwargs['action']
-        data['html_form'] = render_to_string(template, context, request=request)
+        data['html_form'] = render_to_string(template, context,
+                                             request=request)
     return JsonResponse(data)
 
 
