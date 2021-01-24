@@ -247,21 +247,18 @@ class DeleteArticle(PermissionRequiredMixin, LoginRequiredMixin, DeleteView):
 @login_required
 def article_like(request):
     """
-    Функція уподобання статті
+    Function to like the article
     """
     article_id = request.POST.get('id')
     action = request.POST.get('action')
     if article_id and action:
-        try:
-            article = get_object_or_404(Article, id=article_id)
-            if action == 'like':
-                article.users_like.add(request.user)
-            else:
-                article.users_like.remove(request.user)
-            return JsonResponse({'status': 'ok'})
-        except:
-            pass
-    return JsonResponse({'status': 'ok'})
+        article = get_object_or_404(Article, id=article_id)
+        if action == 'like':
+            article.users_like.add(request.user)
+        else:
+            article.users_like.remove(request.user)
+        return JsonResponse({'status': 'ok'})
+    return JsonResponse({'status': '404'})
 
 
 def article_search(request):
@@ -279,7 +276,9 @@ def article_search(request):
 @login_required
 @require_POST
 def bookmark_article(request):
-    """Add or remove article from bookmarked articles"""
+    """
+    Add or remove article from bookmarked articles of user
+    """
     article_id = request.POST.get('id')
     action = request.POST.get('action')
     if article_id and action:
@@ -289,4 +288,4 @@ def bookmark_article(request):
         else:
             article.users_bookmark.remove(request.user)
         return JsonResponse({'status': 'ok'})
-    return JsonResponse({'status': 'ok'})
+    return JsonResponse({'status': '404'})

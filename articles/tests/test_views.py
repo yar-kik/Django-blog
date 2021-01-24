@@ -66,6 +66,46 @@ class TestArticleView(TestCase):
         self.assertTemplateUsed(response, 'articles/post/detail.html')
         self.assertEqual(response.context["section"], self.article.category)
 
+    def test_article_like(self):
+        self.client.login(username='admin', password='pass')
+        response = self.client.post("/articles/like_article/",
+                                    data={"id": self.article.id,
+                                          "action": 'like'})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(self.article.users_like.count(), 1)
+
+        response = self.client.post("/articles/like_article/",
+                                    data={"id": self.article.id,
+                                          "action": 'unlike'})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(self.article.users_like.count(), 0)
+
+        response = self.client.post("/articles/like_article/")
+        self.assertJSONEqual(response.content, {'status': '404'})
+
+    def test_bookmark_article(self):
+        self.client.login(username='admin', password='pass')
+        response = self.client.post("/articles/bookmark_article/",
+                                    data={"id": self.article.id,
+                                          "action": 'bookmark'})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(self.article.users_bookmark.count(), 1)
+
+        response = self.client.post("/articles/bookmark_article/",
+                                    data={"id": self.article.id,
+                                          "action": 'unbookmark'})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(self.article.users_bookmark.count(), 0)
+
+        response = self.client.post("/articles/bookmark_article/")
+        self.assertJSONEqual(response.content, {'status': '404'})
+
+    def test_article_search(self):
+        response = self.client.get('/articles/search/',
+                                   data={"query": 'First article'})
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "articles/post/search.html")
+
 
 class TestCommentView(TestCase):
     @classmethod
@@ -97,6 +137,9 @@ class TestCommentView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response,
                                 'articles/comment/partial_comments_all.html')
+        response = self.client.get(f"/articles/{self.article.id}/all_comments/",
+                                   data={'page': 2})
+        self.assertEqual(response.content, b'')
 
     def test_create_comment(self):
         self.client.login(username='user', password='pass')
@@ -165,14 +208,21 @@ class TestCommentView(TestCase):
         )
         self.assertEqual(response.status_code, 200)
 
-    def test_article_like(self):
+    def test_reply_comment(self):
         self.client.login(username='user', password='pass')
-        response = self.client.post("/articles/like_article/",
-                                    date={"id": 1, "action": 'like'})
+        response = self.client.get(
+            f"/articles/{self.comment.id}/reply_comment/",
+            content_type='application/json',
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest'
+        )
+        self.assertEqual(response.status_code, 200)
+        response = self.client.post(
+            f"/articles/{self.comment.id}/reply_comment/",
+            content_type='application/json',
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest',
+            data={'body': 'replied comment'}
+        )
         self.assertEqual(response.status_code, 200)
 
-    def test_bookmark_article(self):
-        self.client.login(username='user', password='pass')
-        response = self.client.post("/articles/bookmark_article/",
-                                    date={"id": 1, "action": 'like'})
-        self.assertEqual(response.status_code, 200)
+
+
