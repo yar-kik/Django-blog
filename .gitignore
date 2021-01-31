@@ -5,6 +5,10 @@ media/
 __pycache__
 .env
 TODO.md
-/static/debug_toolbar/
+static/debug_toolbar/
 .coverage
 htmlcov/
+static/admin/
+static/autocomplete_light/
+static/ckeditor/
+static/vendor/

@@ -7,6 +7,7 @@ INSTALLED_APPS = [
     'articles',
     'archives',
 
+    'rest_framework',
     'dal',
     'dal_select2',
     "livereload",
