@@ -5,10 +5,10 @@ import sys
 
 
 def main():
-    DJANGO_SETTINGS_MODULE = 'konfetka.settings.dev'
-    if os.environ.get("DJANGO_ENV") == "production":
-        DJANGO_SETTINGS_MODULE = 'konfetka.settings.prod'
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', DJANGO_SETTINGS_MODULE)
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE',
+                          'konfetka.settings.prod'
+                          if os.environ.get("DJANGO_ENV", "") == "production"
+                          else 'konfetka.settings.dev')
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

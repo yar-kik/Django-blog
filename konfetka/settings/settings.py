@@ -146,8 +146,8 @@ ABSOLUTE_URL_OVERRIDES = {
     'auth.user': lambda u: reverse_lazy('account:user_detail', args=[u.username])
 }
 
-REDIS_HOST = os.environ.get('REDIS_HOST')
-REDIS_PORT = os.environ.get("REDIS_PORT")
+REDIS_HOST = os.environ.get('REDIS_HOST', "redis")
+REDIS_PORT = os.environ.get("REDIS_PORT", 6379)
 REDIS_DB = 0
 
 INTERNAL_IPS = [
@@ -158,7 +158,7 @@ INTERNAL_IPS = [
 CACHES = {
     "default": {
         "BACKEND": "redis_cache.RedisCache",
-        "LOCATION": 'localhost:6379',
+        "LOCATION": os.environ.get('REDIS_URL', "redis:6379"),
         "OPTIONS": {
             "DB": 1,
         }
