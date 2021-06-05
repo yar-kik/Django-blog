@@ -1,0 +1,13 @@
+sudo: required
+services:
+  - redis-server
+language: python
+python:
+  - "3.8"
+install:
+  - pip install -r requirements.txt
+  - pip install coveralls
+script:
+  - coverage run --source="." -m unittest && coveralls
+  - coverage report --fail-under=80
+  - pylint account/ archives/ articles/ common/ konfetka/ --ignore=migrations --rcfile=.pylintrc --fail-under=5
