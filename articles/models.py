@@ -76,7 +76,7 @@ class Article(models.Model):
     large_picture = ProcessedImageField(
         upload_to='articles/large/',
         blank=True,
-        default='default/large-article-picture.jpg',
+        # default='default/large-article-picture.jpg',
         verbose_name='картинка для ПК',
         processors=[ResizeToFill(1280, 720)],
         format='JPEG')
