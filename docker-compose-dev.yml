@@ -9,6 +9,8 @@ services:
         environment:
             - DJANGO_ENV=development
             - DATABASE_HOST=db
+            - REDIS_URL=redis:6379
+            - REDIS_HOST=redis
         volumes:
             - ./:/app
         depends_on:
@@ -32,6 +34,8 @@ services:
         environment:
             - DATABASE_HOST=db
             - DJANGO_ENV=development
+            - REDIS_URL=redis:6379
+            - REDIS_HOST=redis
         volumes:
             - ./:/app
         depends_on:

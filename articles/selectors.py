@@ -24,7 +24,7 @@ def get_all_articles(annotate: bool = True) -> Article:
     """
     articles = Article.objects.all().select_related('author').prefetch_related().\
         only('title', 'text', 'slug', 'author__username', 'author__is_staff',
-             'date_created', 'large_picture')
+             'date_created')
     if annotate:
         articles = articles.annotate(total_comments=Count('comments', distinct=True),
                                      total_likes=Count('users_like', distinct=True))

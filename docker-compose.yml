@@ -8,7 +8,8 @@ services:
         command: python3 -m gunicorn --workers 3 --bind 0.0.0.0:8000 manage:app
         environment:
             - DJANGO_ENV=production
-            - CACHE_REDIS_URL=redis://redis:6379
+            - REDIS_URL=redis:6379
+            - REDIS_HOST=redis
             - DATABASE_HOST=db
         volumes:
             - ./:/app
@@ -34,6 +35,8 @@ services:
         environment:
             - FLASK_ENV=production
             - DATABASE_HOST=db
+            - REDIS_URL=redis:6379
+            - REDIS_HOST=redis
         volumes:
             - ./:/app
         depends_on:
