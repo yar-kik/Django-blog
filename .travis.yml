@@ -9,5 +9,5 @@ install:
   - pip install coveralls
 script:
   - coverage run --source="." manage.py test && coveralls
-  - coverage report --fail-under=80
+  - coverage report --fail-under=20
   - pylint account/ archives/ articles/ common/ konfetka/ --ignore=migrations --rcfile=.pylintrc --fail-under=5
