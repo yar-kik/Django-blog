@@ -11,18 +11,13 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
-import environ
 from django.urls import reverse_lazy
+from dotenv import load_dotenv
 
-env = environ.Env(
-    DEBUG=(bool, False)
-)
-environ.Env.read_env()
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+load_dotenv(".env")
 
-
-SECRET_KEY = env('SECRET_KEY')
-
+SECRET_KEY = os.environ.get('SECRET_KEY', "hardtorememberstring")
 SITE_ID = 1
 
 ROOT_URLCONF = 'konfetka.urls'
@@ -45,17 +40,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'konfetka.wsgi.application'
 
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': env("DATABASE_NAME"),
-        'USER': env("DATABASE_USER"),
-        'PASSWORD': env("DATABASE_PASSWORD"),
-        'CONN_MAX_AGE': 60,
-    }
-}
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -71,6 +55,16 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get("DATABASE_NAME", "postgres"),
+        'USER': os.environ.get("DATABASE_USER", "postgres"),
+        'PASSWORD': os.environ.get("DATABASE_PASSWORD", "postgres"),
+        'HOST': os.environ.get("DATABASE_HOST", "localhost"),
+        'CONN_MAX_AGE': 60,
+    }
+}
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
@@ -129,20 +123,20 @@ AUTHENTICATION_BACKENDS = [
     'social_core.backends.google.GoogleOAuth2'
 ]
 
-SOCIAL_AUTH_FACEBOOK_KEY = env('FACEBOOK_KEY')  # Facebook App ID
-SOCIAL_AUTH_FACEBOOK_SECRET = env('FACEBOOK_SECRET')  # Facebook App Secret
+SOCIAL_AUTH_FACEBOOK_KEY = os.environ.get('FACEBOOK_KEY')  # Facebook App ID
+SOCIAL_AUTH_FACEBOOK_SECRET = os.environ.get('FACEBOOK_SECRET')  # Facebook App Secret
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env('GOOGLE_OAUTH2_KEY')
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env('GOOGLE_OAUTH2_SECRET')  # Google Consumer Secret
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ.get('GOOGLE_OAUTH2_KEY')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ.get('GOOGLE_OAUTH2_SECRET')  # Google Consumer Secret
 
 ADMINS = [("Yaroslav", "einstein16.04@gmail.com"),
           ("Sveta", "misstkachuk15@gmail.com")]
 
-EMAIL_HOST = env('EMAIL_HOST')
-EMAIL_HOST_USER = env('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
-EMAIL_PORT = env("EMAIL_PORT")
+EMAIL_HOST = os.environ.get('EMAIL_HOST')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+EMAIL_PORT = os.environ.get("EMAIL_PORT")
 EMAIL_USE_SSL = True
 
 PHONENUMBER_DB_FORMAT = 'NATIONAL'
@@ -152,8 +146,8 @@ ABSOLUTE_URL_OVERRIDES = {
     'auth.user': lambda u: reverse_lazy('account:user_detail', args=[u.username])
 }
 
-REDIS_HOST = env('REDIS_HOST')
-REDIS_PORT = env("REDIS_PORT")
+REDIS_HOST = os.environ.get('REDIS_HOST')
+REDIS_PORT = os.environ.get("REDIS_PORT")
 REDIS_DB = 0
 
 INTERNAL_IPS = [

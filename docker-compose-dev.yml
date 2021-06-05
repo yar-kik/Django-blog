@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+    app:
+        build: ./
+        ports:
+            - "8000:8000"
+        command: python3 manage.py runserver 0.0.0.0:8000
+        environment:
+            - DJANGO_ENV=development
+            - DATABASE_HOST=db
+        volumes:
+            - ./:/app
+        depends_on:
+            - redis
+            - migration
+
+    db:
+        image: postgres
+        environment:
+            - POSTGRES_DB=postgres
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=postgres
+        ports:
+            - "5432:5432"
+        volumes:
+            - ./database:/app/database
+
+    migration:
+        build: ./
+        command: python3 manage.py migrate
+        environment:
+            - DATABASE_HOST=db
+            - DJANGO_ENV=development
+        volumes:
+            - ./:/app
+        depends_on:
+            - db
+
+    redis:
+        image: redis
+        ports:
+            - "6379:6379"

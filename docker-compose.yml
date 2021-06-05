@@ -1,0 +1,54 @@
+version: '3'
+
+services:
+    app:
+        build: ./
+        ports:
+            - "8000:8000"
+        command: python3 -m gunicorn --workers 3 --bind 0.0.0.0:8000 manage:app
+        environment:
+            - DJANGO_ENV=production
+            - CACHE_REDIS_URL=redis://redis:6379
+            - DATABASE_HOST=db
+        volumes:
+            - ./:/app
+        depends_on:
+            - db
+            - redis
+            - migration
+
+    db:
+        image: postgres
+        environment:
+            - POSTGRES_DB=postgres
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=postgres
+        ports:
+            - "5432:5432"
+        volumes:
+            - ./database:/app/database
+
+    migration:
+        build: ./backend
+        command: python3 manage.py migrate
+        environment:
+            - FLASK_ENV=production
+            - DATABASE_HOST=db
+        volumes:
+            - ./:/app
+        depends_on:
+            - db
+
+    redis:
+        image: redis
+        ports:
+            - "6379:6379"
+
+    nginx:
+        build:
+            context: ./nginx
+            dockerfile: Dockerfile
+        ports:
+            - "80:80"
+        depends_on:
+            - app

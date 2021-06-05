@@ -9,9 +9,6 @@ INSTALLED_APPS = [
     'articles',
     'archives',
 
-    'dal',
-    'dal_select2',
-
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.humanize',
@@ -22,7 +19,6 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.sitemaps',
 
-    'taggit',
     'social_django',
     'sorl.thumbnail',
     'phonenumber_field',
@@ -30,8 +26,8 @@ INSTALLED_APPS = [
     'ckeditor',
     'ckeditor_uploader',
     'imagekit',
-    'environ',
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
