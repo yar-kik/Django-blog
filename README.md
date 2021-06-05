@@ -1,1 +1,2 @@
-"# konfetka" 
+# Django Blog
+ 

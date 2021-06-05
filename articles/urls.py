@@ -1,9 +1,7 @@
-from dal import autocomplete
 from django.urls import path
 
 from archives.models import InfoBase
 from . import views
-from .feeds import LatestArticlesFeed
 
 app_name = 'articles'
 urlpatterns = [
@@ -27,9 +25,9 @@ urlpatterns = [
          name='article_search'),
     path('bookmark_article/', views.bookmark_article,
          name='bookmark_article'),
-    path('item_autocomplete/',
-         autocomplete.Select2QuerySetView.as_view(model=InfoBase),
-         name='item_autocomplete'),
+    # path('item_autocomplete/',
+    #      autocomplete.Select2QuerySetView.as_view(model=InfoBase),
+    #      name='item_autocomplete'),
     path('<int:comment_id>/update_comment/', views.edit_comment,
          name='edit_comment'),
     path('<int:comment_id>/delete_comment/', views.delete_comment,
