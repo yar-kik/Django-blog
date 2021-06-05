@@ -13,10 +13,10 @@ class FilmForm(forms.ModelForm):
             'tags': 'Теги',
             'genres': 'Жанри',
         }
-        widgets = {
-            'tags': autocomplete.TaggitSelect2('archives:tag_autocomplete'),
-            'genres': autocomplete.TaggitSelect2('archives:genre_autocomplete')
-        }
+        # widgets = {
+        #     'tags': autocomplete.TaggitSelect2('archives:tag_autocomplete'),
+        #     'genres': autocomplete.TaggitSelect2('archives:genre_autocomplete')
+        # }
         # widgets = {
         #     'release_date': forms.NumberInput(attrs={'min_value': 1900, 'max_value': 2025})
         # }

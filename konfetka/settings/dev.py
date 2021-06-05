@@ -1,16 +1,13 @@
 from .settings import *
 
+DEBUG = True
+
 ALLOWED_HOSTS = ["localhost",
                  "127.0.0.1"]
 INSTALLED_APPS = [
     'account',
     'articles',
     'archives',
-
-    'rest_framework',
-    'dal',
-    'dal_select2',
-    "livereload",
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -22,7 +19,6 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.sitemaps',
 
-    'taggit',
     'social_django',
     'sorl.thumbnail',
     'phonenumber_field',
@@ -31,15 +27,11 @@ INSTALLED_APPS = [
     'ckeditor',
     'ckeditor_uploader',
     'imagekit',
-    'environ',
 ]
-DEBUG = True
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
-    'livereload.middleware.LiveReloadScript',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',

@@ -76,18 +76,20 @@ class Article(models.Model):
     large_picture = ProcessedImageField(
         upload_to='articles/large/',
         blank=True,
-        default='default/large-article-picture.jpg',
+        null=True,
+        # default='default/large-article-picture.jpg',
         verbose_name='картинка для ПК',
-        processors=[ResizeToFill(1280, 720)],
-        format='JPEG')
-    medium_picture = ImageSpecField(
-        source='large_picture',
-        processors=[ResizeToFill(640, 360)],
-        format='JPEG')
-    small_picture = ImageSpecField(
-        source='large_picture',
-        processors=[ResizeToFill(320, 180)],
-        format='JPEG')
+        # processors=[ResizeToFill(1280, 720)],
+        # format='JPEG'
+    )
+    # medium_picture = ImageSpecField(
+    #     source='large_picture',
+    #     processors=[ResizeToFill(640, 360)],
+    #     format='JPEG')
+    # small_picture = ImageSpecField(
+    #     source='large_picture',
+    #     processors=[ResizeToFill(320, 180)],
+    #     format='JPEG')
 
     class Meta:
         ordering = ('-date_created',)

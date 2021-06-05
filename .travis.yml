@@ -1,0 +1,14 @@
+sudo: required
+services:
+  - redis-server
+  - postgresql
+language: python
+python:
+  - "3.8"
+install:
+  - pip install -r requirements.txt
+  - pip install coveralls
+script:
+  - coverage run --source="." manage.py test && coveralls
+  - coverage report --fail-under=20
+  - pylint account/ archives/ articles/ common/ konfetka/ --ignore=migrations --rcfile=.pylintrc --fail-under=5

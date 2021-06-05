@@ -3,7 +3,6 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from taggit.managers import TaggableManager
 
-from articles.tagging import TaggedWhatever, TaggedGenres
 
 YEARS = [(x, x) for x in range(1950, 2026)]
 
@@ -12,8 +11,6 @@ class InfoBase(models.Model):
     title = models.CharField(max_length=150, verbose_name='назва')
     original_title = models.CharField(max_length=150, blank=True, default='', verbose_name='оригінальна назва')
     release_date = models.PositiveSmallIntegerField(verbose_name='дата виходу', choices=YEARS, default=2020)
-    genres = TaggableManager(through=TaggedGenres, verbose_name='теги')
-    tags = TaggableManager(through=TaggedWhatever, verbose_name='жанри')
     description = models.TextField(max_length=10000, verbose_name='опис')
 
     def __str__(self):
