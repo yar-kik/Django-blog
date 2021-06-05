@@ -1,6 +1,7 @@
 sudo: required
 services:
   - redis-server
+  - postgresql
 language: python
 python:
   - "3.8"
