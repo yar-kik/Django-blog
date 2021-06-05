@@ -158,7 +158,7 @@ INTERNAL_IPS = [
 CACHES = {
     "default": {
         "BACKEND": "redis_cache.RedisCache",
-        "LOCATION": os.environ.get('REDIS_URL', "redis:6379"),
+        "LOCATION": os.environ.get('REDIS_URL', "localhost:6379"),
         "OPTIONS": {
             "DB": 1,
         }
