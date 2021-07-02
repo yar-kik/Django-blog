@@ -1,9 +1,11 @@
+"""Module for django-admin page"""
+
 from django.contrib import admin
 from .models import Profile
 
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ['user', 'date_of_birth', 'photo', 'sex', 'phone']
+    """Class for user profile changes"""
 
-# Register your models here.
+    list_display = ["user", "date_of_birth", "photo", "sex", "phone"]

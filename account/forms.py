@@ -13,31 +13,34 @@ class LoginForm(forms.Form):
 
 
 class UserRegistrationForm(forms.ModelForm):
-    password = forms.CharField(max_length=32, widget=forms.PasswordInput,
-                               label='Пароль')
-    email = forms.CharField(required=True, label="Електронна пошта",
-                            error_messages={'unique': "Користувач з такою поштою вже існує!"})
+    password = forms.CharField(
+        max_length=32, widget=forms.PasswordInput, label="Пароль"
+    )
+    email = forms.CharField(
+        required=True,
+        label="Електронна пошта",
+        error_messages={"unique": "Користувач з такою поштою вже існує!"},
+    )
 
     class Meta:
         model = User
-        fields = ('username', 'email')
-        help_texts = {
-            'username': ''
-        }
+        fields = ("username", "email")
+        help_texts = {"username": ""}
 
 
 class UserEditForm(forms.ModelForm):
     """Дозволяє користувачам змінювати ім'я, прізвише та пошту"""
+
     class Meta:
         model = User
-        fields = ('first_name', 'last_name', 'email')
+        fields = ("first_name", "last_name", "email")
         widgets = {
-            'email': forms.TextInput(attrs={'placeholder': 'example@gmail.com'})
+            "email": forms.TextInput(
+                attrs={"placeholder": "example@gmail.com"}
+            )
         }
         error_messages = {
-            'email': {
-                "unique": "Користувач з такою поштою вже існує!"
-            }
+            "email": {"unique": "Користувач з такою поштою вже існує!"}
         }
 
 
@@ -47,30 +50,38 @@ class ProfileEditForm(forms.ModelForm):
     def clean_photo(self):
         max_photo_size = settings.MAX_UPLOAD_IMAGE_SIZE
         valid_extensions = settings.VALID_IMAGE_EXTENSION
-        photo = self.cleaned_data['photo']
-        photo_format = photo.name.split('.')[-1]
+        photo = self.cleaned_data["photo"]
+        photo_format = photo.name.split(".")[-1]
         if photo_format in valid_extensions:
             if photo.size > max_photo_size:
-                raise forms.ValidationError("Розмір вашого зображення перевищує 2 Мб!")
+                raise forms.ValidationError(
+                    "Розмір вашого зображення перевищує 2 Мб!"
+                )
         else:
-            raise forms.ValidationError('Будь ласка, виберіть зображення у форматі jpg, jpeg або png')
+            raise forms.ValidationError(
+                "Будь ласка, виберіть зображення у форматі jpg, jpeg або png"
+            )
         return photo
 
     class Meta:
         model = Profile
-        fields = ('date_of_birth', 'photo', 'sex', 'phone')
+        fields = ("date_of_birth", "photo", "sex", "phone")
         widgets = {
-            'date_of_birth': forms.DateInput(attrs={'placeholder': 'ДД.ММ.РРРР'}),
-            'phone': forms.DateInput(attrs={'placeholder': '+380(__)___-__-__'})
+            "date_of_birth": forms.DateInput(
+                attrs={"placeholder": "ДД.ММ.РРРР"}
+            ),
+            "phone": forms.DateInput(
+                attrs={"placeholder": "+380(__)___-__-__"}
+            ),
         }
         error_messages = {
-            'phone': {
-                'invalid': 'Введіть коректний номер телефону, наприклад +38(098)152-27-15',
-                'unique': "Вибачте, але на цей номер вже зареєстровано інший акаунт"
+            "phone": {
+                "invalid": "Введіть коректний номер телефону, наприклад +38(098)152-27-15",
+                "unique": "Вибачте, але на цей номер вже зареєстровано інший акаунт",
             },
-            'date_of_birth': {
-                'invalid': 'Введіть коректну дату народження',
-            }
+            "date_of_birth": {
+                "invalid": "Введіть коректну дату народження",
+            },
         }
 
 
@@ -81,6 +92,7 @@ class FeedbackEmailForm(forms.Form):
     sender - пошта відправника;
     message - зміст повідомлення;
     """
+
     subject = forms.CharField(max_length=100)
     sender = forms.EmailField()
     message = forms.CharField(max_length=5000, widget=forms.Textarea)

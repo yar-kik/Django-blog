@@ -17,26 +17,100 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Profile',
+            name="Profile",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('date_of_birth', models.DateField(blank=True, null=True, verbose_name='дата народження')),
-                ('sex', models.CharField(blank=True, choices=[('', 'Не обрано'), ('M', 'Чоловіча'), ('F', 'Жіноча')], max_length=1, verbose_name='стать')),
-                ('photo', imagekit.models.fields.ProcessedImageField(blank=True, default='default/profile-picture.png', upload_to='user/avatar/%Y/%m/%d/', verbose_name='фото профілю')),
-                ('phone', phonenumber_field.modelfields.PhoneNumberField(blank=True, max_length=128, null=True, region=None, unique=True, verbose_name='номер телефону')),
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "date_of_birth",
+                    models.DateField(
+                        blank=True, null=True, verbose_name="дата народження"
+                    ),
+                ),
+                (
+                    "sex",
+                    models.CharField(
+                        blank=True,
+                        choices=[
+                            ("", "Не обрано"),
+                            ("M", "Чоловіча"),
+                            ("F", "Жіноча"),
+                        ],
+                        max_length=1,
+                        verbose_name="стать",
+                    ),
+                ),
+                (
+                    "photo",
+                    imagekit.models.fields.ProcessedImageField(
+                        blank=True,
+                        default="default/profile-picture.png",
+                        upload_to="user/avatar/%Y/%m/%d/",
+                        verbose_name="фото профілю",
+                    ),
+                ),
+                (
+                    "phone",
+                    phonenumber_field.modelfields.PhoneNumberField(
+                        blank=True,
+                        max_length=128,
+                        null=True,
+                        region=None,
+                        unique=True,
+                        verbose_name="номер телефону",
+                    ),
+                ),
+                (
+                    "user",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Contact',
+            name="Contact",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', models.DateTimeField(auto_now_add=True, db_index=True)),
-                ('user_from', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='rel_from_set', to=settings.AUTH_USER_MODEL)),
-                ('user_to', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='rel_to_set', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created",
+                    models.DateTimeField(auto_now_add=True, db_index=True),
+                ),
+                (
+                    "user_from",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="rel_from_set",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "user_to",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="rel_to_set",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'ordering': ('-created',),
+                "ordering": ("-created",),
             },
         ),
     ]

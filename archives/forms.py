@@ -8,10 +8,10 @@ from archives.models import Film, Anime, Game
 class FilmForm(forms.ModelForm):
     class Meta:
         model = Film
-        fields = '__all__'
+        fields = "__all__"
         labels = {
-            'tags': 'Теги',
-            'genres': 'Жанри',
+            "tags": "Теги",
+            "genres": "Жанри",
         }
         # widgets = {
         #     'tags': autocomplete.TaggitSelect2('archives:tag_autocomplete'),
@@ -25,10 +25,10 @@ class FilmForm(forms.ModelForm):
 class AnimeForm(forms.ModelForm):
     class Meta:
         model = Anime
-        fields = '__all__'
+        fields = "__all__"
 
 
 class GameForm(forms.ModelForm):
     class Meta:
         model = Game
-        fields = '__all__'
+        fields = "__all__"

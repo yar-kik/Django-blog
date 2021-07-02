@@ -1,8 +1,10 @@
+"""Module for user authentication"""
+
 from django.contrib.auth.models import User
 
 
-class EmailAuthBackend(object):
-    """Виконує аутенфікацію користувача по е-мейл"""
+class EmailAuthBackend:
+    """Auth user via emeai"""
 
     def authenticate(self, request, username=None, password=None):
         try:
@@ -20,8 +22,8 @@ class EmailAuthBackend(object):
             return None
 
 
-class PhoneAuthBackend(object):
-    """Виконує аутенфікацію користувача за номером телефона"""
+class PhoneAuthBackend:
+    """Auth user via phone"""
 
     def authenticate(self, request, username=None, password=None):
         try:

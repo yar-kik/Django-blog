@@ -3,7 +3,7 @@ from .models import Article
 
 
 class ArticleSitemap(Sitemap):
-    changefreq = 'weekly'
+    changefreq = "weekly"
     priority = 0.9
 
     def items(self):
@@ -11,5 +11,3 @@ class ArticleSitemap(Sitemap):
 
     def lastmod(self, obj):
         return obj.date_updated
-
-

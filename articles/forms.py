@@ -14,19 +14,18 @@ class EmailPostForm(forms.Form):
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = ('body',)
+        fields = ("body",)
 
 
 class ArticleForm(forms.ModelForm):
     class Meta:
         model = Article
-        fields = ('title', 'text', 'category', 'related_item')
+        fields = ("title", "text", "category", "related_item")
         widgets = {
-            'text': CKEditorUploadingWidget(),
+            "text": CKEditorUploadingWidget(),
             # 'related_item': autocomplete.ModelSelect2('articles:item_autocomplete')
         }
 
 
 class SearchForm(forms.Form):
     query = forms.CharField(max_length=50)
-

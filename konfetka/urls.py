@@ -22,21 +22,32 @@ from django.conf.urls.static import static
 from articles.views import articles_redirect
 from articles.sitemaps import ArticleSitemap
 
-sitemaps = {'articles': ArticleSitemap, }
+sitemaps = {
+    "articles": ArticleSitemap,
+}
 
 urlpatterns = [
-    path('', articles_redirect),
-    path('articles/', include('articles.urls', namespace='articles')),
-    path('account/', include('account.urls', namespace='account')),
-    path('admin/', admin.site.urls),
-    path('archives/', include('archives.urls', namespace='archives')),
-    path('social_auth/', include('social_django.urls', namespace='social')),
-    path('ckeditor/', include('ckeditor_uploader.urls')),
-    path('sitemap.xml', sitemap, {'sitemaps': sitemaps},
-         name='django.contrib.sitemaps.views.sitemap')
+    path("", articles_redirect),
+    path("articles/", include("articles.urls", namespace="articles")),
+    path("account/", include("account.urls", namespace="account")),
+    path("admin/", admin.site.urls),
+    path("archives/", include("archives.urls", namespace="archives")),
+    path("social_auth/", include("social_django.urls", namespace="social")),
+    path("ckeditor/", include("ckeditor_uploader.urls")),
+    path(
+        "sitemap.xml",
+        sitemap,
+        {"sitemaps": sitemaps},
+        name="django.contrib.sitemaps.views.sitemap",
+    ),
 ]
 """Don't use at working website!"""
 if settings.DEBUG:
     import debug_toolbar
-    urlpatterns = [path('__debug__/', include(debug_toolbar.urls)),] + urlpatterns
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+    urlpatterns = [
+        path("__debug__/", include(debug_toolbar.urls)),
+    ] + urlpatterns
+    urlpatterns += static(
+        settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
+    )

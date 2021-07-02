@@ -11,10 +11,22 @@ def get_comments_by_id(article_id: Type[int]) -> Comment:
     """
     Return all comments by the article id
     """
-    comments = Comment.objects.filter(article_id=article_id).order_by('path').\
-        select_related('name', 'name__profile', 'reply_to').only('article', 'body', 'name', 'created', 'updated',
-                                                                 'name__profile__photo', 'name__username', 'path',
-                                                                 'reply_to')
+    comments = (
+        Comment.objects.filter(article_id=article_id)
+        .order_by("path")
+        .select_related("name", "name__profile", "reply_to")
+        .only(
+            "article",
+            "body",
+            "name",
+            "created",
+            "updated",
+            "name__profile__photo",
+            "name__username",
+            "path",
+            "reply_to",
+        )
+    )
     return comments
 
 
@@ -22,16 +34,30 @@ def get_all_articles(annotate: bool = True) -> Article:
     """
     Return all articles with predefined fields. If necessary return also count of the comments and likes
     """
-    articles = Article.objects.all().select_related('author').prefetch_related().\
-        only('title', 'text', 'slug', 'author__username', 'author__is_staff',
-             'date_created')
+    articles = (
+        Article.objects.all()
+        .select_related("author")
+        .prefetch_related()
+        .only(
+            "title",
+            "text",
+            "slug",
+            "author__username",
+            "author__is_staff",
+            "date_created",
+        )
+    )
     if annotate:
-        articles = articles.annotate(total_comments=Count('comments', distinct=True),
-                                     total_likes=Count('users_like', distinct=True))
+        articles = articles.annotate(
+            total_comments=Count("comments", distinct=True),
+            total_likes=Count("users_like", distinct=True),
+        )
     return articles
 
 
-def get_article_by_slug(slug: str, annotate: bool = False) -> Optional[Article]:
+def get_article_by_slug(
+    slug: str, annotate: bool = False
+) -> Optional[Article]:
     """
     Return article by the slug
     """
@@ -42,7 +68,9 @@ def get_article_by_slug(slug: str, annotate: bool = False) -> Optional[Article]:
     return article
 
 
-def get_article_by_id(article_id: int, annotate: bool = False) -> Optional[Article]:
+def get_article_by_id(
+    article_id: int, annotate: bool = False
+) -> Optional[Article]:
     """Return article by the article's id"""
     try:
         article = get_all_articles(annotate).get(id=article_id)
@@ -53,25 +81,29 @@ def get_article_by_id(article_id: int, annotate: bool = False) -> Optional[Artic
 
 def get_published_articles() -> Article:
     """Return all published article"""
-    articles = get_all_articles().filter(status__in=['publish'])
+    articles = get_all_articles().filter(status__in=["publish"])
     return articles
 
 
 def get_moderation_articles() -> Article:
     """Return all articles on moderation"""
-    articles = get_all_articles().filter(status__in=['moderation'])
+    articles = get_all_articles().filter(status__in=["moderation"])
     return articles
 
 
 def get_draft_articles(request: HttpRequest) -> Article:
     """Return all draft articles"""
-    articles = get_all_articles().filter(status__in=['draft'], author=request.user)
+    articles = get_all_articles().filter(
+        status__in=["draft"], author=request.user
+    )
     return articles
 
 
 def get_parent_comment(comment_id: int) -> Comment:
     """Return parent comment"""
-    parent_comment = Comment.objects.only('id', 'article', 'name', 'path').get(id=comment_id)
+    parent_comment = Comment.objects.only("id", "article", "name", "path").get(
+        id=comment_id
+    )
     return parent_comment
 
 
@@ -82,18 +114,18 @@ def get_total_comments(article_id: int) -> int:
 
 
 def get_film_articles() -> Article:
-    published_articles = get_all_articles().filter(status__in=['publish'])
-    articles = published_articles.filter(category='film')
+    published_articles = get_all_articles().filter(status__in=["publish"])
+    articles = published_articles.filter(category="film")
     return articles
 
 
 def get_anime_articles() -> Article:
-    published_articles = get_all_articles().filter(status__in=['publish'])
-    articles = published_articles.filter(category='anime')
+    published_articles = get_all_articles().filter(status__in=["publish"])
+    articles = published_articles.filter(category="anime")
     return articles
 
 
 def get_game_articles() -> Article:
-    published_articles = get_all_articles().filter(status__in=['publish'])
-    articles = published_articles.filter(category='game')
+    published_articles = get_all_articles().filter(status__in=["publish"])
+    articles = published_articles.filter(category="game")
     return articles
