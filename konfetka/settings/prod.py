@@ -1,5 +1,7 @@
+from pathlib import Path
 import os
-from .settings import BASE_DIR
+
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 ALLOWED_HOSTS = ["kotolampa.live", "127.0.0.1", "localhost"]
 
@@ -18,6 +20,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.sites",
     "django.contrib.sitemaps",
+    "rest_framework",
     "social_django",
     "sorl.thumbnail",
     "phonenumber_field",
@@ -27,6 +30,16 @@ INSTALLED_APPS = [
     "imagekit",
 ]
 
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.environ.get("DATABASE_NAME", "postgres"),
+        "USER": os.environ.get("DATABASE_USER", "postgres"),
+        "PASSWORD": os.environ.get("DATABASE_PASSWORD", "postgres"),
+        "HOST": os.environ.get("DATABASE_HOST", "localhost"),
+        "CONN_MAX_AGE": 60,
+    }
+}
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

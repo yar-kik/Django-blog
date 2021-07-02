@@ -51,7 +51,7 @@ class TestArticleServices(TestCase):
         )
         new_comment.save()
         self.assertEqual(new_comment.name, self.user)
-        self.assertEqual(new_comment.reply_to, self.comment.name)
+        self.assertEqual(new_comment.reply_to, self.comment.user)
         self.assertEqual(new_comment.path, [self.comment.id, new_comment.id])
 
     def test_create_comment_form(self):
@@ -59,7 +59,7 @@ class TestArticleServices(TestCase):
             self.request, self.comment_form, self.article.id
         )
         new_comment.save()
-        self.assertEqual(new_comment.name, self.user)
+        self.assertEqual(new_comment.user, self.user)
         self.assertEqual(new_comment.article_id, self.article.id)
 
     def test_is_author(self):

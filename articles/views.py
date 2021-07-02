@@ -7,12 +7,14 @@ from django.contrib.auth.mixins import (
     PermissionRequiredMixin,
 )
 from django.http import JsonResponse, HttpResponse, HttpResponseForbidden
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.views.decorators.http import require_POST
 from django.views.generic import CreateView, UpdateView, DeleteView
 from django.views.generic.edit import ModelFormMixin
+from rest_framework.generics import ListCreateAPIView, \
+    RetrieveUpdateDestroyAPIView
 
 from common.decorators import ajax_required
 from .forms import CommentForm, ArticleForm
@@ -28,6 +30,7 @@ from .selectors import (
     get_anime_articles,
     get_game_articles,
 )
+from .serializers import ArticleSerializer
 from .services import (
     create_comment_form,
     create_reply_form,
@@ -43,13 +46,6 @@ logger = logging.getLogger(__name__)
 r = redis.StrictRedis(
     host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=settings.REDIS_DB
 )
-
-
-def articles_redirect(request):
-    """
-    Redirect to main page
-    """
-    return redirect("articles:all_articles", permanent=True)
 
 
 def publish_list(request):
@@ -237,64 +233,15 @@ def delete_comment(request, comment_id):
     return JsonResponse(data)
 
 
-class ArticleBaseValidation(ModelFormMixin):
-    """
-    Base class of article's validation
-    """
-
-    def form_valid(self, form):
-        """Check article's status in a form and assign it"""
-        form.instance.author = self.request.user
-        if "draft" in self.request.POST:
-            form.instance.status = "draft"
-        elif "moderation" in self.request.POST:
-            form.instance.status = "moderation"
-        elif "publish" in self.request.POST:
-            form.instance.status = "publish"
-        return super().form_valid(form)
+class ListArticleApiView(ListCreateAPIView):
+    queryset = Article.objects.all()
+    serializer_class = ArticleSerializer
 
 
-class CreateArticle(
-    PermissionRequiredMixin,
-    LoginRequiredMixin,
-    CreateView,
-    ArticleBaseValidation,
-):
-    """
-    Клас створення статті (необхідний відповідний дозвіл)
-    """
-
-    form_class = ArticleForm
-    model = Article
-    template_name = "articles/post/create_article.html"
-    permission_required = "articles.add_article"
-
-
-class UpdateArticle(
-    PermissionRequiredMixin,
-    LoginRequiredMixin,
-    UpdateView,
-    ArticleBaseValidation,
-):
-    """
-    Клас редагування статті (необхідний дозвіл на це)
-    """
-
-    model = Article
-    form_class = ArticleForm
-    template_name = "articles/post/update_article.html"
-    permission_required = "articles.change_article"
-
-
-class DeleteArticle(PermissionRequiredMixin, LoginRequiredMixin, DeleteView):
-    """
-    Видалення статті (необхідний дозвіл або статус персонала)
-    """
-
-    model = Article
-    template_name = "articles/post/delete_article.html"
-    success_url = reverse_lazy("articles:all_articles")
-    permission_required = "articles.delete_article"
+class SingleArticleApiView(RetrieveUpdateDestroyAPIView):
+    lookup_field = 'slug'
+    queryset = Article.objects.all()
+    serializer_class = ArticleSerializer
 
 
 @require_POST

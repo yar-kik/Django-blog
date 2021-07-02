@@ -25,7 +25,7 @@ def create_reply_form(
     if comment_form.is_valid():
         new_comment = comment_form.save(commit=False)
         new_comment.article_id = parent_comment.article_id
-        new_comment.name = request.user
+        new_comment.user = request.user
         new_comment.path.extend(parent_comment.path)
         new_comment.reply_to_id = parent_comment.name_id
         return new_comment
@@ -40,7 +40,7 @@ def create_comment_form(
     if comment_form.is_valid():
         new_comment = comment_form.save(commit=False)
         new_comment.article_id = article_id
-        new_comment.name = request.user
+        new_comment.user = request.user
         return new_comment
 
 

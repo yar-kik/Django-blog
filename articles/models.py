@@ -1,9 +1,6 @@
 from django.contrib.auth.models import User
-from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.urls import reverse
-from imagekit.models import ProcessedImageField, ImageSpecField
-from pilkit.processors import ResizeToFill
 from uuslug import slugify
 
 from archives.models import InfoBase, Film
@@ -18,11 +15,11 @@ class PublishedManager(models.Manager):
         )
 
 
-CATEGORIES = [("film", "Фільми"), ("game", "Ігри"), ("anime", "Аніме")]
+CATEGORIES = [("film", "Film"), ("game", "Game"), ("anime", "Anime")]
 STATUS_CHOICES = [
-    ("draft", "Чернетка"),
-    ("moderation", "На модерації"),
-    ("publish", "Опублікований"),
+    ("draft", "Drafted"),
+    ("moderation", "On moderation"),
+    ("publish", "Published"),
 ]
 
 
@@ -68,24 +65,6 @@ class Article(models.Model):
         verbose_name="статус",
         blank=True,
     )
-    large_picture = ProcessedImageField(
-        upload_to="articles/large/",
-        blank=True,
-        null=True,
-        # default='default/large-article-picture.jpg',
-        verbose_name="картинка для ПК",
-        # processors=[ResizeToFill(1280, 720)],
-        # format='JPEG'
-    )
-
-    # medium_picture = ImageSpecField(
-    #     source='large_picture',
-    #     processors=[ResizeToFill(640, 360)],
-    #     format='JPEG')
-    # small_picture = ImageSpecField(
-    #     source='large_picture',
-    #     processors=[ResizeToFill(320, 180)],
-    #     format='JPEG')
 
     class Meta:
         ordering = ("-date_created",)
@@ -111,14 +90,13 @@ class Comment(models.Model):
     article = models.ForeignKey(
         Article, on_delete=models.CASCADE, related_name="comments"
     )
-    name = models.ForeignKey(
+    user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="comments"
     )
     body = models.TextField(max_length=2000, verbose_name="")
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     active = models.BooleanField(default=True)
-    path = ArrayField(models.IntegerField(blank=True, null=True), default=list)
     reply_to = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -134,17 +112,4 @@ class Comment(models.Model):
         ordering = ("-created",)
 
     def __str__(self):
-        return f"Comment by {self.name} on {self.article}"
-
-    def save(self, *args, **kwargs):
-        if self.id is None:
-            super().save(*args, **kwargs)
-            self.path.append(self.id)
-        else:
-            super().save(*args, **kwargs)
-
-    def get_offset(self):
-        level = len(self.path)
-        if level > 5:
-            level = 5
-        return level
+        return f"Comment by {self.user} on {self.article}"

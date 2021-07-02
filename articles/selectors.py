@@ -14,15 +14,15 @@ def get_comments_by_id(article_id: Type[int]) -> Comment:
     comments = (
         Comment.objects.filter(article_id=article_id)
         .order_by("path")
-        .select_related("name", "name__profile", "reply_to")
+        .select_related("user", "name__profile", "reply_to")
         .only(
             "article",
             "body",
-            "name",
+            "user",
             "created",
             "updated",
-            "name__profile__photo",
-            "name__username",
+            "user__profile__photo",
+            "user__username",
             "path",
             "reply_to",
         )
@@ -101,7 +101,7 @@ def get_draft_articles(request: HttpRequest) -> Article:
 
 def get_parent_comment(comment_id: int) -> Comment:
     """Return parent comment"""
-    parent_comment = Comment.objects.only("id", "article", "name", "path").get(
+    parent_comment = Comment.objects.only("id", "article", "user", "path").get(
         id=comment_id
     )
     return parent_comment

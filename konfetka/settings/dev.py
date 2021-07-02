@@ -1,5 +1,7 @@
 import os
-from .settings import BASE_DIR
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
@@ -18,6 +20,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.sites",
     "django.contrib.sitemaps",
+    "rest_framework",
     "social_django",
     "sorl.thumbnail",
     "phonenumber_field",
@@ -27,6 +30,13 @@ INSTALLED_APPS = [
     "ckeditor_uploader",
     "imagekit",
 ]
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

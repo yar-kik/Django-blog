@@ -1,7 +1,4 @@
-from django.contrib.postgres.fields import ArrayField
-from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
-from taggit.managers import TaggableManager
 
 
 YEARS = [(x, x) for x in range(1950, 2026)]
@@ -28,12 +25,12 @@ class InfoBase(models.Model):
 
 
 class Film(InfoBase):
-    directors = ArrayField(
-        models.CharField(max_length=100), default=list, verbose_name="режисер"
-    )
-    actors = ArrayField(
-        models.CharField(max_length=100), default=list, verbose_name="актори"
-    )
+    # directors = ArrayField(
+    #     models.CharField(max_length=100), default=list, verbose_name="режисер"
+    # )
+    # actors = ArrayField(
+    #     models.CharField(max_length=100), default=list, verbose_name="актори"
+    # )
     image = models.ImageField(
         upload_to="archives/films", blank=True, null=True
     )
@@ -51,11 +48,11 @@ class Anime(InfoBase):
 
 class Game(InfoBase):
     developer = models.CharField(max_length=100, verbose_name="розробник")
-    platforms = ArrayField(
-        models.CharField(max_length=100),
-        default=list,
-        verbose_name="платформи",
-    )
+    # platforms = ArrayField(
+    #     models.CharField(max_length=100),
+    #     default=list,
+    #     verbose_name="платформи",
+    # )
     image = models.ImageField(
         upload_to="archives/games", blank=True, null=True
     )

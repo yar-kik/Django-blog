@@ -19,7 +19,6 @@ from django.shortcuts import redirect
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from articles.views import articles_redirect
 from articles.sitemaps import ArticleSitemap
 
 sitemaps = {
@@ -27,7 +26,6 @@ sitemaps = {
 }
 
 urlpatterns = [
-    path("", articles_redirect),
     path("articles/", include("articles.urls", namespace="articles")),
     path("account/", include("account.urls", namespace="account")),
     path("admin/", admin.site.urls),
