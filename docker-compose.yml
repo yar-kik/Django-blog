@@ -1,18 +1,18 @@
 version: '3'
 
 services:
-    app:
+    api:
         build: ./
         ports:
             - "8000:8000"
-        command: python3 -m gunicorn --workers 3 --bind 0.0.0.0:8000 manage:app
+        command: gunicorn --workers 3 --bind 0.0.0.0:8000 konfetka.wsgi
         environment:
             - DJANGO_ENV=production
             - REDIS_URL=redis:6379
             - REDIS_HOST=redis
             - DATABASE_HOST=db
         volumes:
-            - ./:/app
+            - ./:/api
         depends_on:
             - db
             - redis
@@ -27,10 +27,10 @@ services:
         ports:
             - "5432:5432"
         volumes:
-            - ./database:/app/database
+            - ./database:/api/database
 
     migration:
-        build: ./backend
+        build: ./
         command: python3 manage.py migrate
         environment:
             - FLASK_ENV=production
@@ -38,7 +38,7 @@ services:
             - REDIS_URL=redis:6379
             - REDIS_HOST=redis
         volumes:
-            - ./:/app
+            - ./:/api
         depends_on:
             - db
 
@@ -48,10 +48,8 @@ services:
             - "6379:6379"
 
     nginx:
-        build:
-            context: ./nginx
-            dockerfile: Dockerfile
+        build: ./nginx
         ports:
             - "80:80"
         depends_on:
-            - app
+            - api

@@ -1,6 +1,7 @@
-from .settings import *
+import os
+from .settings import BASE_DIR
 
-ALLOWED_HOSTS = ["kotolampa.live"]
+ALLOWED_HOSTS = ["kotolampa.live", "127.0.0.1", "localhost"]
 
 DEBUG = False
 
