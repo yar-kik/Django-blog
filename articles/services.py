@@ -1,47 +1,12 @@
 from typing import Union
 
-from django.contrib.postgres.search import (
-    SearchVector,
-    SearchQuery,
-    SearchRank,
-    TrigramSimilarity,
-)
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import QuerySet
 from django.http import HttpRequest, JsonResponse
 from django.template.loader import render_to_string
 
-from articles.forms import CommentForm, SearchForm
 from articles.models import Comment, Article
 from articles.selectors import get_comments_by_id
-
-
-def create_reply_form(
-    request: HttpRequest, comment_form: CommentForm, parent_comment: Comment
-) -> CommentForm:
-    """
-    Create reply form using a parent comment
-    """
-    if comment_form.is_valid():
-        new_comment = comment_form.save(commit=False)
-        new_comment.article_id = parent_comment.article_id
-        new_comment.user = request.user
-        new_comment.path.extend(parent_comment.path)
-        new_comment.reply_to_id = parent_comment.name_id
-        return new_comment
-
-
-def create_comment_form(
-    request: HttpRequest, comment_form: CommentForm, article_id: int
-) -> Comment:
-    """
-    Create comment form using a article's id
-    """
-    if comment_form.is_valid():
-        new_comment = comment_form.save(commit=False)
-        new_comment.article_id = article_id
-        new_comment.user = request.user
-        return new_comment
 
 
 def is_author(request: HttpRequest, comment: Comment) -> bool:
@@ -117,40 +82,3 @@ def save_comment(request, template, form, **kwargs):
             template, context, request=request
         )
     return JsonResponse(data)
-
-
-def search_results(request):
-    """Пошук статті і використанням вектору пошуку (за полями заголовку і тексту з
-    ваговими коефіцієнтами 1 та 0.4 відповідно. Пошуковий набір проходить стемінг.
-    При пошуку враховується близькість шуканих слів одне до одного"""
-    form = SearchForm(request.GET)
-    if form.is_valid():
-        query = form.cleaned_data["query"]
-        search_vector = SearchVector("title", weight="A") + SearchVector(
-            "text", weight="B"
-        )
-        search_query = SearchQuery(query)
-        results = (
-            Article.objects.annotate(
-                search=search_vector,
-                rank=SearchRank(search_vector, search_query),
-            )
-            .filter(rank__gte=0.3)
-            .order_by("-rank")
-        )
-        return results, query
-
-
-def search_results2(request):
-    """Search using trigram similarity"""
-    form = SearchForm(request.GET)
-    if form.is_valid():
-        query = form.cleaned_data["query"]
-        results = (
-            Article.objects.annotate(
-                similarity=TrigramSimilarity("title", query),
-            )
-            .filter(similarity__gt=0.2)
-            .order_by("-similarity")
-        )
-        return results, query

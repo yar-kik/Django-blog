@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from uuslug import slugify
@@ -40,7 +40,7 @@ class Article(models.Model):
     )
     title = models.CharField(max_length=100, verbose_name="назва статті")
     author = models.ForeignKey(
-        User, on_delete=models.CASCADE, verbose_name="автор"
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="автор"
     )
     text = models.TextField(max_length=20000, verbose_name="текст")
     date_created = models.DateTimeField(
@@ -53,10 +53,10 @@ class Article(models.Model):
     objects = models.Manager()
     published = PublishedManager()
     users_like = models.ManyToManyField(
-        User, related_name="articles_liked", blank=True
+        settings.AUTH_USER_MODEL, related_name="articles_liked", blank=True
     )
     users_bookmark = models.ManyToManyField(
-        User, related_name="articles_bookmarked", blank=True
+        settings.AUTH_USER_MODEL, related_name="articles_bookmarked", blank=True
     )
     status = models.CharField(
         max_length=16,
@@ -91,21 +91,21 @@ class Comment(models.Model):
         Article, on_delete=models.CASCADE, related_name="comments"
     )
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="comments"
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="comments"
     )
     body = models.TextField(max_length=2000, verbose_name="")
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     active = models.BooleanField(default=True)
     reply_to = models.ForeignKey(
-        User,
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="reply",
         null=True,
         blank=True,
     )
     users_like = models.ManyToManyField(
-        User, blank=True, related_name="comments_liked"
+        settings.AUTH_USER_MODEL, blank=True, related_name="comments_liked"
     )
 
     class Meta:

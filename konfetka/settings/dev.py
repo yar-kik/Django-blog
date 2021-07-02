@@ -8,7 +8,7 @@ ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 DEBUG = True
 
 INSTALLED_APPS = [
-    "account",
+    "authentication",
     "articles",
     "archives",
     "django.contrib.admin",
@@ -20,14 +20,12 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.sites",
     "django.contrib.sitemaps",
+    "django.contrib.postgres",
     "rest_framework",
     "social_django",
     "sorl.thumbnail",
     "phonenumber_field",
     "debug_toolbar",
-    "django.contrib.postgres",
-    "ckeditor",
-    "ckeditor_uploader",
     "imagekit",
 ]
 
@@ -47,6 +45,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "authentication.middlewares.UserActivityMiddleware",
 ]
 
 STATICFILES_DIRS = [

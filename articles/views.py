@@ -2,22 +2,14 @@ import logging
 import redis
 from django.conf import settings
 from django.contrib.auth.decorators import login_required, permission_required
-from django.contrib.auth.mixins import (
-    LoginRequiredMixin,
-    PermissionRequiredMixin,
-)
 from django.http import JsonResponse, HttpResponse, HttpResponseForbidden
 from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
-from django.urls import reverse_lazy
 from django.views.decorators.http import require_POST
-from django.views.generic import CreateView, UpdateView, DeleteView
-from django.views.generic.edit import ModelFormMixin
 from rest_framework.generics import ListCreateAPIView, \
     RetrieveUpdateDestroyAPIView
 
 from common.decorators import ajax_required
-from .forms import CommentForm, ArticleForm
 from .models import Article, Comment
 from .selectors import (
     get_article_by_slug,
@@ -32,13 +24,10 @@ from .selectors import (
 )
 from .serializers import ArticleSerializer
 from .services import (
-    create_comment_form,
-    create_reply_form,
     is_author,
     paginate_articles,
     save_comment,
     paginate_comments,
-    search_results,
 )
 
 logger = logging.getLogger(__name__)

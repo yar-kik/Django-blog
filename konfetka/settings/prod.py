@@ -8,7 +8,7 @@ ALLOWED_HOSTS = ["kotolampa.live", "127.0.0.1", "localhost"]
 DEBUG = False
 
 INSTALLED_APPS = [
-    "account",
+    "authentication",
     "articles",
     "archives",
     "django.contrib.admin",
@@ -20,13 +20,11 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.sites",
     "django.contrib.sitemaps",
+    "django.contrib.postgres",
     "rest_framework",
     "social_django",
     "sorl.thumbnail",
     "phonenumber_field",
-    "django.contrib.postgres",
-    "ckeditor",
-    "ckeditor_uploader",
     "imagekit",
 ]
 
@@ -49,6 +47,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "authentication.middlewares.UserActivityMiddleware",
 ]
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"

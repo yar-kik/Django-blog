@@ -84,7 +84,7 @@
                 <button type="submit" class="add-comment">Додати коментар</button>
             </form>
         {% else %}
-            <p>Коментування доступне лише <a href="{% url 'account:login' %}">авторизованим</a> користувачам</p>
+            <p>Коментування доступне лише <a href="{% url 'authentication:login' %}">авторизованим</a> користувачам</p>
         {% endif %}
     </div>
 

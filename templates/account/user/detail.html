@@ -34,7 +34,7 @@
 {% block domready %}
     $('a.follow').click(function(e){
     e.preventDefault();
-    $.post('{% url "account:user_follow" %}',
+    $.post('{% url "authentication:user_follow" %}',
         {
             id: $(this).data('id'),
             action: $(this).data('action')

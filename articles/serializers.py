@@ -18,5 +18,5 @@ class ArticleSerializer(serializers.ModelSerializer):
         fields = ("title", "text", "author", "date_created", "date_updated",
                   "slug", "status", "category", "total_likes",
                   "total_bookmarks")
-        read_only_fields = ("author", "total_likes", "total_bookmarks")
+        read_only_fields = ("author", "total_likes", "total_bookmarks", "slug")
         lookup_field = 'slug'

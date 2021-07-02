@@ -27,11 +27,10 @@ sitemaps = {
 
 urlpatterns = [
     path("articles/", include("articles.urls", namespace="articles")),
-    path("account/", include("account.urls", namespace="account")),
+    path("authentication/", include("authentication.urls", namespace="authentication")),
     path("admin/", admin.site.urls),
     path("archives/", include("archives.urls", namespace="archives")),
     path("social_auth/", include("social_django.urls", namespace="social")),
-    path("ckeditor/", include("ckeditor_uploader.urls")),
     path(
         "sitemap.xml",
         sitemap,

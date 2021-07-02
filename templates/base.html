@@ -44,16 +44,16 @@
                 <ul>
                 {% if user.is_authenticated %}
                     <li>
-                        <a href="{% url 'account:dashboard' %}" class="button"><i class="flaticon-home-1"></i>
+                        <a href="{% url 'authentication:dashboard' %}" class="button"><i class="flaticon-home-1"></i>
                         Мій кабінет</a>
                     </li>
                     <li>
-                        <a href="{% url 'account:logout' %}" class="button">
+                        <a href="{% url 'authentication:logout' %}" class="button">
                             <i class="flaticon-exit-2"></i>Вихід</a>
                     </li>
                 {% else %}
                     <li>
-                        <a href="{% url 'account:login' %}" class="button">
+                        <a href="{% url 'authentication:login' %}" class="button">
                             <i class="flaticon-login"></i>Вхід</a>
                     </li>
                 {% endif %}
@@ -97,7 +97,7 @@
                     {% endfor %}
                 </ul>
             </div>
-	    <p><a href="{% url 'account:feedback' %}">Побажання та пропозиції?</a></p>
+	    <p><a href="{% url 'authentication:feedback' %}">Побажання та пропозиції?</a></p>
         {#<p><a href="{% url 'articles:article_feed' %}">Subscribe to my RSS feed</a></p>#}
         </aside>
     </main>
