@@ -8,7 +8,5 @@ TODO.md
 static/debug_toolbar/
 .coverage
 htmlcov/
-static/admin/
-static/autocomplete_light/
-static/ckeditor/
-static/vendor/
+*.sqlite3
+*.sqlite

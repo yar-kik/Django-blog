@@ -1,6 +1,0 @@
-<form action="{% url 'blog:reply_comment' comment_id %}" method="post" class="reply-form">
-    {{ form.as_p }}
-    {% csrf_token %}
-    <button type="submit">Додати коментар</button>
-    <button type="button" class="cancel">Відмінити</button>
-</form>
