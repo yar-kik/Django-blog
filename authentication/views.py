@@ -1,3 +1,5 @@
+"""Module for auth controllers (views)"""
+
 from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -10,6 +12,8 @@ from .serializers import (
 
 
 class RegistrationApiView(APIView):
+    """Registration API endpoint"""
+
     serializer_class = RegistrationSerializer
 
     def post(self, request: Request) -> Response:
@@ -24,6 +28,8 @@ class RegistrationApiView(APIView):
 
 
 class LoginApiView(APIView):
+    """Login API endpoint"""
+
     serializer_class = LoginSerializer
 
     def post(self, request: Request) -> Response:

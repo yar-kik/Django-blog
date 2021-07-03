@@ -17,8 +17,8 @@ class InfoBase(models.Model):
     )
     description = models.TextField(max_length=10000, verbose_name="опис")
 
-    def __str__(self):
-        return self.title
+    def __str__(self) -> str:
+        return str(self.title)
 
     class Meta:
         ordering = ("title",)

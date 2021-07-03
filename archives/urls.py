@@ -1,7 +1,5 @@
-from django.urls import path
-from . import views
+"""Module for the archive app urls"""
 
+# pylint: disable=invalid-name
 app_name = "archives"
-urlpatterns = [
-    path("films/", views.film_list, name="film_list"),
-]
+urlpatterns = []

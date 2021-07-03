@@ -1,3 +1,5 @@
+"""Module to test blog app views"""
+
 import unittest
 
 from rest_framework.response import Response
@@ -8,22 +10,30 @@ from blog.models import Article
 
 
 class TestListArticleApiView(APITestCase):
+    """Test to create article and get a list of all articles"""
+
     @classmethod
     def setUpTestData(cls):
         cls.user = User.objects.create_user(
             username="user", email="email@mail.com", password="password"
         )
 
-    def test_create_post_if_unauthorized(self):
+    def test_create_article_if_unauthorized(self):
+        """Testing article creating if user if not authorized"""
+
         response = self.client.post("/blog/articles/")
         self.assertEqual(response.status_code, 403)
 
-    def test_create_post_if_empty_input(self):
+    def test_create_article_if_empty_input(self):
+        """Testing article creating if input is empty"""
+
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.user.token)
         response = self.client.post("/blog/articles/")
         self.assertEqual(response.status_code, 400)
 
-    def test_create_post_if_invalid_data(self):
+    def test_create_article_if_invalid_data(self):
+        """Testing article creating if data is invalid"""
+
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.user.token)
         response = self.client.post(
             "/blog/articles/", data={"article": {"title": ""}}
@@ -35,7 +45,8 @@ class TestListArticleApiView(APITestCase):
         response = self.client.post(
             "/blog/articles/",
             data={
-                "article": {"title": "Article title", "text": "Article text"}},
+                "article": {"title": "Article title", "text": "Article text"}
+            },
         )
         self.assertEqual(response.status_code, 201)
         article = Article.objects.first()

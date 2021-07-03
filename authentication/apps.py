@@ -1,5 +1,9 @@
+"""Module for app definition"""
+
 from django.apps import AppConfig
 
 
-class AccountConfig(AppConfig):
+class AuthConfig(AppConfig):
+    """Configuration of the auth app"""
+
     name = "authentication"

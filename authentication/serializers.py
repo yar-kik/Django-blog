@@ -1,3 +1,5 @@
+"""Module for auth serializers"""
+
 from datetime import datetime
 
 from django.contrib.auth import authenticate
@@ -15,6 +17,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
         max_length=64, min_length=8, write_only=True
     )
 
+    # pylint: disable=missing-class-docstring
     class Meta:
         model = User
         fields = ["username", "email", "password"]
@@ -31,9 +34,9 @@ class LoginSerializer(serializers.Serializer):
     password = serializers.CharField(max_length=64, write_only=True)
     token = serializers.CharField(max_length=255, read_only=True)
 
-    def validate(self, data):
-        username = data.get("username")
-        password = data.get("password")
+    def validate(self, attrs):
+        username = attrs.get("username")
+        password = attrs.get("password")
         user = authenticate(username=username, password=password)
         if user is None:
             raise serializers.ValidationError(
@@ -49,6 +52,7 @@ class LoginSerializer(serializers.Serializer):
 class UserActivitySerializer(serializers.ModelSerializer):
     """Serializer for user activity"""
 
+    # pylint: disable=missing-class-docstring
     class Meta:
         model = User
         fields = ("username", "registered", "last_login", "last_request")

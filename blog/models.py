@@ -1,18 +1,17 @@
+"""Module for the blog app models"""
+
 from django.conf import settings
 from django.db import models
-from django.urls import reverse
-from uuslug import slugify
 
-from archives.models import InfoBase, Film
+from archives.models import InfoBase
 
 
 class PublishedManager(models.Manager):
+    """Manager of a published articles"""
+
     def get_queryset(self):
-        return (
-            super(PublishedManager, self)
-            .get_queryset()
-            .filter(status="publish")
-        )
+        """Return queryset of a published articles"""
+        return super().get_queryset().filter(status="publish")
 
 
 CATEGORIES = [("film", "Film"), ("game", "Game"), ("anime", "Anime")]
@@ -24,9 +23,7 @@ STATUS_CHOICES = [
 
 
 class Article(models.Model):
-    """
-    Клас для збереження статей.
-    """
+    """Article database model"""
 
     category = models.CharField(
         max_length=16,
@@ -38,10 +35,13 @@ class Article(models.Model):
     related_item = models.ForeignKey(
         InfoBase, on_delete=models.CASCADE, null=True, blank=True
     )
-    title = models.CharField(max_length=100, verbose_name="назва статті",
-                             unique=True)
+    title = models.CharField(
+        max_length=100, verbose_name="назва статті", unique=True
+    )
     author = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="автор"
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        verbose_name="автор",
     )
     text = models.TextField(max_length=20000, verbose_name="текст")
     date_created = models.DateTimeField(
@@ -56,7 +56,9 @@ class Article(models.Model):
         settings.AUTH_USER_MODEL, related_name="articles_liked", blank=True
     )
     users_bookmark = models.ManyToManyField(
-        settings.AUTH_USER_MODEL, related_name="articles_bookmarked", blank=True
+        settings.AUTH_USER_MODEL,
+        related_name="articles_bookmarked",
+        blank=True,
     )
     status = models.CharField(
         max_length=16,
@@ -66,6 +68,7 @@ class Article(models.Model):
         blank=True,
     )
 
+    # pylint: disable=missing-class-docstring
     class Meta:
         ordering = ("-date_created",)
         permissions = [
@@ -73,19 +76,22 @@ class Article(models.Model):
             ("can_draft_article", "Може створювати чернетку статті"),
         ]
 
-    def __str__(self):
-        return self.title
+    def __str__(self) -> str:
+        return str(self.title)
 
 
 class Comment(models.Model):
-    """Клас коментарів конкретної статті"""
+    """Comment database model"""
 
     article = models.ForeignKey(
         Article, on_delete=models.CASCADE, related_name="comments"
     )
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="comments"
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="comments",
     )
+    objects = models.Manager()
     body = models.TextField(max_length=2000, verbose_name="")
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -101,6 +107,7 @@ class Comment(models.Model):
         settings.AUTH_USER_MODEL, blank=True, related_name="comments_liked"
     )
 
+    # pylint: disable=missing-class-docstring
     class Meta:
         ordering = ("-created",)
 

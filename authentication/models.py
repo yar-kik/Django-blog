@@ -1,3 +1,5 @@
+"""Module for database models"""
+
 from datetime import datetime, timedelta
 
 import jwt
@@ -41,6 +43,8 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
+    """Custom user model"""
+
     username = models.CharField(
         db_index=True,
         max_length=32,
@@ -59,7 +63,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self) -> str:
         """Return string representation of model"""
-        return self.username
+        return str(self.username)
 
     @property
     def token(self) -> str:
