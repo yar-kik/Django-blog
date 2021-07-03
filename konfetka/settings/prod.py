@@ -18,17 +18,6 @@ DATABASES = {
     }
 }
 
-MIDDLEWARE = [
-    "django.middleware.security.SecurityMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "authentication.middlewares.UserActivityMiddleware",
-]
-
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
 STATIC_ROOT = os.path.join(BASE_DIR, "../../static/")

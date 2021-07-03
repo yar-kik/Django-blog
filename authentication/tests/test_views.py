@@ -6,7 +6,7 @@ from authentication.models import User
 class TestRegistrationApiView(APITestCase):
     def test_register_if_invalid_data(self):
         response = self.client.post(
-            "/api/auth/registration/",
+            "/auth/registration/",
             data={
                 "user": {
                     "username": "fake user",
@@ -19,7 +19,7 @@ class TestRegistrationApiView(APITestCase):
 
     def test_create_post_if_empty_input(self):
         response = self.client.post(
-            "/api/auth/registration/",
+            "/auth/registration/",
             data={
                 "user": {
                     "username": "user",
@@ -40,14 +40,14 @@ class TestLoginApiView(APITestCase):
 
     def test_login_if_user_not_exists_or_wrong_password(self):
         response = self.client.post(
-            "/api/auth/login/",
+            "/auth/login/",
             data={"user": {"username": "fake_user", "password": "somepass"}},
         )
         self.assertEqual(response.status_code, 400)
 
     def test_successful_login(self):
         response = self.client.post(
-            "/api/auth/login/",
+            "/auth/login/",
             data={"user": {"username": "user", "password": "password"}},
         )
         self.assertEqual(response.status_code, 200)

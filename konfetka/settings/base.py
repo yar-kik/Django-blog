@@ -12,24 +12,37 @@ TOKEN_EXPIRATION = {"days": 5}
 ROOT_URLCONF = "konfetka.urls"
 
 INSTALLED_APPS = [
-    "authentication",
-    "articles",
-    "archives",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.humanize",
-    "django.contrib.contenttypes",
     "django.contrib.sessions",
+    "django.contrib.contenttypes",
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.sites",
     "django.contrib.sitemaps",
     "django.contrib.postgres",
+
+    "authentication",
+    "blog",
+    "archives",
+
     "rest_framework",
     "social_django",
     "sorl.thumbnail",
     "phonenumber_field",
     "imagekit",
+]
+
+MIDDLEWARE = [
+    "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "authentication.middlewares.UserActivityMiddleware",
 ]
 
 TEMPLATES = [
@@ -116,7 +129,7 @@ PHONENUMBER_DB_FORMAT = "NATIONAL"
 PHONENUMBER_DEFAULT_REGION = "UA"
 
 ABSOLUTE_URL_OVERRIDES = {
-    "auth.user": lambda u: reverse_lazy(
+    "authentication.user": lambda u: reverse_lazy(
         "authentication:user_detail", args=[u.username]
     )
 }

@@ -1,29 +1,16 @@
 import logging
 import redis
 from django.conf import settings
-from django.contrib.auth.decorators import login_required, permission_required
-from django.http import JsonResponse
-from django.shortcuts import render, get_object_or_404
-from django.views.decorators.http import require_POST
 from rest_framework import status
 from rest_framework.generics import ListCreateAPIView, \
-    RetrieveUpdateDestroyAPIView
+    RetrieveUpdateDestroyAPIView, get_object_or_404
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.request import Request
 from rest_framework.response import Response
 
 from .models import Article, Comment
-from .selectors import (
-    get_moderation_articles,
-    get_published_articles,
-    get_draft_articles,
-    get_film_articles,
-    get_anime_articles,
-    get_game_articles,
-)
+from .permissions import IsAuthor
 from .serializers import ArticleSerializer, CommentSerializer
-from .services import (
-    paginate_articles,
-)
 
 logger = logging.getLogger(__name__)
 
@@ -37,6 +24,7 @@ class ListCommentApiView(ListCreateAPIView):
     serializer_class = CommentSerializer
     lookup_field = "article__id"
     lookup_url_kwarg = "article_id"
+    permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def create(self, request: Request, *args, **kwargs):
         comment = request.data.get("comment")
@@ -51,11 +39,13 @@ class SingleCommentApiView(RetrieveUpdateDestroyAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     lookup_url_kwarg = "comment_id"
+    permission_classes = (IsAuthenticatedOrReadOnly & IsAuthor)
 
 
 class ListArticleApiView(ListCreateAPIView):
     queryset = Article.objects.all()
     serializer_class = ArticleSerializer
+    permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def create(self, request, *args, **kwargs):
         article = request.data.get("article")
@@ -69,3 +59,4 @@ class SingleArticleApiView(RetrieveUpdateDestroyAPIView):
     queryset = Article.objects.all()
     serializer_class = ArticleSerializer
     lookup_url_kwarg = "article_id"
+    permission_classes = [IsAuthenticatedOrReadOnly & IsAuthor]

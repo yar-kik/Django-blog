@@ -11,4 +11,4 @@ install:
 script:
   - coverage run --source="." manage.py test && coveralls
   - coverage report --fail-under=80
-  - pylint authentication/ archives/ articles/ common/ konfetka/ --ignore=migrations --rcfile=.pylintrc --fail-under=5
+  - pylint authentication/ archives/ blog/ common/ konfetka/ --ignore=migrations --rcfile=.pylintrc --fail-under=5

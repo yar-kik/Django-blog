@@ -4,7 +4,7 @@ from functools import wraps
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
 
-from articles.models import Comment
+from blog.models import Comment
 
 
 def ajax_required(view):

@@ -50,7 +50,6 @@ class Article(models.Model):
     date_updated = models.DateTimeField(
         auto_now=True, verbose_name="дата редагування"
     )
-    slug = models.SlugField(max_length=100)
     objects = models.Manager()
     published = PublishedManager()
     users_like = models.ManyToManyField(
@@ -76,13 +75,6 @@ class Article(models.Model):
 
     def __str__(self):
         return self.title
-
-    def get_absolute_url(self):
-        return reverse("articles:article_detail", args=[self.slug])
-
-    def save(self, *args, **kwargs):
-        self.slug = slugify(self.title)
-        super(Article, self).save(*args, **kwargs)
 
 
 class Comment(models.Model):

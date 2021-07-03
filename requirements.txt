@@ -10,7 +10,7 @@ colorama==0.4.4
 coverage==5.5
 cryptography==3.4.7
 defusedxml==0.7.1
-Django==3.2.4
+Django==3.2.5
 django-appconf==1.0.4
 django-imagekit==4.0.2
 django-phonenumber-field==5.2.0

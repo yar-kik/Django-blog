@@ -16,14 +16,14 @@ Including another URLconf
 from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
 from django.urls import path, include
-from articles.sitemaps import ArticleSitemap
+from blog.sitemaps import ArticleSitemap
 
 sitemaps = {
-    "articles": ArticleSitemap,
+    "blog": ArticleSitemap,
 }
 
 urlpatterns = [
-    path("", include("articles.urls", namespace="articles")),
+    path("blog/", include("blog.urls", namespace="blog")),
     path("auth/", include("authentication.urls", namespace="auth")),
     path("admin/", admin.site.urls),
     path("archives/", include("archives.urls", namespace="archives")),

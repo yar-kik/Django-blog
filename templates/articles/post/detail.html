@@ -8,8 +8,8 @@
     <article>
     <div class="article-header">
         {% if article.author == user or user.is_staff %}
-            <a href="{% url 'articles:update_article' article.slug %}"><button>Редагувати статтю</button></a>
-            <a href="{% url 'articles:delete_article' article.slug %}"><button>Видалити статтю</button></a>
+            <a href="{% url 'blog:update_article' article.slug %}"><button>Редагувати статтю</button></a>
+            <a href="{% url 'blog:delete_article' article.slug %}"><button>Видалити статтю</button></a>
         {% endif %}
 
         <div class="article-info">
@@ -19,7 +19,7 @@
 
         <div class="tags">
             {% for tag in article.tags.all %}
-                <a href="{% url 'articles:all_articles_by_tag' tag.slug %}">
+                <a href="{% url 'blog:all_articles_by_tag' tag.slug %}">
                     #{{ tag.name }}
                 </a>
                 {% if not forloop.last %}, {% endif %}
@@ -38,7 +38,7 @@
 
     {% with users_like=article.users_like.all users_bookmark=article.users_bookmark.all %}
         <button data-id="{{ article.id }}" data-action="{% if request.user in users_like %}un{% endif %}like"
-                data-url="{% url "articles:like_article" %}" id="like">
+                data-url="{% url "blog:like_article" %}" id="like">
             {% if request.user not in users_like %}
                 Вподобайка
             {% else %}
@@ -47,7 +47,7 @@
         </button>
 
         <button data-id="{{ article.id }}" data-action="{% if request.user in users_bookmark %}un{% endif %}bookmark"
-                data-url="{% url "articles:bookmark_article" %}" id="bookmark">
+                data-url="{% url "blog:bookmark_article" %}" id="bookmark">
             {% if request.user not in users_bookmark %}
                 Додати в закладки
             {% else %}
@@ -64,7 +64,7 @@
         </span>
     {% endwith %}
 
-{#    <h2><a href="{% url 'articles:post_share' article.id %}">Поділитися</a></h2>#}
+{#    <h2><a href="{% url 'blog:post_share' article.id %}">Поділитися</a></h2>#}
 
     <h2>Схожа писанина</h2>
         {% for article in similar_articles %}
@@ -78,7 +78,7 @@
     <div class="new-comment">
         <h3>Залишити коментар</h3>
         {% if user.is_authenticated %}
-            <form action="{% url 'articles:create_comment' article.id %}" method="post" class="new-comment-form">
+            <form action="{% url 'blog:create_comment' article.id %}" method="post" class="new-comment-form">
                 {{ comment_form }}
                 {% csrf_token %}
                 <button type="submit" class="add-comment">Додати коментар</button>
@@ -93,7 +93,7 @@
 {#    {% endwith %}#}
 
     <div class="all-comments" style="display: grid; grid-template-columns: repeat(24, 1fr);">
-        {% include 'articles/comment/partial_comments_all.html' %}
+        {% include 'blog/comment/partial_comments_all.html' %}
     </div>
     <p id="empty" {% if article.total_comments %}style="display: none"{% endif %}>Поки що немає жодного коментарю. Будь першим!)</p>
 {% endblock %}
@@ -235,7 +235,7 @@
             block_request == false) {
                 block_request = true;
                 $.get(
-                    '{% url "articles:all_comments" article.id %}?page=' + page,
+                    '{% url "blog:all_comments" article.id %}?page=' + page,
                     function(data) {
                         if(data == '') {
                             empty_page = true;

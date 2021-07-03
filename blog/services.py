@@ -5,8 +5,8 @@ from django.db.models import QuerySet
 from django.http import HttpRequest, JsonResponse
 from django.template.loader import render_to_string
 
-from articles.models import Comment, Article
-from articles.selectors import get_comments_by_id
+from blog.models import Comment, Article
+from blog.selectors import get_comments_by_id
 
 
 def is_author(request: HttpRequest, comment: Comment) -> bool:
@@ -24,7 +24,7 @@ def paginate_articles(
     request: HttpRequest, object_list: Article, paginate_by: int = 6
 ) -> QuerySet:
     """
-    Get QuerySet of Article model and return paginated articles
+    Get QuerySet of Article model and return paginated blog
     """
     paginator = Paginator(object_list, paginate_by)
     page = request.GET.get("page")
@@ -69,7 +69,7 @@ def save_comment(request, template, form, **kwargs):
             form.save()
             data["form_is_valid"] = True
             data["html_comments_all"] = render_to_string(
-                "articles/comment/partial_comments_all.html", context
+                "blog/comment/partial_comments_all.html", context
             )
         else:
             data["form_is_valid"] = False

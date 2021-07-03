@@ -4,7 +4,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Count
 from django.http import HttpRequest, Http404
 
-from articles.models import Article, Comment
+from blog.models import Article, Comment
 
 
 def get_comments_by_id(article_id: Type[int]) -> Comment:
@@ -32,7 +32,7 @@ def get_comments_by_id(article_id: Type[int]) -> Comment:
 
 def get_all_articles(annotate: bool = True) -> Article:
     """
-    Return all articles with predefined fields. If necessary return also count of the comments and likes
+    Return all blog with predefined fields. If necessary return also count of the comments and likes
     """
     articles = (
         Article.objects.all()
@@ -86,13 +86,13 @@ def get_published_articles() -> Article:
 
 
 def get_moderation_articles() -> Article:
-    """Return all articles on moderation"""
+    """Return all blog on moderation"""
     articles = get_all_articles().filter(status__in=["moderation"])
     return articles
 
 
 def get_draft_articles(request: HttpRequest) -> Article:
-    """Return all draft articles"""
+    """Return all draft blog"""
     articles = get_all_articles().filter(
         status__in=["draft"], author=request.user
     )

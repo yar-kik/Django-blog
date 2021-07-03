@@ -3,11 +3,10 @@ from .models import Article, Comment
 
 
 @admin.register(Article)
-class PostAdmin(admin.ModelAdmin):
+class ArticleAdmin(admin.ModelAdmin):
     list_display = ("title", "author", "date_created", "date_updated")
     list_filter = ("date_created", "date_updated")
     search_fields = ("title", "author")
-    prepopulated_fields = {"slug": ("title",)}
 
 
 @admin.register(Comment)

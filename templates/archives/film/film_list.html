@@ -8,7 +8,7 @@
        <h1>{{ film.title }}</h1>
        <p class="tags">
             {% for tag in film.tags.all %}
-                <a href="{% url 'articles:all_articles_by_tag' tag.slug %}">
+                <a href="{% url 'blog:all_articles_by_tag' tag.slug %}">
                     {{ tag.name }}
                 </a>
                 {% if not forloop.last %}, {% endif %}
@@ -16,7 +16,7 @@
        </p>
        <p class="genres">
             {% for genre in film.genres.all %}
-                <a href="{% url 'articles:all_articles_by_tag' genre.slug %}">
+                <a href="{% url 'blog:all_articles_by_tag' genre.slug %}">
                     {{ genre.name }}
                 </a>
                 {% if not forloop.last %}, {% endif %}
