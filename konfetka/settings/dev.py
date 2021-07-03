@@ -7,28 +7,6 @@ ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
 DEBUG = True
 
-INSTALLED_APPS = [
-    "authentication",
-    "articles",
-    "archives",
-    "django.contrib.admin",
-    "django.contrib.auth",
-    "django.contrib.humanize",
-    "django.contrib.contenttypes",
-    "django.contrib.sessions",
-    "django.contrib.messages",
-    "django.contrib.staticfiles",
-    "django.contrib.sites",
-    "django.contrib.sitemaps",
-    "django.contrib.postgres",
-    "rest_framework",
-    "social_django",
-    "sorl.thumbnail",
-    "phonenumber_field",
-    "debug_toolbar",
-    "imagekit",
-]
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -38,7 +16,6 @@ DATABASES = {
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",

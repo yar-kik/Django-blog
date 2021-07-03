@@ -1,4 +1,7 @@
+from datetime import datetime
+
 from django.contrib.auth import authenticate
+from django.utils import timezone
 
 from rest_framework import serializers
 
@@ -11,11 +14,10 @@ class RegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
         max_length=64, min_length=8, write_only=True
     )
-    token = serializers.CharField(max_length=255, read_only=True)
 
     class Meta:
         model = User
-        fields = ["username", "email", "password", "token"]
+        fields = ["username", "email", "password"]
 
     def create(self, validated_data):
         """Create new user with validated data"""
@@ -39,6 +41,8 @@ class LoginSerializer(serializers.Serializer):
             )
         if not user.is_active:
             raise serializers.ValidationError("This user has been deactivated")
+        user.last_login = datetime.now(tz=timezone.utc)
+        user.save()
         return {"username": user.username, "token": user.token}
 
 

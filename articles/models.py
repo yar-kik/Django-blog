@@ -38,7 +38,8 @@ class Article(models.Model):
     related_item = models.ForeignKey(
         InfoBase, on_delete=models.CASCADE, null=True, blank=True
     )
-    title = models.CharField(max_length=100, verbose_name="назва статті")
+    title = models.CharField(max_length=100, verbose_name="назва статті",
+                             unique=True)
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="автор"
     )

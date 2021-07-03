@@ -51,7 +51,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     registered = models.DateTimeField(auto_now_add=True)
-    last_request = models.DateTimeField(null=True)
+    last_request = models.DateTimeField(auto_now=True)
 
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = ["email"]

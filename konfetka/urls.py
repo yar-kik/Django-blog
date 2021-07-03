@@ -15,10 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
-from django.shortcuts import redirect
 from django.urls import path, include
-from django.conf import settings
-from django.conf.urls.static import static
 from articles.sitemaps import ArticleSitemap
 
 sitemaps = {
@@ -26,8 +23,8 @@ sitemaps = {
 }
 
 urlpatterns = [
-    path("articles/", include("articles.urls", namespace="articles")),
-    path("authentication/", include("authentication.urls", namespace="authentication")),
+    path("", include("articles.urls", namespace="articles")),
+    path("auth/", include("authentication.urls", namespace="auth")),
     path("admin/", admin.site.urls),
     path("archives/", include("archives.urls", namespace="archives")),
     path("social_auth/", include("social_django.urls", namespace="social")),
@@ -38,13 +35,3 @@ urlpatterns = [
         name="django.contrib.sitemaps.views.sitemap",
     ),
 ]
-"""Don't use at working website!"""
-if settings.DEBUG:
-    import debug_toolbar
-
-    urlpatterns = [
-        path("__debug__/", include(debug_toolbar.urls)),
-    ] + urlpatterns
-    urlpatterns += static(
-        settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
-    )

@@ -7,27 +7,6 @@ ALLOWED_HOSTS = ["kotolampa.live", "127.0.0.1", "localhost"]
 
 DEBUG = False
 
-INSTALLED_APPS = [
-    "authentication",
-    "articles",
-    "archives",
-    "django.contrib.admin",
-    "django.contrib.auth",
-    "django.contrib.humanize",
-    "django.contrib.contenttypes",
-    "django.contrib.sessions",
-    "django.contrib.messages",
-    "django.contrib.staticfiles",
-    "django.contrib.sites",
-    "django.contrib.sitemaps",
-    "django.contrib.postgres",
-    "rest_framework",
-    "social_django",
-    "sorl.thumbnail",
-    "phonenumber_field",
-    "imagekit",
-]
-
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",

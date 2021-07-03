@@ -8,8 +8,29 @@ load_dotenv(".env")
 SECRET_KEY = os.environ.get("SECRET_KEY", "hardtorememberstring")
 SITE_ID = 1
 AUTH_USER_MODEL = 'authentication.User'
-TOKEN_EXPIRATION = {"days": 1}
+TOKEN_EXPIRATION = {"days": 5}
 ROOT_URLCONF = "konfetka.urls"
+
+INSTALLED_APPS = [
+    "authentication",
+    "articles",
+    "archives",
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.humanize",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "django.contrib.sites",
+    "django.contrib.sitemaps",
+    "django.contrib.postgres",
+    "rest_framework",
+    "social_django",
+    "sorl.thumbnail",
+    "phonenumber_field",
+    "imagekit",
+]
 
 TEMPLATES = [
     {
