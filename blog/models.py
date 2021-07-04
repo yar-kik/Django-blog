@@ -22,6 +22,7 @@ STATUS_CHOICES = [
 ]
 
 
+# pylint: disable=no-member
 class Article(models.Model):
     """Article database model"""
 
@@ -100,9 +101,12 @@ class ArticleLike(models.Model):
         Article, related_name="likes", on_delete=models.CASCADE
     )
     user: User = models.ForeignKey(
-        settings.AUTH_USER_MODEL, related_name="article_likes", on_delete=models.CASCADE
+        settings.AUTH_USER_MODEL,
+        related_name="article_likes",
+        on_delete=models.CASCADE,
     )
     created = models.DateTimeField(auto_now_add=True)
+    objects = models.Manager()
 
     def __str__(self):
         return f"<ArticleLike> {self.article.title} ({self.user.username})"
@@ -115,9 +119,12 @@ class CommentLike(models.Model):
         Comment, related_name="likes", on_delete=models.CASCADE
     )
     user: User = models.ForeignKey(
-        settings.AUTH_USER_MODEL, related_name="comment_likes", on_delete=models.CASCADE
+        settings.AUTH_USER_MODEL,
+        related_name="comment_likes",
+        on_delete=models.CASCADE,
     )
     created = models.DateTimeField(auto_now_add=True)
+    objects = models.Manager()
 
     def __str__(self):
         return f"<CommentLike> {self.user.username} ({self.created})"
@@ -130,9 +137,12 @@ class ArticleBookmark(models.Model):
         Article, related_name="bookmarks", on_delete=models.CASCADE
     )
     user: User = models.ForeignKey(
-        settings.AUTH_USER_MODEL, related_name="article_bookmarks", on_delete=models.CASCADE
+        settings.AUTH_USER_MODEL,
+        related_name="article_bookmarks",
+        on_delete=models.CASCADE,
     )
     created = models.DateTimeField(auto_now_add=True)
+    objects = models.Manager()
 
     def __str__(self):
         return f"<ArticleBookmark> {self.article.title} ({self.user.username})"

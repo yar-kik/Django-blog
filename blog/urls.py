@@ -19,5 +19,5 @@ urlpatterns = [
     path("articles/<int:article_id>/like/", ArticleLikeApiView.as_view()),
     path("articles/<int:article_id>/comments/", ListCommentApiView.as_view()),
     path("comments/<int:comment_id>/", SingleCommentApiView.as_view()),
-    path("comments/<int:comment_id>/like/", CommentLikeApiView.as_view())
+    path("comments/<int:comment_id>/like/", CommentLikeApiView.as_view()),
 ]

@@ -1,7 +1,5 @@
 """Module to test blog app views"""
 
-import unittest
-
 from rest_framework.response import Response
 from rest_framework.test import APITestCase
 

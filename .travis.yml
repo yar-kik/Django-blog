@@ -9,7 +9,7 @@ install:
   - pip install -r requirements.txt
   - pip install coveralls
 script:
-  - coverage run --source=blog,authentication,archives --omit="*migrations*" manage.py test && coveralls
+  - coverage run --source=blog,authentication --omit="*migrations*" manage.py test && coveralls
   - coverage report --fail-under=80
-  - pylint authentication/ archives/ blog/ --ignore=migrations --rcfile=.pylintrc --fail-under=8
-  - black --exclude="venv/*" --exclude="migrations/*" authentication/ blog/ archives/ --line-length 79 --check
+  - pylint authentication/ blog/ --ignore=migrations --rcfile=.pylintrc --fail-under=8
+  - black --exclude="venv/*" --exclude="migrations/*" authentication/ blog/ --line-length 79 --check

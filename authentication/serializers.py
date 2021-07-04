@@ -27,6 +27,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
         return User.objects.create_user(**validated_data)
 
 
+# pylint: disable=abstract-method
 class LoginSerializer(serializers.Serializer):
     """Class for user logging data deserialization"""
 

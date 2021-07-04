@@ -25,7 +25,6 @@ INSTALLED_APPS = [
 
     "authentication",
     "blog",
-    "archives",
 
     "rest_framework",
     "social_django",

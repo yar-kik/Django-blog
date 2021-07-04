@@ -26,7 +26,6 @@ urlpatterns = [
     path("blog/", include("blog.urls", namespace="blog")),
     path("auth/", include("authentication.urls", namespace="auth")),
     path("admin/", admin.site.urls),
-    path("archives/", include("archives.urls", namespace="archives")),
     path("social_auth/", include("social_django.urls", namespace="social")),
     path(
         "sitemap.xml",

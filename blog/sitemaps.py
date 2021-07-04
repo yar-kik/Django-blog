@@ -15,4 +15,5 @@ class ArticleSitemap(Sitemap):
         return Article.objects.all()
 
     def lastmod(self, obj):
-        return obj.date_updated
+        """Return last date of article update"""
+        return obj.updated

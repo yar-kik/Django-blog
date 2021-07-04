@@ -33,10 +33,6 @@ class Migration(migrations.Migration):
         ),
         migrations.RemoveField(
             model_name='article',
-            name='related_item',
-        ),
-        migrations.RemoveField(
-            model_name='article',
             name='text',
         ),
         migrations.RemoveField(

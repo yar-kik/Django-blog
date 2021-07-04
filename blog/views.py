@@ -6,10 +6,13 @@ from django.conf import settings
 from rest_framework import status
 from rest_framework.generics import (
     ListCreateAPIView,
-    RetrieveUpdateDestroyAPIView, get_object_or_404,
+    RetrieveUpdateDestroyAPIView,
+    get_object_or_404,
 )
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, \
-    IsAuthenticated
+from rest_framework.permissions import (
+    IsAuthenticatedOrReadOnly,
+    IsAuthenticated,
+)
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -86,14 +89,18 @@ class ArticleLikeApiView(APIView):
 
     permission_classes = [IsAuthenticated]
 
+    # pylint: disable=no-self-use
     def get(self, request: Request, article_id: int) -> Response:
+        """Like or unlike the article"""
         article = get_object_or_404(Article, id=article_id)
         like = article.likes.filter(user=request.user).all()
         if like:
             like.delete()
             message = {"detail": "Article was unliked"}
         else:
-            like = ArticleLike.objects.create(user=request.user, article=article)
+            like = ArticleLike.objects.create(
+                user=request.user, article=article
+            )
             article.likes.add(like)
             request.user.article_likes.add(like)
             message = {"detail": "Article was liked"}
@@ -107,14 +114,18 @@ class CommentLikeApiView(APIView):
 
     permission_classes = [IsAuthenticated]
 
+    # pylint: disable=no-self-use
     def get(self, request: Request, comment_id: int) -> Response:
+        """Like or unlike the comment"""
         comment = get_object_or_404(Comment, id=comment_id)
         like = comment.likes.filter(user=request.user).all()
         if like:
             like.delete()
             message = {"detail": "Comment was unliked"}
         else:
-            like = CommentLike.objects.create(user=request.user, comment=comment)
+            like = CommentLike.objects.create(
+                user=request.user, comment=comment
+            )
             comment.likes.add(like)
             request.user.comment_likes.add(like)
             message = {"detail": "Comment was liked"}

@@ -1,10 +1,15 @@
+"""Module to test auth app views"""
+
 from rest_framework.test import APITestCase
 
 from authentication.models import User
 
 
 class TestRegistrationApiView(APITestCase):
+    """Test user registration"""
+
     def test_register_if_invalid_data(self):
+        """Testing user register if data is invalid"""
         response = self.client.post(
             "/auth/registration/",
             data={
@@ -18,6 +23,7 @@ class TestRegistrationApiView(APITestCase):
         self.assertEqual(response.status_code, 400)
 
     def test_create_post_if_empty_input(self):
+        """Testing create post if input is empty"""
         response = self.client.post(
             "/auth/registration/",
             data={
@@ -32,6 +38,8 @@ class TestRegistrationApiView(APITestCase):
 
 
 class TestLoginApiView(APITestCase):
+    """Test user login"""
+
     @classmethod
     def setUpTestData(cls):
         cls.user = User.objects.create_user(
@@ -39,6 +47,7 @@ class TestLoginApiView(APITestCase):
         )
 
     def test_login_if_user_not_exists_or_wrong_password(self):
+        """Testing login if user not exists or password is wrong"""
         response = self.client.post(
             "/auth/login/",
             data={"user": {"username": "fake_user", "password": "somepass"}},
@@ -46,6 +55,7 @@ class TestLoginApiView(APITestCase):
         self.assertEqual(response.status_code, 400)
 
     def test_successful_login(self):
+        """Testing successful login"""
         response = self.client.post(
             "/auth/login/",
             data={"user": {"username": "user", "password": "password"}},
