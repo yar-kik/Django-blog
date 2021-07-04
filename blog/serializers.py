@@ -19,11 +19,11 @@ class ArticleSerializer(serializers.ModelSerializer):
 
     def get_total_likes(self, article: Article) -> int:
         """Return total number of the article likes"""
-        return article.users_like.count()
+        return article.likes.count()
 
     def get_total_bookmarks(self, article: Article) -> int:
         """Return total number of the article bookmarks"""
-        return article.users_bookmark.count()
+        return article.bookmarks.count()
 
     # pylint: disable=missing-class-docstring
     class Meta:
@@ -31,10 +31,10 @@ class ArticleSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "title",
-            "text",
+            "body",
             "author",
-            "date_created",
-            "date_updated",
+            "created",
+            "updated",
             "status",
             "category",
             "total_likes",
@@ -47,8 +47,8 @@ class ArticleSerializer(serializers.ModelSerializer):
             "total_likes",
             "total_bookmarks",
             "total_comments",
-            "date_created",
-            "date_updated",
+            "created",
+            "updated",
         )
 
 
@@ -60,7 +60,7 @@ class CommentSerializer(serializers.ModelSerializer):
     # pylint: disable=no-self-use
     def get_total_likes(self, comment: Comment) -> int:
         """Return total number of the comments likes"""
-        return comment.users_like.count()
+        return comment.likes.count()
 
     # pylint: disable=missing-class-docstring
     class Meta:
@@ -68,7 +68,7 @@ class CommentSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "article_id",
-            "user",
+            "author",
             "body",
             "created",
             "updated",
@@ -78,7 +78,7 @@ class CommentSerializer(serializers.ModelSerializer):
         read_only_fields = (
             "id",
             "article_id",
-            "user",
+            "author",
             "updated",
             "created",
             "total_likes",

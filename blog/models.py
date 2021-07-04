@@ -3,7 +3,7 @@
 from django.conf import settings
 from django.db import models
 
-from archives.models import InfoBase
+from authentication.models import User
 
 
 class PublishedManager(models.Manager):
@@ -29,55 +29,36 @@ class Article(models.Model):
         max_length=16,
         choices=CATEGORIES,
         default="film",
-        verbose_name="категорія",
         blank=True,
     )
-    related_item = models.ForeignKey(
-        InfoBase, on_delete=models.CASCADE, null=True, blank=True
-    )
-    title = models.CharField(
-        max_length=100, verbose_name="назва статті", unique=True
-    )
-    author = models.ForeignKey(
+    title = models.CharField(max_length=100, unique=True)
+    author: User = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        verbose_name="автор",
     )
-    text = models.TextField(max_length=20000, verbose_name="текст")
-    date_created = models.DateTimeField(
-        auto_now_add=True, verbose_name="дата створення"
-    )
-    date_updated = models.DateTimeField(
-        auto_now=True, verbose_name="дата редагування"
-    )
+    body = models.TextField(max_length=20000)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
     objects = models.Manager()
     published = PublishedManager()
-    users_like = models.ManyToManyField(
-        settings.AUTH_USER_MODEL, related_name="articles_liked", blank=True
-    )
-    users_bookmark = models.ManyToManyField(
-        settings.AUTH_USER_MODEL,
-        related_name="articles_bookmarked",
-        blank=True,
-    )
+
     status = models.CharField(
         max_length=16,
         choices=STATUS_CHOICES,
         default="draft",
-        verbose_name="статус",
         blank=True,
     )
 
     # pylint: disable=missing-class-docstring
     class Meta:
-        ordering = ("-date_created",)
+        ordering = ("-created",)
         permissions = [
-            ("can_moderate_article", "Може одобрювати статті"),
-            ("can_draft_article", "Може створювати чернетку статті"),
+            ("can_moderate_article", "Can moderate article"),
+            ("can_draft_article", "Can create draft article"),
         ]
 
     def __str__(self) -> str:
-        return str(self.title)
+        return f"<Article> {self.title} ({self.author.username})"
 
 
 class Comment(models.Model):
@@ -86,7 +67,7 @@ class Comment(models.Model):
     article = models.ForeignKey(
         Article, on_delete=models.CASCADE, related_name="comments"
     )
-    user = models.ForeignKey(
+    author: User = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="comments",
@@ -103,13 +84,55 @@ class Comment(models.Model):
         null=True,
         blank=True,
     )
-    users_like = models.ManyToManyField(
-        settings.AUTH_USER_MODEL, blank=True, related_name="comments_liked"
-    )
 
     # pylint: disable=missing-class-docstring
     class Meta:
         ordering = ("-created",)
 
+    def __str__(self) -> str:
+        return f"<Comment> {self.article.title} ({self.author.username})"
+
+
+class ArticleLike(models.Model):
+    """Article like database model"""
+
+    article: Article = models.ForeignKey(
+        Article, related_name="likes", on_delete=models.CASCADE
+    )
+    user: User = models.ForeignKey(
+        settings.AUTH_USER_MODEL, related_name="article_likes", on_delete=models.CASCADE
+    )
+    created = models.DateTimeField(auto_now_add=True)
+
     def __str__(self):
-        return f"Comment by {self.user} on {self.article}"
+        return f"<ArticleLike> {self.article.title} ({self.user.username})"
+
+
+class CommentLike(models.Model):
+    """Comment like database model"""
+
+    comment: Comment = models.ForeignKey(
+        Comment, related_name="likes", on_delete=models.CASCADE
+    )
+    user: User = models.ForeignKey(
+        settings.AUTH_USER_MODEL, related_name="comment_likes", on_delete=models.CASCADE
+    )
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"<CommentLike> {self.user.username} ({self.created})"
+
+
+class ArticleBookmark(models.Model):
+    """Article bookmark database model"""
+
+    article: Article = models.ForeignKey(
+        Article, related_name="bookmarks", on_delete=models.CASCADE
+    )
+    user: User = models.ForeignKey(
+        settings.AUTH_USER_MODEL, related_name="article_bookmarks", on_delete=models.CASCADE
+    )
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"<ArticleBookmark> {self.article.title} ({self.user.username})"

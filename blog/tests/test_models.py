@@ -15,13 +15,13 @@ class TestArticleModel(TestCase):
             username="user", email="email@mail.com", password="password"
         )
         cls.article = Article.objects.create(
-            title="First article", author=cls.user, text="Some text"
+            title="First article", author=cls.user, body="Some text"
         )
 
     def test_str(self):
         """Testing article model string representation"""
 
-        self.assertEqual(str(self.article), "First article")
+        self.assertEqual(str(self.article), "<Article> First article (user)")
 
 
 class TestCommentModel(TestCase):
@@ -35,23 +35,23 @@ class TestCommentModel(TestCase):
         cls.article = Article.objects.create(
             title="First article",
             author=cls.user,
-            text="Some text",
+            body="Some text",
             status="publish",
         )
         cls.article2 = Article.objects.create(
             title="Second article",
             author=cls.user,
-            text="Another text",
+            body="Another text",
             status="draft",
         )
         cls.comment = Comment.objects.create(
-            article=cls.article, user=cls.user, body="Some comment"
+            article=cls.article, author=cls.user, body="Some comment"
         )
 
     def test_str(self):
         """Testing comment model string representation"""
 
-        self.assertEqual(str(self.comment), "Comment by user on First article")
+        self.assertEqual(str(self.comment), "<Comment> First article (user)")
 
     def test_published(self):
         """Testing article model manager"""

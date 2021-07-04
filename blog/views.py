@@ -6,13 +6,15 @@ from django.conf import settings
 from rest_framework import status
 from rest_framework.generics import (
     ListCreateAPIView,
-    RetrieveUpdateDestroyAPIView,
+    RetrieveUpdateDestroyAPIView, get_object_or_404,
 )
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, \
+    IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from .models import Article, Comment
+from .models import Article, Comment, ArticleLike, CommentLike
 from .permissions import IsAuthor
 from .serializers import ArticleSerializer, CommentSerializer
 
@@ -32,7 +34,7 @@ class ListCommentApiView(ListCreateAPIView):
     serializer_class = CommentSerializer
     lookup_field = "article__id"
     lookup_url_kwarg = "article_id"
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def create(self, request: Request, *args, **kwargs):
         comment = request.data.get("comment")
@@ -50,7 +52,7 @@ class SingleCommentApiView(RetrieveUpdateDestroyAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     lookup_url_kwarg = "comment_id"
-    permission_classes = IsAuthenticatedOrReadOnly & IsAuthor
+    permission_classes = [IsAuthenticatedOrReadOnly & IsAuthor]
 
 
 class ListArticleApiView(ListCreateAPIView):
@@ -58,7 +60,7 @@ class ListArticleApiView(ListCreateAPIView):
 
     queryset = Article.objects.all()
     serializer_class = ArticleSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def create(self, request, *args, **kwargs):
         article = request.data.get("article")
@@ -75,3 +77,45 @@ class SingleArticleApiView(RetrieveUpdateDestroyAPIView):
     serializer_class = ArticleSerializer
     lookup_url_kwarg = "article_id"
     permission_classes = [IsAuthenticatedOrReadOnly & IsAuthor]
+
+
+class ArticleLikeApiView(APIView):
+    """
+    Like or unlike the article.
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request: Request, article_id: int) -> Response:
+        article = get_object_or_404(Article, id=article_id)
+        like = article.likes.filter(user=request.user).all()
+        if like:
+            like.delete()
+            message = {"detail": "Article was unliked"}
+        else:
+            like = ArticleLike.objects.create(user=request.user, article=article)
+            article.likes.add(like)
+            request.user.article_likes.add(like)
+            message = {"detail": "Article was liked"}
+        return Response(message)
+
+
+class CommentLikeApiView(APIView):
+    """
+    Like or unlike the comment.
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request: Request, comment_id: int) -> Response:
+        comment = get_object_or_404(Comment, id=comment_id)
+        like = comment.likes.filter(user=request.user).all()
+        if like:
+            like.delete()
+            message = {"detail": "Comment was unliked"}
+        else:
+            like = CommentLike.objects.create(user=request.user, comment=comment)
+            comment.likes.add(like)
+            request.user.comment_likes.add(like)
+            message = {"detail": "Comment was liked"}
+        return Response(message)

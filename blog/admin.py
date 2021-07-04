@@ -8,8 +8,8 @@ from .models import Article, Comment
 class ArticleAdmin(admin.ModelAdmin):
     """Article instances administration"""
 
-    list_display = ("title", "author", "date_created", "date_updated")
-    list_filter = ("date_created", "date_updated")
+    list_display = ("title", "author", "created", "updated")
+    list_filter = ("created", "updated")
     search_fields = ("title", "author")
 
 
@@ -17,6 +17,6 @@ class ArticleAdmin(admin.ModelAdmin):
 class CommentAdmin(admin.ModelAdmin):
     """Comment instances administration"""
 
-    list_display = ("user", "article", "body", "created", "updated")
+    list_display = ("author", "article", "body", "created", "updated")
     list_filter = ("active", "created", "updated")
-    search_fields = ("user", "body")
+    search_fields = ("author", "body")
