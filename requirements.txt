@@ -7,7 +7,7 @@ colorama==0.4.4
 coverage==5.5
 cryptography==3.4.7
 defusedxml==0.7.1
-Django==3.2.4
+Django==3.2.14
 django-appconf==1.0.4
 django-autocomplete-light==3.8.2
 django-ckeditor==6.1.0
